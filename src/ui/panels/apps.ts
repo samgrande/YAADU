@@ -156,7 +156,9 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
     <div class="card apps-list-card">
       <div class="card-header" style="align-items: center;">
         <div class="card-title">
-          <svg class="ct-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="6" height="6" rx="1"/><rect x="9" y="3" width="6" height="6" rx="1"/><rect x="16" y="3" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="9" y="10" width="6" height="6" rx="1"/><rect x="16" y="10" width="6" height="6" rx="1"/><rect x="2" y="17" width="6" height="6" rx="1"/><rect x="9" y="17" width="6" height="6" rx="1"/></svg>
+          <svg class="ct-icon" width="16" height="16" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M26.2125 7.75194L15.9 2.10937C15.6245 1.95712 15.3148 1.87726 15 1.87726C14.6852 1.87726 14.3755 1.95712 14.1 2.10937L3.7875 7.75429C3.49299 7.91543 3.24715 8.15268 3.07565 8.44127C2.90414 8.72986 2.81326 9.05921 2.8125 9.39491V20.6027C2.81326 20.9384 2.90414 21.2678 3.07565 21.5564C3.24715 21.845 3.49299 22.0822 3.7875 22.2433L14.1 27.8883C14.3755 28.0405 14.6852 28.1204 15 28.1204C15.3148 28.1204 15.6245 28.0405 15.9 27.8883L26.2125 22.2433C26.507 22.0822 26.7528 21.845 26.9244 21.5564C27.0959 21.2678 27.1867 20.9384 27.1875 20.6027V9.39608C27.1874 9.05978 27.0968 8.7297 26.9252 8.44044C26.7537 8.15117 26.5075 7.91337 26.2125 7.75194ZM15 3.74999L24.416 8.90624L20.9262 10.8152L11.5102 5.65897L15 3.74999ZM15 14.0625L5.58398 8.90624L9.55781 6.73007L18.9738 11.8863L15 14.0625ZM25.3125 20.6074L15.9375 25.7391V15.6832L19.6875 13.6312V17.8125C19.6875 18.0611 19.7863 18.2996 19.9621 18.4754C20.1379 18.6512 20.3764 18.75 20.625 18.75C20.8736 18.75 21.1121 18.6512 21.2879 18.4754C21.4637 18.2996 21.5625 18.0611 21.5625 17.8125V12.6047L25.3125 10.5527V20.6027V20.6074Z" fill="currentColor"/>
+</svg>
           Installed Apps
         </div>
         <md-outlined-button id="btn-refresh-apps">

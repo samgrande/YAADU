@@ -88,7 +88,6 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
       <svg class="spinner-stroke" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
         <circle cx="12" cy="12" r="9" stroke-dasharray="40 10"/>
       </svg>
-      <span class="btn-refresh-text">Loading…</span>
     `;
 
     try {

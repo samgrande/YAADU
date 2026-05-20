@@ -920,7 +920,7 @@ md-dialog {
 
   /* Interactive button qualities */
   border: none;
-  border-radius: 12px;
+  border-radius: 28px;
   background: #4CCB51;
   cursor: pointer;
   transition: all 0.15s ease-in-out;

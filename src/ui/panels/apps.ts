@@ -284,7 +284,6 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
       <svg class="spinner-stroke" slot="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
         <circle cx="12" cy="12" r="9" stroke-dasharray="40 10"/>
       </svg>
-      Loading…
     `;
     grid.innerHTML = `
       <div class="empty-state">

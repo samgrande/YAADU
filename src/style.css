@@ -635,7 +635,6 @@ md-dialog {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  flex: 1;
 }
 
 .nav-item-m3 {

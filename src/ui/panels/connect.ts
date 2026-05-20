@@ -175,6 +175,23 @@ export function renderConnectScreen(): HTMLElement {
 
   screen.innerHTML = buildTemplate();
 
+  const fitContent = () => {
+    const el = screen.querySelector<HTMLElement>(".connect-screen-content");
+    if (!el) return;
+    const avail = window.innerHeight - 32;
+    const h = el.scrollHeight;
+    if (h > avail) {
+      el.style.transformOrigin = "center center";
+      el.style.transform = `scale(${(avail / h).toFixed(3)})`;
+    } else {
+      el.style.transform = "";
+    }
+  };
+
+  if (document.readyState === "complete") fitContent();
+  else window.addEventListener("load", fitContent, { once: true });
+  window.addEventListener("resize", fitContent);
+
   const cardContainer = screen.querySelector<HTMLElement>("#connect-card")!;
 
   const changeCardState = (newState: "main" | "help" | "about") => {
@@ -223,6 +240,7 @@ export function renderConnectScreen(): HTMLElement {
         newContentEl.style.opacity = "1";
         newContentEl.style.transform = "none";
       }
+      fitContent();
     }, 180);
   };
 
@@ -232,14 +250,10 @@ export function renderConnectScreen(): HTMLElement {
         <div class="card-content-wrapper main-layout">
           <!-- Concentric circles containing smiling device graphic -->
           <div class="phone-graphic-container">
-            <svg width="265" height="265" viewBox="0 0 265 265" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Outer Circle 2 (New, largest, animated) -->
+            <svg width="190" height="190" viewBox="0 0 265 265" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle class="pulse-circle outer-2" cx="132.5" cy="132.5" r="132.5" fill="#B7F1B9" fill-opacity="0.16"/>
-              <!-- Outer Circle 1 (Original, animated) -->
               <circle class="pulse-circle outer-1" cx="132.5" cy="132.5" r="115" fill="#B7F1B9" fill-opacity="0.37"/>
-              <!-- Inner Circle (Static) -->
               <circle class="pulse-circle-static" cx="132.5" cy="132.5" r="95" fill="#B7F1B9"/>
-              <!-- Phone SVG from user, translated to center (102.5, 45.5) -->
               <g transform="translate(102.5, 63)">
                 <path d="M32.5004 114V113.5C32.5004 112.096 32.5004 111.393 32.1634 110.889C32.0175 110.671 31.8299 110.483 31.6114 110.337C31.1074 110 30.4044 110 29.0004 110C27.5964 110 26.8934 110 26.3894 110.337C26.171 110.483 25.9834 110.671 25.8374 110.889C25.5004 111.393 25.5004 112.096 25.5004 113.5V114" stroke="#095F4C" stroke-width="2"/>
                 <path d="M23.0044 115.113C22.9374 114.243 23.6404 113.5 24.5304 113.5H33.4704C34.3604 113.5 35.0634 114.243 34.9964 115.113L34.8124 117.492C34.6774 119.206 34.0984 120.855 33.1324 122.277L32.5324 123.162C32.2488 123.576 31.8684 123.914 31.4243 124.147C30.9803 124.38 30.486 124.501 29.9844 124.5H28.0164C27.515 124.501 27.021 124.38 26.5771 124.147C26.1332 123.913 25.753 123.575 25.4694 123.162L24.8684 122.277C23.9025 120.855 23.3235 119.206 23.1884 117.492L23.0044 115.113Z" stroke="#095F4C" stroke-width="2"/>
@@ -378,10 +392,10 @@ export function renderConnectScreen(): HTMLElement {
 
   const unsubConn = state.on("connectionChanged", updateStatus);
 
-  // Cleanup observer when element is removed from DOM
   const observer = new MutationObserver(() => {
     if (!document.contains(screen)) {
       unsubConn();
+      window.removeEventListener("resize", fitContent);
       observer.disconnect();
     }
   });

@@ -128,11 +128,10 @@ select {
   align-items: center;
   justify-content: center;
   background: #FFFFFF;
-  /* Pure white background exactly like the reference image */
   z-index: 100;
   transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
-  overflow-y: auto;
-  padding: 40px 20px;
+  overflow: hidden;
+  padding: 16px;
 }
 
 .connect-screen.exit {
@@ -146,8 +145,7 @@ select {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 497px;
-  /* Constrain wrapper width to match the card exactly */
+  width: 400px;
 }
 
 .connect-brand-header {
@@ -155,21 +153,21 @@ select {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .connect-android-logo {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .connect-title-yaadu {
   font-family: 'Roboto Condensed', sans-serif;
   font-style: normal;
   font-weight: 900;
-  font-size: 57px;
+  font-size: 42px;
   line-height: 1;
   text-align: center;
   color: #4CCB51;
@@ -177,9 +175,9 @@ select {
 }
 
 .connect-wave-separator {
-  margin: 8px 0;
-  width: 238px;
-  height: 12px;
+  margin: 6px 0;
+  width: 180px;
+  height: 10px;
   overflow: hidden;
   position: relative;
   mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
@@ -208,27 +206,25 @@ select {
   font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: 300;
-  font-size: 16px;
-  line-height: 19px;
+  font-size: 13px;
+  line-height: 1.4;
   text-align: center;
   color: #5A6055;
-  /* Soft dark grey matching reference image */
 }
 
 .connect-card-m3 {
   box-sizing: border-box;
-  width: 497px;
-  height: 598px;
+  width: 400px;
   background: #F5F9EF;
   border: 1px solid #9CFAA0;
   border-radius: 28px;
-  padding: 40px 32px 48px 32px;
+  padding: 28px 28px 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.04);
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 }
 
 .phone-graphic-container {
@@ -236,9 +232,9 @@ select {
   justify-content: center;
   align-items: center;
   position: relative;
-  width: 265px;
-  height: 265px;
-  margin-bottom: 55px;
+  width: 190px;
+  height: 190px;
+  margin-bottom: 20px;
 }
 
 .phone-graphic-container svg {
@@ -246,7 +242,7 @@ select {
 }
 
 .pulse-circle {
-  transform-origin: 132.5px 132.5px;
+  transform-origin: 95px 95px;
 }
 
 .pulse-circle.outer-1 {
@@ -293,21 +289,21 @@ select {
 
 /* Status Badge */
 .status-badge-m3 {
-  width: 369px;
-  height: 70px;
+  width: 320px;
+  height: 48px;
   background: #B7F1B9;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   color: #095F4C;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
-  font-size: 22px;
+  font-size: 16px;
   box-sizing: border-box;
-  margin-bottom: 32px;
-  /* increased to move badge lower */
+  margin-top: 12px;
+  margin-bottom: 16px;
 }
 
 .status-badge-m3.connecting {
@@ -327,26 +323,25 @@ select {
 }
 
 .status-badge-icon svg {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
 }
 
 .status-badge-m3.disconnected .status-badge-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 /* USB button */
 .btn-connect-m3 {
-  width: 220px;
-  height: 50px;
+  width: 180px;
+  height: 38px;
   background: #376A3E;
   border-radius: 25px;
   color: #FFFFFF;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
-  font-size: 20px;
-  /* Slightly reduced to guarantee no text wrapping on standard screens */
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -354,7 +349,6 @@ select {
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
   margin-top: auto;
-  /* Push connect button to bottom of card padding limit */
 }
 
 .btn-connect-m3:hover:not(:disabled) {
@@ -376,20 +370,19 @@ select {
 }
 
 .bottom-btn-m3 {
-  height: 60px;
+  height: 44px;
   border-radius: 43px;
   background: #B7F1B9;
   color: #095F4C;
   font-family: 'Roboto', sans-serif;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 700;
-  /* Bold letters as shown in reference image */
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   text-decoration: none;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.04);
   transition: background-color 0.2s, transform 0.1s;
@@ -402,15 +395,15 @@ select {
 /* No active press scale, replaced by ripple */
 
 .bottom-btn-m3.help-btn {
-  width: 134px;
+  width: 110px;
 }
 
 .bottom-btn-m3.about-btn {
-  width: 162px;
+  width: 130px;
 }
 
 .bottom-btn-m3.github-btn {
-  width: 141px;
+  width: 120px;
 }
 
 .bottom-btn-icon {
@@ -420,8 +413,8 @@ select {
 }
 
 .bottom-btn-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 
 /* Card text content for Help/About inline states */
@@ -1827,19 +1820,18 @@ select#dpi-preset:focus {
 /* ── Landing Page Background Icon Scrolling Animation ── */
 .landing-bg-animation {
   position: absolute;
-  top: calc(55% - 350px);
+  top: calc(55% - 280px);
   left: 0;
   right: 0;
-  height: 720px;
+  height: 520px;
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 32px; /* Balanced spacing to cluster all 6 tracks beautifully behind the card */
+  gap: 20px;
   opacity: 1;
-  /* Mask to smoothly fade out the icons at the left and right edges */
   mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
 }
@@ -1855,14 +1847,14 @@ select#dpi-preset:focus {
 
 .bg-track-content {
   display: inline-flex;
-  gap: 80px; /* Space between icons */
-  padding-right: 80px;
+  gap: 48px;
+  padding-right: 48px;
   will-change: transform;
 }
 
 .bg-track-content svg {
-  width: 50px;
-  height: 50px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
 }
 
@@ -1918,6 +1910,6 @@ select#dpi-preset:focus {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 497px;
+  width: 400px;
   pointer-events: auto;
 }

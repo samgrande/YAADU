@@ -188,9 +188,17 @@ function renderPanel(adb: Adb, panelId: ActivePanel): HTMLElement {
   const wrapper = document.createElement("div");
   wrapper.className = "panel-area";
   wrapper.setAttribute("data-panel-id", panelId);
-  wrapper.style.overflow = "hidden";
+  if (panelId === "apps") {
+    wrapper.style.overflow = "hidden";
+    wrapper.style.display = "flex";
+    wrapper.style.flexDirection = "column";
+  } else {
+    wrapper.style.overflow = "hidden";
+  }
   wrapper.appendChild(PANEL_FACTORIES[panelId](adb));
-  requestAnimationFrame(() => fitPanelContent(wrapper));
+  requestAnimationFrame(() => {
+    if (panelId !== "apps") fitPanelContent(wrapper);
+  });
   return wrapper;
 }
 

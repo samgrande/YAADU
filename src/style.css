@@ -849,7 +849,9 @@ md-dialog {
   flex-direction: column;
   gap: 0;
   min-height: 150px;
+  min-width: 260px;
   justify-content: center;
+  flex: none;
 }
 
 .metric-label {
@@ -986,8 +988,7 @@ md-dialog {
 }
 
 .telem-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
   gap: 20px;
 }
 

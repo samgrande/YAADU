@@ -604,7 +604,7 @@ md-dialog {
 .sidebar-inner {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  height: auto;
   transform-origin: top left;
 }
 
@@ -694,16 +694,17 @@ md-dialog {
 }
 
 .sidebar-device-card {
+  margin: 8px 14px;
+  padding: 16px 18px;
+  background: #B7F1B9;
   border: none;
   border-radius: 28px;
   flex-shrink: 0;
-  margin-top: auto;
 }
 
 .sidebar-disconnect-wrap {
   padding: 8px 14px 18px;
   flex-shrink: 0;
-  margin-top: auto;
 }
 
 .btn-disconnect {

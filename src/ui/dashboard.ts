@@ -78,7 +78,7 @@ function renderSidebar(adb: Adb): HTMLElement {
     </nav>
 
     <!-- Device card -->
-    <div class="sidebar-device-card" id="sb-device-card">
+    <div class="sidebar-device-card" id="sb-device-card" style="margin-top: auto;">
       <div class="device-brand" id="sb-brand">Device</div>
       <div class="device-model" id="sb-model">—</div>
       <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">

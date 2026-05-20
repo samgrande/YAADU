@@ -204,7 +204,7 @@ function renderPanel(adb: Adb, panelId: ActivePanel): HTMLElement {
 
 function onDashResize() {
   fitSidebar();
-  if (currentPanelEl) fitPanelContent(currentPanelEl);
+  if (currentPanelEl && currentPanelEl.getAttribute("data-panel-id") !== "apps") fitPanelContent(currentPanelEl);
 }
 
 // ── Dashboard Root ─────────────────────────────────────────────────────────

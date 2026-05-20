@@ -1095,6 +1095,12 @@ md-linear-progress {
   flex-direction: column;
   overflow-y: auto;
   flex: 1;
+  min-height: 0;
+}
+
+.panel-area[data-panel-id="apps"] {
+  display: flex;
+  flex-direction: column;
 }
 
 .panel-area[data-panel-id="apps"] > .card {
@@ -1102,6 +1108,7 @@ md-linear-progress {
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .panel-area[data-panel-id="apps"] .card-body.no-pad {
@@ -1110,6 +1117,7 @@ md-linear-progress {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  padding: 0;
 }
 
 .app-row {

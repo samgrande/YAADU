@@ -549,8 +549,8 @@
       <div class="device-brand" id="sb-brand">Device</div>
       <div class="device-model" id="sb-model">—</div>
       <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
-        <span class="battery-pct" id="sb-batt-pct">—</span>
         <md-linear-progress id="sb-batt-progress" value="0" style="flex:1;"></md-linear-progress>
+        <span class="battery-pct" id="sb-batt-pct">—</span>
       </div>
     </div>
 

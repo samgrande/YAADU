@@ -1028,7 +1028,13 @@ md-switch {
 
 md-linear-progress {
   --md-linear-progress-active-indicator-color: var(--md-sys-color-primary);
-  --md-linear-progress-track-color: #D0E8D0;
+  --md-linear-progress-track-color: var(--border-mid);
+  --md-linear-progress-track-height: 6px;
+  --md-linear-progress-active-indicator-height: 6px;
+}
+
+#sb-batt-progress {
+  --md-linear-progress-track-color: rgba(9, 95, 76, 0.3);
   --md-linear-progress-track-height: 12px;
   --md-linear-progress-active-indicator-height: 12px;
   --md-linear-progress-track-shape: 6px;

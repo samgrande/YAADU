@@ -1,0 +1,1923 @@
+/* ═══════════════════════════════════════════════════════
+   YAADU Design System — Material 3 (Light Theme)
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Material Design 3 Tokens ── */
+  --md-sys-color-primary: #376A3E;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-primary-container: #B7F1B9;
+  --md-sys-color-on-primary-container: #095F4C;
+  --md-sys-color-secondary: #526350;
+  --md-sys-color-on-secondary: #FFFFFF;
+  --md-sys-color-surface: #F5F9EF;
+  --md-sys-color-on-surface: #191C19;
+  --md-sys-color-surface-variant: #E1E4DC;
+  --md-sys-color-on-surface-variant: #43483F;
+  --md-sys-color-outline: #73796E;
+  --md-sys-color-outline-variant: #C1C9BE;
+  --md-sys-color-background: #E8F0E5;
+  --md-sys-color-on-background: #191C19;
+  --md-sys-color-error: #BA1A1A;
+  --md-sys-color-on-error: #FFFFFF;
+  --md-sys-color-error-container: #FFDAD6;
+  --md-sys-color-on-error-container: #410002;
+
+  /* ── Legacy Variables Mapped to M3 ── */
+  --bg: #E8F0E5;
+  --surface: #F5F9EF;
+  --surface-mid: #FFFFFF;
+  --surface-high: #E8F0E5;
+  --surface-hover: #DFE8DD;
+
+  --border: #D7DFD5;
+  --border-mid: #C1C9BE;
+  --border-light: #9CFAA0;
+
+  --cyan: #376A3E;
+  --cyan-dim: rgba(55, 106, 62, 0.1);
+  --cyan-glow: rgba(55, 106, 62, 0.2);
+  --green: #376A3E;
+  --green-dim: rgba(55, 106, 62, 0.1);
+  --amber: #825500;
+  --amber-dim: rgba(130, 85, 0, 0.1);
+  --red: #BA1A1A;
+  --red-dim: rgba(186, 26, 26, 0.1);
+  --purple: #526350;
+  --purple-dim: rgba(82, 99, 80, 0.1);
+
+  --text: #191C19;
+  --text-muted: #43483F;
+  --text-dim: #73796E;
+
+  --sidebar-w: 290px;
+  --header-h: 64px;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-lg: 28px;
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur: 200ms;
+}
+
+/* ── Reset ──────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Roboto', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-mid);
+  border-radius: 99px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+input,
+select {
+  font-family: inherit;
+}
+
+/* ── App Shell ──────────────────────────────────────── */
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CONNECT SCREEN (Landing Page M3 Layout)
+   ═══════════════════════════════════════════════════════ */
+.connect-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  /* Pure white background exactly like the reference image */
+  z-index: 100;
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+  overflow-y: auto;
+  padding: 40px 20px;
+}
+
+.connect-screen.exit {
+  opacity: 0;
+  transform: scale(0.97) translateY(-10px);
+  pointer-events: none;
+}
+
+.connect-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 497px;
+  /* Constrain wrapper width to match the card exactly */
+}
+
+.connect-brand-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.connect-android-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.connect-title-yaadu {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 57px;
+  line-height: 1;
+  text-align: center;
+  color: #4CCB51;
+  letter-spacing: -0.01em;
+}
+
+.connect-wave-separator {
+  margin: 8px 0;
+  width: 238px;
+  height: 12px;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
+.connect-wave-path {
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: wave-move 1.8s linear infinite;
+  will-change: transform;
+}
+
+@keyframes wave-move {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-20px, 0, 0);
+  }
+}
+
+.connect-tagline-text {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #5A6055;
+  /* Soft dark grey matching reference image */
+}
+
+.connect-card-m3 {
+  box-sizing: border-box;
+  width: 497px;
+  height: 598px;
+  background: #F5F9EF;
+  border: 1px solid #9CFAA0;
+  border-radius: 28px;
+  padding: 40px 32px 48px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.04);
+  margin-bottom: 32px;
+}
+
+.phone-graphic-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 265px;
+  height: 265px;
+  margin-bottom: 55px;
+}
+
+.phone-graphic-container svg {
+  overflow: visible;
+}
+
+.pulse-circle {
+  transform-origin: 132.5px 132.5px;
+}
+
+.pulse-circle.outer-1 {
+  animation: pulse-outer-1 4s ease-in-out infinite;
+}
+
+.pulse-circle.outer-2 {
+  animation: pulse-outer-2 4s ease-in-out infinite;
+}
+
+@keyframes pulse-outer-1 {
+  0% {
+    transform: scale(0.92);
+    fill-opacity: 0.25;
+  }
+
+  50% {
+    transform: scale(1.12);
+    fill-opacity: 0.55;
+  }
+
+  100% {
+    transform: scale(0.92);
+    fill-opacity: 0.25;
+  }
+}
+
+@keyframes pulse-outer-2 {
+  0% {
+    transform: scale(0.90);
+    fill-opacity: 0.08;
+  }
+
+  50% {
+    transform: scale(1.25);
+    fill-opacity: 0.35;
+  }
+
+  100% {
+    transform: scale(0.90);
+    fill-opacity: 0.08;
+  }
+}
+
+/* Status Badge */
+.status-badge-m3 {
+  width: 369px;
+  height: 70px;
+  background: #B7F1B9;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #095F4C;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  box-sizing: border-box;
+  margin-bottom: 32px;
+  /* increased to move badge lower */
+}
+
+.status-badge-m3.connecting {
+  background: #FFE2B7;
+  color: #825500;
+}
+
+.status-badge-m3.error {
+  background: #FFDADA;
+  color: #BA1A1A;
+}
+
+.status-badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-badge-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.status-badge-m3.disconnected .status-badge-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* USB button */
+.btn-connect-m3 {
+  width: 220px;
+  height: 50px;
+  background: #376A3E;
+  border-radius: 25px;
+  color: #FFFFFF;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  /* Slightly reduced to guarantee no text wrapping on standard screens */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  margin-top: auto;
+  /* Push connect button to bottom of card padding limit */
+}
+
+.btn-connect-m3:hover:not(:disabled) {
+  background: #2E5A35;
+}
+
+/* No active press scale, replaced by ripple */
+
+.btn-connect-m3:disabled {
+  background: #A3B5A5;
+  cursor: not-allowed;
+}
+
+/* Bottom panel */
+.connect-bottom-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.bottom-btn-m3 {
+  height: 60px;
+  border-radius: 43px;
+  background: #B7F1B9;
+  color: #095F4C;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  /* Bold letters as shown in reference image */
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.bottom-btn-m3:hover {
+  background: #9CEAA0;
+}
+
+/* No active press scale, replaced by ripple */
+
+.bottom-btn-m3.help-btn {
+  width: 134px;
+}
+
+.bottom-btn-m3.about-btn {
+  width: 162px;
+}
+
+.bottom-btn-m3.github-btn {
+  width: 141px;
+}
+
+.bottom-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottom-btn-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Card text content for Help/About inline states */
+.card-text-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: #095F4C;
+  font-family: 'Roboto', sans-serif;
+  text-align: left;
+}
+
+.card-text-header {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #9CFAA0;
+  padding-bottom: 8px;
+}
+
+.card-text-body {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #000000;
+}
+
+/* Retro Help & About Layout Style (inspired by Figma images) */
+.about-layout-retro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.about-header-main {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #095F4C;
+  margin-bottom: 6px;
+}
+
+.about-header-line {
+  width: 48px;
+  height: 3px;
+  background: #4CCB51;
+  margin-bottom: 20px;
+  border-radius: 2px;
+}
+
+.about-japanese-title {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: #376A3E; /* Sleek brand green replacing original theme red */
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.about-japanese-sub {
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  color: #5A6055;
+  margin-bottom: 24px;
+}
+
+.about-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.about-para-card {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #2F382B;
+  text-align: left;
+  padding-left: 16px;
+  border-left: 4px solid #4CCB51; /* Bold green vertical accent line */
+}
+
+/* Retro Help Cards Styling */
+.help-layout-retro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.help-retro-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.help-retro-card {
+  background: rgba(217, 237, 218, 0.25); /* Ultra soft green tone matching card design system */
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.help-retro-card:hover {
+  transform: translateY(-2px);
+  background: rgba(217, 237, 218, 0.35);
+}
+
+.help-retro-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.help-retro-num-badge {
+  background: rgba(76, 203, 81, 0.15); /* Light active green accent background */
+  color: #376A3E; /* High contrast, bold green text */
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.help-retro-title {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 14.5px;
+  color: #095F4C;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.help-retro-body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #2F382B;
+}
+
+.help-retro-body strong {
+  color: #376A3E;
+  font-weight: 600;
+}
+
+/* ── M3 dialog ── */
+md-dialog {
+  --md-dialog-container-shape: 28px;
+  --md-dialog-container-color: #F5F9EF;
+  --md-dialog-headline-font: 'Roboto', sans-serif;
+  --md-dialog-headline-color: #191C19;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════
+   DASHBOARD SHELL — SIDEBAR + CONTENT
+   ═══════════════════════════════════════════════════════ */
+.dashboard {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  animation: fadeSlideUp 0.4s var(--ease) both;
+}
+
+/* ── Sidebar ────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: #F5F9EF;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 20px 20px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.sidebar-header svg {
+  flex-shrink: 0;
+}
+
+.sidebar-wordmark {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 30px;
+  letter-spacing: 0;
+  color: #4CCB51;
+}
+
+/* Sidebar nav – pill style */
+.sidebar-nav {
+  padding: 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.nav-item-m3 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 20px;
+  height: 72px;
+  border-radius: 20px;
+  border: none;
+  background: transparent;
+  color: #3A583B;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item-m3.active {
+  background: #B7F1B9;
+  color: #3A583B;
+}
+
+.nav-item-m3.active .nav-icon-container svg {
+  stroke: #095F4C;
+}
+
+.nav-item-m3:hover:not(.active) {
+  background: #DCF5DC;
+  color: #3A583B;
+}
+
+.nav-label {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.nav-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-icon-container svg {
+  width: 22px;
+  height: 22px;
+  stroke: #095F4C;
+}
+
+.sidebar-device-card {
+  margin: 8px 14px;
+  padding: 16px 18px;
+  background: #B7F1B9;
+  border: none;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.sidebar-disconnect-wrap {
+  padding: 8px 14px 18px;
+  flex-shrink: 0;
+}
+
+.btn-disconnect {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 20px;
+  border: none;
+  background: #FFC9C9;
+  color: #FF3030;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-disconnect:hover {
+  background: #FFB0B0;
+}
+
+.device-brand {
+  font-size: 13px;
+  color: #095F4C;
+  font-weight: 500;
+  opacity: 0.7;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
+}
+
+.device-model {
+  font-size: 18px;
+  font-weight: 500;
+  color: #095F4C;
+  margin-bottom: 10px;
+  letter-spacing: 0.3px;
+}
+
+.device-battery {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.battery-pct {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-align: right;
+  margin-top: 2px;
+}
+
+/* ── Main Content ───────────────────────────────────── */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  background: #FFFFFF;
+}
+
+.panel-area {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══════════════════════════════════════════════════════
+   M3 CARD & COMPONENTS
+   ═══════════════════════════════════════════════════════ */
+.card {
+  background: #F5F9EF;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-title .ct-icon {
+  color: var(--text-dim);
+}
+
+.card-body {
+  padding: 24px;
+}
+
+.card-body.no-pad {
+  padding: 0;
+}
+
+/* Section grid */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* Metric tile – Figma spec */
+.metric-tile {
+  background: #F5F9EF;
+  border: 1px solid #C1FBC3;
+  border-radius: 28px;
+  padding: 20px 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 150px;
+  justify-content: center;
+}
+
+.metric-label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: rgba(9, 95, 76, 0.64);
+  letter-spacing: 0.3px;
+  margin-bottom: 10px;
+}
+
+.metric-value {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 42px;
+  font-weight: 500;
+  color: #095F4C;
+  line-height: 1.1;
+  letter-spacing: 0.3px;
+}
+
+.metric-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ── Telemetry Panel ─────────────────────────────────── */
+.telem-panel {
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.telem-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.telem-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #095F4C;
+  letter-spacing: -0.5px;
+}
+
+.btn-refresh-green {
+  /* Auto layout */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 24px;
+  gap: 12px;
+  isolation: isolate;
+
+  width: 180px;
+  height: 60px;
+
+  /* Inside auto layout */
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+
+  /* Interactive button qualities */
+  border: none;
+  border-radius: 12px;
+  background: #4CCB51;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-refresh-green:hover {
+  background: #3DBF42;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 203, 81, 0.15);
+}
+
+.btn-refresh-green:active {
+  transform: translateY(0);
+}
+
+.btn-refresh-green:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Vector styling */
+.btn-refresh-green svg {
+  width: 26px;
+  height: 26px;
+  color: #095F4C;
+  stroke: #095F4C;
+  fill: none;
+
+  /* Inside auto layout */
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  z-index: 1;
+}
+
+/* Reload text styling */
+.btn-refresh-text {
+  /* M3/headline/small */
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 34px;
+  
+  display: flex;
+  align-items: center;
+
+  color: #095F4C;
+
+  /* Inside auto layout */
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  z-index: 0;
+}
+
+.telem-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.telem-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* Battery indicator */
+.battery-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.batt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Web Components defaults override */
+md-outlined-button {
+  --md-outlined-button-container-shape: 100px;
+  --md-outlined-button-label-text-font: 'Roboto', sans-serif;
+  --md-outlined-button-label-text-weight: 500;
+}
+
+md-filled-button {
+  --md-filled-button-container-shape: 100px;
+  --md-filled-button-label-text-font: 'Roboto', sans-serif;
+  --md-filled-button-label-text-weight: 500;
+}
+
+md-outlined-text-field {
+  --md-outlined-text-field-container-shape: 12px;
+  --md-outlined-text-field-label-text-font: 'Roboto', sans-serif;
+  width: 100%;
+}
+
+md-switch {
+  --md-switch-selected-icon-color: var(--md-sys-color-primary);
+}
+
+md-linear-progress {
+  --md-linear-progress-active-indicator-color: var(--md-sys-color-primary);
+  --md-linear-progress-track-color: var(--border-mid);
+  --md-linear-progress-track-height: 6px;
+  --md-linear-progress-active-indicator-height: 6px;
+  border-radius: 99px;
+}
+
+/* Spinners */
+.spinner-stroke {
+  animation: spin 0.8s linear infinite;
+  transform-origin: center;
+}
+
+/* Tags/badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-green {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.badge-red {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+}
+
+.badge-amber {
+  background: #FFE2B7;
+  color: #825500;
+}
+
+.badge-cyan {
+  background: #D2E4FF;
+  color: #00497E;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 6px 0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TELEMETRY PANEL
+   ═══════════════════════════════════════════════════════ */
+.telemetry-skeleton {
+  opacity: 0.5;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════
+   APPS PANEL
+   ═══════════════════════════════════════════════════════ */
+.apps-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-row {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--dur) var(--ease);
+}
+
+.app-row:last-child {
+  border-bottom: none;
+}
+
+.app-row:hover {
+  background: var(--surface-hover);
+}
+
+.app-row.disabled-app {
+  opacity: 0.6;
+}
+
+.app-icon-placeholder {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--surface-high);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--md-sys-color-primary);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+}
+
+.app-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-pkg {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-pkg-short {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+}
+
+.app-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+/* APK Installer */
+.apk-drop-zone {
+  border: 2px dashed var(--border-mid);
+  border-radius: 20px;
+  padding: 36px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  background: #FFFFFF;
+}
+
+.apk-drop-zone:hover,
+.apk-drop-zone.drag-over {
+  border-color: var(--md-sys-color-primary);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.apk-drop-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.apk-drop-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════
+   BACKUP PANEL
+   ═══════════════════════════════════════════════════════ */
+.backup-file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.backup-file-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  animation: fadeSlideIn 0.15s var(--ease) both;
+}
+
+.backup-file-item:last-child {
+  border-bottom: none;
+}
+
+.backup-file-name {
+  flex: 1;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.backup-file-size {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.backup-file-status {
+  flex-shrink: 0;
+}
+
+.backup-log {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text-muted);
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.backup-log .log-ok {
+  color: var(--md-sys-color-primary);
+  font-weight: 500;
+}
+
+.backup-log .log-err {
+  color: var(--md-sys-color-error);
+}
+
+.backup-log .log-info {
+  color: var(--md-sys-color-secondary);
+}
+
+/* ═══════════════════════════════════════════════════════
+   TWEAKS PANEL
+   ═══════════════════════════════════════════════════════ */
+.tweak-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  gap: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tweak-row:last-child {
+  border-bottom: none;
+}
+
+.tweak-info {
+  flex: 1;
+}
+
+.tweak-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.tweak-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.tweak-control {
+  flex-shrink: 0;
+}
+
+/* Anim slider group in Segmented Style */
+.anim-slider-group {
+  display: flex;
+  background: #E8F0E5;
+  padding: 4px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+}
+
+.anim-btn {
+  padding: 8px 18px;
+  border-radius: 100px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  font-family: 'Roboto', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+}
+
+.anim-btn.active {
+  background: #FFFFFF;
+  color: var(--md-sys-color-primary);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.anim-btn:hover:not(.active) {
+  color: var(--text);
+}
+
+/* presets */
+select#dpi-preset {
+  font-weight: 500;
+  transition: border-color var(--dur);
+}
+
+select#dpi-preset:focus {
+  border-color: var(--md-sys-color-primary) !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOASTS & FEEDBACK
+   ═══════════════════════════════════════════════════════ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 64px 24px;
+  gap: 16px;
+  color: var(--text-dim);
+}
+
+.empty-state svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 999;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 14px 20px;
+  border-radius: 100px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-mid);
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+  animation: toastIn 0.3s var(--ease) both;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toast.success {
+  border-color: var(--md-sys-color-primary);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.toast.error {
+  border-color: var(--md-sys-color-error);
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+}
+
+.toast.info {
+  border-color: var(--border);
+  background: #E8F0E5;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.toast.exit {
+  animation: toastOut 0.25s var(--ease) both;
+}
+
+/* ── Keyframes ── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes shimmer {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+}
+
+/* Ripple Animation Styles */
+.btn-connect-m3,
+.bottom-btn-m3,
+.anim-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.m3-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(0);
+  animation: m3-ripple-effect 1200ms cubic-bezier(0.1, 0.8, 0.1, 1);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Darker ripple for light-colored background buttons */
+.bottom-btn-m3 .m3-ripple,
+.anim-btn .m3-ripple {
+  background: rgba(9, 95, 76, 0.12);
+}
+
+@keyframes m3-ripple-effect {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(3.5);
+    opacity: 0;
+  }
+}
+
+/* ── Page & Element Transition System ── */
+
+/* Card transitions on Connect Screen (main ↔ help ↔ about) */
+.connect-card-m3 {
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+
+.connect-card-m3.card-exit {
+  opacity: 0;
+  transform: scale(0.97) translateY(8px);
+}
+
+.connect-card-m3.card-enter {
+  opacity: 0;
+  transform: scale(0.97) translateY(-8px);
+}
+
+/* Connect Screen Initial Load Entrance Animations */
+.connect-brand-header {
+  animation: connectHeaderEnter 0.6s var(--ease) both;
+}
+
+.connect-wave-separator {
+  animation: connectWaveEnter 0.8s var(--ease) 0.15s both;
+}
+
+.connect-tagline-text {
+  animation: connectTaglineEnter 0.6s var(--ease) 0.25s both;
+}
+
+.connect-card-m3 {
+  animation: connectCardEnter 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+}
+
+.connect-bottom-buttons .bottom-btn-m3 {
+  opacity: 0;
+  animation: connectButtonEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.connect-bottom-buttons .bottom-btn-m3:nth-child(1) { animation-delay: 0.5s; }
+.connect-bottom-buttons .bottom-btn-m3:nth-child(2) { animation-delay: 0.58s; }
+.connect-bottom-buttons .bottom-btn-m3:nth-child(3) { animation-delay: 0.66s; }
+
+/* Dashboard Panels Transitions */
+.panel-area {
+  will-change: transform, opacity;
+}
+
+/* Panel Exit Animation */
+.panel-area.panel-exit {
+  animation: panelExit 0.2s cubic-bezier(0.3, 0, 0.8, 0.15) both;
+  pointer-events: none;
+}
+
+/* Panel Entry Animations - Tailored to each unique view */
+.panel-area[data-panel-id="telemetry"] {
+  animation: telemetryEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Staggered entry for Telemetry Grid tiles */
+.panel-area[data-panel-id="telemetry"] .metric-tile-m3 {
+  opacity: 0;
+  animation: metricTileEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.panel-area[data-panel-id="telemetry"] .metric-tile-m3:nth-child(1) { animation-delay: 0.04s; }
+.panel-area[data-panel-id="telemetry"] .metric-tile-m3:nth-child(2) { animation-delay: 0.08s; }
+.panel-area[data-panel-id="telemetry"] .metric-tile-m3:nth-child(3) { animation-delay: 0.12s; }
+.panel-area[data-panel-id="telemetry"] .metric-tile-m3:nth-child(4) { animation-delay: 0.16s; }
+.panel-area[data-panel-id="telemetry"] .metric-tile-m3:nth-child(5) { animation-delay: 0.2s; }
+.panel-area[data-panel-id="telemetry"] .metric-tile-m3:nth-child(6) { animation-delay: 0.24s; }
+
+/* Apps Panel: Slide from right + fade */
+.panel-area[data-panel-id="apps"] {
+  animation: appsEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Staggered App rows in Apps Manager */
+.panel-area[data-panel-id="apps"] .app-row {
+  opacity: 0;
+  animation: appRowEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Stagger the first 10 app rows to avoid performance lag for long lists */
+.panel-area[data-panel-id="apps"] .app-row:nth-child(1) { animation-delay: 0.02s; }
+.panel-area[data-panel-id="apps"] .app-row:nth-child(2) { animation-delay: 0.04s; }
+.panel-area[data-panel-id="apps"] .app-row:nth-child(3) { animation-delay: 0.06s; }
+.panel-area[data-panel-id="apps"] .app-row:nth-child(4) { animation-delay: 0.08s; }
+.panel-area[data-panel-id="apps"] .app-row:nth-child(5) { animation-delay: 0.1s; }
+.panel-area[data-panel-id="apps"] .app-row:nth-child(6) { animation-delay: 0.12s; }
+.panel-area[data-panel-id="apps"] .app-row:nth-child(7) { animation-delay: 0.14s; }
+.panel-area[data-panel-id="apps"] .app-row:nth-child(8) { animation-delay: 0.16s; }
+.panel-area[data-panel-id="apps"] .app-row:nth-child(9) { animation-delay: 0.18s; }
+.panel-area[data-panel-id="apps"] .app-row:nth-child(10) { animation-delay: 0.2s; }
+
+/* Media Backup Panel: Smooth zoom + scale reveal */
+.panel-area[data-panel-id="backup"] {
+  animation: backupEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Media Backup File Items stagger */
+.panel-area[data-panel-id="backup"] .backup-file-item {
+  opacity: 0;
+  animation: backupItemEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(1) { animation-delay: 0.03s; }
+.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(2) { animation-delay: 0.06s; }
+.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(3) { animation-delay: 0.09s; }
+.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(4) { animation-delay: 0.12s; }
+.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(5) { animation-delay: 0.15s; }
+
+/* System Tweaks Panel: Slide up from bottom + fade */
+.panel-area[data-panel-id="tweaks"] {
+  animation: tweaksEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* System Tweaks rows stagger */
+.panel-area[data-panel-id="tweaks"] .tweak-row {
+  opacity: 0;
+  animation: tweakRowEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.panel-area[data-panel-id="tweaks"] .tweak-row:nth-child(1) { animation-delay: 0.04s; }
+.panel-area[data-panel-id="tweaks"] .tweak-row:nth-child(2) { animation-delay: 0.08s; }
+.panel-area[data-panel-id="tweaks"] .tweak-row:nth-child(3) { animation-delay: 0.12s; }
+
+/* ── Keyframes for Transitions ── */
+
+@keyframes connectHeaderEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes connectWaveEnter {
+  from {
+    opacity: 0;
+    transform: scaleX(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes connectTaglineEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes connectCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes connectButtonEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes panelExit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+}
+
+@keyframes telemetryEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes metricTileEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes appsEnter {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes appRowEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes backupEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes backupItemEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tweaksEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tweakRowEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card Content Wrapper for unified seamless slide/fade transitions */
+.card-content-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.card-content-wrapper.text-layout {
+  justify-content: space-between;
+}
+
+/* ── Landing Page Background Icon Scrolling Animation ── */
+.landing-bg-animation {
+  position: absolute;
+  top: calc(55% - 350px);
+  left: 0;
+  right: 0;
+  height: 720px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px; /* Balanced spacing to cluster all 6 tracks beautifully behind the card */
+  opacity: 1;
+  /* Mask to smoothly fade out the icons at the left and right edges */
+  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
+.bg-track {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0.1; /* 10% opacity as requested by the user */
+  user-select: none;
+}
+
+.bg-track-content {
+  display: inline-flex;
+  gap: 80px; /* Space between icons */
+  padding-right: 80px;
+  will-change: transform;
+}
+
+.bg-track-content svg {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+}
+
+/* Accent Colors for a beautiful premium look */
+.bg-track:nth-child(1) { color: #4CCB51; } /* Bright brand green */
+.bg-track:nth-child(2) { color: #376A3E; } /* Forest theme green */
+.bg-track:nth-child(3) { color: #4CCB51; } /* Bright brand green */
+.bg-track:nth-child(4) { color: #376A3E; } /* Forest theme green */
+.bg-track:nth-child(5) { color: #4CCB51; } /* Bright brand green */
+.bg-track:nth-child(6) { color: #376A3E; } /* Forest theme green */
+
+/* Seamless Scrolling Keyframes */
+@keyframes scroll-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes scroll-right {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.track-left-to-right .bg-track-content {
+  animation: scroll-left 25s linear infinite;
+}
+
+.track-right-to-left .bg-track-content {
+  animation: scroll-right 25s linear infinite;
+}
+
+/* Variations in speed for extra depth */
+.bg-track.slow .bg-track-content {
+  animation-duration: 35s;
+}
+
+.bg-track.fast .bg-track-content {
+  animation-duration: 18s;
+}
+
+/* Ensure landing page content sits on top of background animation */
+.connect-screen-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 497px;
+  pointer-events: auto;
+}

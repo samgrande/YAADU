@@ -911,7 +911,7 @@ md-dialog {
   isolation: isolate;
 
   width: 180px;
-  height: 60px;
+  height: 63px;
 
   /* Inside auto layout */
   flex: none;
@@ -922,7 +922,7 @@ md-dialog {
   /* Interactive button qualities */
   border: none;
   border-radius: 28px;
-  background: #4CCB51;
+  background: #B7F1B9;
   cursor: pointer;
   transition: all 0.15s ease-in-out;
   position: relative;

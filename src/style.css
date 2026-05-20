@@ -1103,7 +1103,7 @@ md-linear-progress {
   flex-direction: column;
 }
 
-.panel-area[data-panel-id="apps"] > .card {
+.panel-area[data-panel-id="apps"] > .card:first-child {
   display: flex;
   flex-direction: column;
   flex: 1;

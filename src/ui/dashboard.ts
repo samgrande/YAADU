@@ -83,9 +83,9 @@ function renderSidebar(adb: Adb): HTMLElement {
     <div class="sidebar-device-card" id="sb-device-card">
       <div class="device-brand" id="sb-brand">Device</div>
       <div class="device-model" id="sb-model">—</div>
-      <div style="display:flex; flex-direction:column; gap:6px; margin-top:10px;">
-        <md-linear-progress id="sb-batt-progress" value="0" style="width:100%;"></md-linear-progress>
+      <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
         <span class="battery-pct" id="sb-batt-pct">—</span>
+        <md-linear-progress id="sb-batt-progress" value="0" style="flex:1;"></md-linear-progress>
       </div>
     </div>
 

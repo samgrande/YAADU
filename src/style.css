@@ -643,7 +643,7 @@ md-dialog {
   gap: 14px;
   padding: 0 20px;
   height: 72px;
-  border-radius: 20px;
+  border-radius: 28px;
   border: none;
   background: transparent;
   color: #3A583B;
@@ -697,7 +697,7 @@ md-dialog {
   padding: 16px 18px;
   background: #B7F1B9;
   border: none;
-  border-radius: 20px;
+  border-radius: 28px;
   flex-shrink: 0;
 }
 
@@ -713,7 +713,7 @@ md-dialog {
   gap: 10px;
   width: 100%;
   padding: 14px 18px;
-  border-radius: 20px;
+  border-radius: 28px;
   border: none;
   background: #FFC9C9;
   color: #FF3030;
@@ -756,11 +756,11 @@ md-dialog {
 
 .battery-pct {
   font-family: 'Roboto', sans-serif;
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: 500;
-  text-align: right;
-  margin-top: 2px;
+  font-size: 14px;
+  color: #095F4C;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ── Main Content ───────────────────────────────────── */
@@ -786,7 +786,7 @@ md-dialog {
 .card {
   background: #F5F9EF;
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 28px;
   overflow: hidden;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -1028,10 +1028,11 @@ md-switch {
 
 md-linear-progress {
   --md-linear-progress-active-indicator-color: var(--md-sys-color-primary);
-  --md-linear-progress-track-color: var(--border-mid);
-  --md-linear-progress-track-height: 6px;
-  --md-linear-progress-active-indicator-height: 6px;
-  border-radius: 99px;
+  --md-linear-progress-track-color: #D0E8D0;
+  --md-linear-progress-track-height: 12px;
+  --md-linear-progress-active-indicator-height: 12px;
+  --md-linear-progress-track-shape: 6px;
+  --md-linear-progress-active-indicator-shape: 6px;
 }
 
 /* Spinners */
@@ -1197,7 +1198,7 @@ md-linear-progress {
 /* APK Installer */
 .apk-drop-zone {
   border: 2px dashed var(--border-mid);
-  border-radius: 20px;
+  border-radius: 28px;
   padding: 36px 24px;
   text-align: center;
   cursor: pointer;

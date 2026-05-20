@@ -431,7 +431,6 @@ select {
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 20px;
-  border-bottom: 2px solid #9CFAA0;
   padding-bottom: 8px;
 }
 
@@ -611,7 +610,6 @@ md-dialog {
 
 .sidebar-header {
   padding: 20px 20px 18px;
-  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -798,7 +796,6 @@ md-dialog {
   align-items: center;
   justify-content: space-between;
   padding: 18px 24px;
-  border-bottom: 1px solid var(--border);
 }
 
 .card-title {
@@ -1103,12 +1100,10 @@ md-linear-progress {
   align-items: center;
   padding: 16px 24px;
   gap: 16px;
-  border-bottom: 1px solid var(--border);
   transition: background var(--dur) var(--ease);
 }
 
 .app-row:last-child {
-  border-bottom: none;
 }
 
 .app-row:hover {
@@ -1211,13 +1206,11 @@ md-linear-progress {
   align-items: center;
   gap: 14px;
   padding: 12px 24px;
-  border-bottom: 1px solid var(--border);
   font-size: 13px;
   animation: fadeSlideIn 0.15s var(--ease) both;
 }
 
 .backup-file-item:last-child {
-  border-bottom: none;
 }
 
 .backup-file-name {
@@ -1275,11 +1268,9 @@ md-linear-progress {
   justify-content: space-between;
   padding: 20px 24px;
   gap: 24px;
-  border-bottom: 1px solid var(--border);
 }
 
 .tweak-row:last-child {
-  border-bottom: none;
 }
 
 .tweak-info {

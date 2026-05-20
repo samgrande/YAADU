@@ -612,6 +612,7 @@ md-dialog {
   padding: 20px 20px 18px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   flex-shrink: 0;
 }

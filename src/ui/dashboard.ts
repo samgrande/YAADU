@@ -153,12 +153,34 @@ const PANEL_FACTORIES: Record<ActivePanel, (adb: Adb) => HTMLElement> = {
   tweaks:    renderTweaksPanel,
 };
 
+function fitPanelContent(wrapper: HTMLElement) {
+  const mc = wrapper.closest<HTMLElement>(".main-content");
+  const inner = wrapper.firstElementChild as HTMLElement | null;
+  if (!mc || !inner) return;
+  const avail = mc.clientHeight;
+  const h = inner.scrollHeight;
+  if (h > avail) {
+    inner.style.transformOrigin = "center top";
+    inner.style.transform = `scale(${(avail / h).toFixed(3)})`;
+  } else {
+    inner.style.transform = "";
+  }
+}
+
+let currentPanelEl: HTMLElement | null = null;
+
 function renderPanel(adb: Adb, panelId: ActivePanel): HTMLElement {
   const wrapper = document.createElement("div");
   wrapper.className = "panel-area";
   wrapper.setAttribute("data-panel-id", panelId);
+  wrapper.style.overflow = "hidden";
   wrapper.appendChild(PANEL_FACTORIES[panelId](adb));
+  requestAnimationFrame(() => fitPanelContent(wrapper));
   return wrapper;
+}
+
+function onDashResize() {
+  if (currentPanelEl) fitPanelContent(currentPanelEl);
 }
 
 // ── Dashboard Root ─────────────────────────────────────────────────────────
@@ -167,35 +189,40 @@ export function renderDashboard(adb: Adb): HTMLElement {
   const dash = document.createElement("div");
   dash.className = "dashboard";
 
-  // Build sidebar
   const sidebar = renderSidebar(adb);
   dash.appendChild(sidebar);
 
-  // Build main content
   const mainContent = document.createElement("div");
   mainContent.className = "main-content";
 
-  // Panel container (fills full main-content area)
   const panelContainer = document.createElement("div");
   panelContainer.style.cssText = "flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0";
   mainContent.appendChild(panelContainer);
 
-  // Initial panel
-  let currentPanelEl = renderPanel(adb, state.panel);
+  currentPanelEl = renderPanel(adb, state.panel);
   panelContainer.appendChild(currentPanelEl);
 
-  // Route on panel change
+  window.addEventListener("resize", onDashResize);
+
   state.on("panelChanged", (rawPanelId) => {
     const panelId = rawPanelId as ActivePanel;
 
-    currentPanelEl.classList.add("panel-exit");
+    currentPanelEl!.classList.add("panel-exit");
 
     setTimeout(() => {
-      currentPanelEl.remove();
+      currentPanelEl!.remove();
       currentPanelEl = renderPanel(adb, panelId);
       panelContainer.appendChild(currentPanelEl);
     }, 200);
   });
+
+  const observer = new MutationObserver(() => {
+    if (!document.contains(dash)) {
+      window.removeEventListener("resize", onDashResize);
+      observer.disconnect();
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 
   dash.appendChild(mainContent);
   return dash;

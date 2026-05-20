@@ -191,6 +191,7 @@ function renderPanel(adb: Adb, panelId: ActivePanel): HTMLElement {
   if (panelId === "apps") {
     wrapper.style.overflow = "hidden";
     wrapper.style.display = "flex";
+    wrapper.style.flex = "1";
     wrapper.style.flexDirection = "column";
   } else {
     wrapper.style.overflow = "hidden";

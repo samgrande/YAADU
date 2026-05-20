@@ -20,7 +20,7 @@ const NAV_ITEMS: NavItem[] = [
     id: "telemetry",
     label: "Device Info",
     title: "Device Info",
-    icon: `<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`,
+    icon: `<svg class="nav-icon" viewBox="0 0 21 33" fill="none" stroke="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 9H12V12H9V9ZM9 15H12V24H9V15ZM18 0.015L3 0C1.35 0 0 1.35 0 3V30C0 31.65 1.35 33 3 33H18C19.65 33 21 31.65 21 30V3C21 1.35 19.65 0.015 18 0.015ZM18 30H3V28.5H18V30ZM18 25.5H3V7.5H18V25.5ZM3 4.5V3H18V4.5H3Z" fill="#095F4C"/></svg>`,
   },
   {
     id: "apps",

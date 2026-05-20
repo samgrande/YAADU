@@ -57,7 +57,10 @@ function renderSidebar(adb: Adb): HTMLElement {
   const sidebar = document.createElement("aside");
   sidebar.className = "sidebar";
 
-  sidebar.innerHTML = `
+  const inner = document.createElement("div");
+  inner.className = "sidebar-inner";
+
+  inner.innerHTML = `
     <div class="sidebar-header">
       ${ANDROID_LOGO_SVG}
       <span class="sidebar-wordmark">YAADU</span>
@@ -98,8 +101,10 @@ function renderSidebar(adb: Adb): HTMLElement {
     </div>
   `;
 
+  sidebar.appendChild(inner);
+
   // ── Nav click events ──────────────────────────────────────────────────
-  const nav = sidebar.querySelector<HTMLElement>("#sidebar-nav")!;
+  const nav = inner.querySelector<HTMLElement>("#sidebar-nav")!;
   nav.addEventListener("click", (e) => {
     const item = (e.target as HTMLElement).closest<HTMLElement>("[data-panel]");
     if (!item) return;
@@ -117,7 +122,7 @@ function renderSidebar(adb: Adb): HTMLElement {
   // Update device card from state
   const updateDeviceCard = (device: typeof state.device) => {
     if (!device) return;
-    const q = (id: string) => sidebar.querySelector<HTMLElement>(`#${id}`)!;
+    const q = (id: string) => inner.querySelector<HTMLElement>(`#${id}`)!;
     q("sb-brand").textContent = device.brand.toUpperCase();
     q("sb-model").textContent = device.marketingName;
     q("sb-batt-pct").textContent = `${device.batteryLevel}%`;
@@ -137,7 +142,7 @@ function renderSidebar(adb: Adb): HTMLElement {
   }
 
   // Disconnect
-  sidebar.querySelector("#btn-disconnect")!.addEventListener("click", () => {
+  inner.querySelector("#btn-disconnect")!.addEventListener("click", () => {
     if (confirm("Disconnect from device?")) disconnectDevice();
   });
 
@@ -153,18 +158,28 @@ const PANEL_FACTORIES: Record<ActivePanel, (adb: Adb) => HTMLElement> = {
   tweaks:    renderTweaksPanel,
 };
 
+function scaleToFit(el: HTMLElement, avail: number) {
+  const h = el.scrollHeight;
+  if (h > avail && avail > 0) {
+    el.style.transformOrigin = "center top";
+    el.style.transform = `scale(${(avail / h).toFixed(3)})`;
+  } else {
+    el.style.transform = "";
+  }
+}
+
 function fitPanelContent(wrapper: HTMLElement) {
   const mc = wrapper.closest<HTMLElement>(".main-content");
   const inner = wrapper.firstElementChild as HTMLElement | null;
   if (!mc || !inner) return;
-  const avail = mc.clientHeight;
-  const h = inner.scrollHeight;
-  if (h > avail) {
-    inner.style.transformOrigin = "center top";
-    inner.style.transform = `scale(${(avail / h).toFixed(3)})`;
-  } else {
-    inner.style.transform = "";
-  }
+  scaleToFit(inner, mc.clientHeight);
+}
+
+function fitSidebar() {
+  const sb = document.querySelector<HTMLElement>(".sidebar");
+  const inner = sb?.querySelector<HTMLElement>(".sidebar-inner");
+  if (!sb || !inner) return;
+  scaleToFit(inner, sb.clientHeight);
 }
 
 let currentPanelEl: HTMLElement | null = null;
@@ -180,6 +195,7 @@ function renderPanel(adb: Adb, panelId: ActivePanel): HTMLElement {
 }
 
 function onDashResize() {
+  fitSidebar();
   if (currentPanelEl) fitPanelContent(currentPanelEl);
 }
 
@@ -202,6 +218,7 @@ export function renderDashboard(adb: Adb): HTMLElement {
   currentPanelEl = renderPanel(adb, state.panel);
   panelContainer.appendChild(currentPanelEl);
 
+  requestAnimationFrame(fitSidebar);
   window.addEventListener("resize", onDashResize);
 
   state.on("panelChanged", (rawPanelId) => {

@@ -599,7 +599,14 @@ md-dialog {
   display: flex;
   flex-direction: column;
   padding: 0;
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+.sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  transform-origin: top left;
 }
 
 .sidebar-header {

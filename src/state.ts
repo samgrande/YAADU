@@ -15,8 +15,9 @@ export interface DeviceInfo {
   marketingName: string;
   osVersion:     string;
   screenSize:    string;
-  batteryLevel:  number;
-  batteryTemp:   number;
+  batteryLevel:    number;
+  batteryTemp:     number;
+  batteryCharging: boolean;
 }
 
 // ── Simple event emitter ───────────────────────────────────────────────────

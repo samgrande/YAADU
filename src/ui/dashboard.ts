@@ -42,6 +42,28 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
+// ── Battery wave path generator ────────────────────────────────────────────
+
+function generateBattWavePath(phase = 0): string {
+  const parts: string[] = [];
+  for (let x = -2; x <= 102; x += 0.25) {
+    const y = 7 + 2.5 * Math.sin(((x + 2) / 104) * 24 * Math.PI + phase);
+    parts.push(`${x === -2 ? 'M' : 'L'}${x.toFixed(2)},${y.toFixed(2)}`);
+  }
+  return parts.join('');
+}
+
+function updateBattWave(wave: SVGPathElement, trackClip: SVGRectElement, pct: number) {
+  const gap = 3;
+  const v = Math.min(100, Math.max(0, pct));
+  const len = wave.getTotalLength();
+  const dashLen = len * v / 100;
+  wave.style.strokeDasharray = `${dashLen} ${len}`;
+  const tx = Math.min(100, v + gap);
+  trackClip.setAttribute("x", `${tx}`);
+  trackClip.setAttribute("width", `${Math.max(0, 100 - tx)}`);
+}
+
 // ── Sidebar ────────────────────────────────────────────────────────────────
 
 const ANDROID_LOGO_SVG = `<svg width="34" height="32" viewBox="0 0 48 45" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -67,47 +89,50 @@ function renderSidebar(adb: Adb): HTMLElement {
     <nav class="sidebar-nav" id="sidebar-nav">
       ${NAV_ITEMS.map(
         (item) => `
-        <button
+        <md-filled-tonal-button
           class="nav-item-m3${state.panel === item.id ? " active" : ""}"
           data-panel="${item.id}"
         >
-          <span class="nav-icon-container">${item.icon}</span>
-          <span class="nav-label">${item.label}</span>
-        </button>`
+          <span slot="icon">${item.icon}</span>
+          ${item.label}
+        </md-filled-tonal-button>`
       ).join("")}
     </nav>
 
     <!-- Device card -->
-    <div class="sidebar-device-card" id="sb-device-card" style="margin-top: auto;">
+    <div class="sidebar-device-card" id="sb-device-card">
       <div class="device-brand" id="sb-brand">Device</div>
       <div class="device-model" id="sb-model">—</div>
       <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
-        <md-linear-progress id="sb-batt-progress" value="0" style="flex:1;"></md-linear-progress>
+        <div class="battery-progress-wrap" style="flex:1;">
+          <svg class="battery-progress-svg" viewBox="-2 0 104 14" preserveAspectRatio="none">
+            <g clip-path="url(#trackClip)">
+              <rect x="2" y="5.5" width="96" height="3" rx="1.5" fill="#095F4C" opacity="0.32"/>
+            </g>
+            <path id="sb-batt-wave-path" d="${generateBattWavePath()}" stroke="#095F4C" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <clipPath id="trackClip">
+              <rect id="sb-track-clip" x="0" y="0" width="100" height="14"/>
+            </clipPath>
+          </svg>
+        </div>
+        <svg id="sb-batt-charging" width="14" height="14" viewBox="0 0 24 24" fill="#095F4C" stroke="none" style="display:none;">
+          <path d="M13.5 2L4 14h6l-1.5 8L18 12h-6l1.5-8z"/>
+        </svg>
         <span class="battery-pct" id="sb-batt-pct">—</span>
       </div>
     </div>
 
     <div class="sidebar-disconnect-wrap">
-      <button class="btn-disconnect" id="btn-disconnect">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-          <line x1="12" y1="9" x2="12" y2="13"/>
-          <line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
+      <md-filled-tonal-button id="btn-disconnect" class="btn-disconnect">
+        <span slot="icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </span>
         Disconnect
-      </button>
-    </div>
-    </div>
-
-    <div class="sidebar-disconnect-wrap" style="margin-top: auto;">
-      <button class="btn-disconnect" id="btn-disconnect">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-          <line x1="12" y1="9" x2="12" y2="13"/>
-          <line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
-        Disconnect
-      </button>
+      </md-filled-tonal-button>
     </div>
   `;
 
@@ -129,18 +154,22 @@ function renderSidebar(adb: Adb): HTMLElement {
     });
   });
 
-  // Update device card from state
+  let battPct = 0;
+
   const updateDeviceCard = (device: typeof state.device) => {
     if (!device) return;
+    battPct = device.batteryLevel;
     const q = (id: string) => inner.querySelector<HTMLElement>(`#${id}`)!;
     q("sb-brand").textContent = device.brand.toUpperCase();
     q("sb-model").textContent = device.marketingName;
     q("sb-batt-pct").textContent = `${device.batteryLevel}%`;
     
-    const progress = sidebar.querySelector<any>("#sb-batt-progress")!;
-    if (progress) {
-      progress.value = device.batteryLevel / 100;
-    }
+    const chargingIcon = inner.querySelector<HTMLElement>("#sb-batt-charging")!;
+    chargingIcon.style.display = device.batteryCharging ? "" : "none";
+    
+    const path = inner.querySelector<SVGPathElement>("#sb-batt-wave-path")!;
+    const tc = inner.querySelector<SVGRectElement>("#sb-track-clip")!;
+    if (path && tc) updateBattWave(path, tc, device.batteryLevel);
   };
 
   state.on("deviceChanged", (rawDevice) => {
@@ -155,6 +184,21 @@ function renderSidebar(adb: Adb): HTMLElement {
   inner.querySelector("#btn-disconnect")!.addEventListener("click", () => {
     if (confirm("Disconnect from device?")) disconnectDevice();
   });
+
+  // Wave animation loop (phase shift, no horizontal translation)
+  const wavePath = inner.querySelector<SVGPathElement>("#sb-batt-wave-path")!;
+  const trackClip = inner.querySelector<SVGRectElement>("#sb-track-clip")!;
+  let waveAnimId = 0;
+  const waveStart = performance.now();
+  function animateWave(time: number) {
+    if (!sidebar.isConnected) { waveAnimId = 0; return; }
+    wavePath.setAttribute("d", generateBattWavePath((time - waveStart) / 2000));
+    const len = wavePath.getTotalLength();
+    const dashLen = len * battPct / 100;
+    wavePath.style.strokeDasharray = `${dashLen} ${len}`;
+    waveAnimId = requestAnimationFrame(animateWave);
+  }
+  waveAnimId = requestAnimationFrame(animateWave);
 
   return sidebar;
 }
@@ -198,13 +242,11 @@ function renderPanel(adb: Adb, panelId: ActivePanel): HTMLElement {
   const wrapper = document.createElement("div");
   wrapper.className = "panel-area";
   wrapper.setAttribute("data-panel-id", panelId);
+  wrapper.style.overflow = "hidden";
   if (panelId === "apps") {
-    wrapper.style.overflow = "hidden";
     wrapper.style.display = "flex";
     wrapper.style.flex = "1";
     wrapper.style.flexDirection = "column";
-  } else {
-    wrapper.style.overflow = "hidden";
   }
   wrapper.appendChild(PANEL_FACTORIES[panelId](adb));
   requestAnimationFrame(() => {

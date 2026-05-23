@@ -22,6 +22,26 @@ import "@material/web/list/list.js";
 import "@material/web/list/list-item.js";
 import "@material/web/divider/divider.js";
 import "@material/web/textfield/outlined-text-field.js";
+import "@material/web/iconbutton/icon-button.js";
+import "@material/web/select/outlined-select.js";
+import "@material/web/select/select-option.js";
+import "@material/web/dialog/dialog.js";
+
+import {styles as typescaleStyles} from "@material/web/typography/md-typescale-styles.js";
+document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+
+import { themeFromSourceColor, argbFromHex, applyTheme } from "@material/material-color-utilities";
+
+// ── Material 3 Theme Generator ────────────────────────────────────────────
+
+const SOURCE_COLOR = "#376A3E";
+
+function generateAndApplyTheme(): void {
+  const theme = themeFromSourceColor(argbFromHex(SOURCE_COLOR));
+  applyTheme(theme, { target: document.documentElement, dark: false });
+}
+
+generateAndApplyTheme();
 
 // ── App Bootstrap ──────────────────────────────────────────────────────────
 
@@ -91,7 +111,7 @@ boot();
 // ── Global Ripple Animation ────────────────────────────────────────────────
 document.addEventListener("mousedown", (e) => {
   const target = e.target as HTMLElement;
-  const button = target.closest("button, .btn-connect-m3, .bottom-btn-m3, .anim-btn, .nav-item-m3, .btn-disconnect, .btn-refresh-green") as HTMLElement;
+  const button = target.closest("button, .anim-btn, .nav-item-m3, .telemetry-skeleton") as HTMLElement;
   if (!button || button.hasAttribute("disabled") || button.classList.contains("disabled")) return;
 
   const ripple = document.createElement("span");

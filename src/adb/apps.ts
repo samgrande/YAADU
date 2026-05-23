@@ -13,11 +13,62 @@ import { shell, shellFull } from "./helpers.js";
 export interface AppEntry {
   packageName: string;
   disabled:    boolean;
+  label?:      string;
 }
 
 export interface AppOpResult {
   success: boolean;
   message: string;
+}
+
+// ── App Label Extraction ──────────────────────────────────────────────────
+
+const labelCache = new Map<string, string>();
+
+function parseAaptLabel(output: string): string | null {
+  const m = output.match(/application-label:\s*'([^']+)'/);
+  return m ? m[1] : null;
+}
+
+function parseDumpsysLabel(output: string): string | null {
+  // Try various formats across Android versions
+  const m = output.match(/label=([^\s\}]+)/);
+  return m ? m[1] : null;
+}
+
+export async function fetchAppLabel(adb: Adb, packageName: string): Promise<string | null> {
+  const cached = labelCache.get(packageName);
+  if (cached) return cached;
+
+  try {
+    // 1. Get APK path
+    const pathOut = await shell(adb, `pm path ${packageName}`);
+    const match = pathOut.match(/package:(.+)/);
+    if (!match) return null;
+    const apkPath = match[1].trim();
+
+    // 2. Try aapt first
+    for (const bin of ["aapt", "aapt-arm-pie", "/data/local/tmp/aapt-arm-pie"]) {
+      const out = await shellFull(adb, `${bin} dump badging "${apkPath}" 2>/dev/null`).catch(() => ({ stdout: "", stderr: "" }));
+      const label = parseAaptLabel(out.stdout || out.stderr);
+      if (label) {
+        labelCache.set(packageName, label);
+        return label;
+      }
+    }
+
+    // 3. Fallback: parse dumpsys package
+    const dumpOut = await shell(adb, `dumpsys package ${packageName}`);
+    const label = parseDumpsysLabel(dumpOut);
+    if (label) {
+      labelCache.set(packageName, label);
+      return label;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 export async function listUserApps(adb: Adb): Promise<AppEntry[]> {

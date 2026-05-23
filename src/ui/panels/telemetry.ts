@@ -1,5 +1,5 @@
 import type { Adb } from "@yume-chan/adb";
-import { fetchDeviceInfo, fetchBattery } from "../../adb/telemetry.js";
+import { fetchDeviceInfo, fetchBattery, fetchSystemDetails } from "../../adb/telemetry.js";
 import { state } from "../../state.js";
 import { toast } from "../toast.js";
 
@@ -7,7 +7,9 @@ import { toast } from "../toast.js";
 
 function renderSkeleton(): string {
   return `
-    <!-- Row 1: Brand | Model (Marketing) -->
+    <!-- Section: System & Build Information -->
+    <div class="telem-section">
+    <div class="section-heading"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> System &amp; Build</div>
     <div class="telem-grid">
       <div class="metric-tile">
         <div class="metric-label">Brand</div>
@@ -19,40 +21,96 @@ function renderSkeleton(): string {
       </div>
     </div>
 
-    <!-- Row 2: Model Number | OS Version -->
+    <div class="telem-grid">
+      <div class="metric-tile tile-square">
+        <div class="metric-label">Android Version</div>
+        <div class="metric-value telemetry-skeleton" id="val-sdk">—</div>
+      </div>
+    </div>
+
     <div class="telem-grid">
       <div class="metric-tile">
         <div class="metric-label">Model Number</div>
         <div class="metric-value telemetry-skeleton" id="val-model-number">—</div>
       </div>
       <div class="metric-tile">
-        <div class="metric-label">OS Version</div>
-        <div class="metric-value telemetry-skeleton" id="val-os">—</div>
+        <div class="metric-label">Device Codename</div>
+        <div class="metric-value telemetry-skeleton" id="val-device-codename">—</div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Section: Hardware & Display -->
+    <div class="telem-section">
+    <div class="section-heading"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Hardware &amp; Display</div>
+    <div class="telem-grid">
+      <div class="metric-tile mem-tile tile-square">
+        <svg class="mem-bg-ring" viewBox="0 0 100 100">
+          <path id="mem-ring-unfilled" fill="none" stroke="#E1E4DC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path id="mem-ring" fill="none" stroke="#095F4C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="mem-overlay">
+          <div class="metric-label">Memory</div>
+          <div class="mem-pct" id="mem-pct">0%</div>
+          <div class="mem-avail" id="val-memory">—</div>
+        </div>
       </div>
     </div>
 
-    <!-- Row 3: Codename | Resolution -->
     <div class="telem-grid">
-      <div class="metric-tile">
-        <div class="metric-label">Codename</div>
-        <div class="metric-value telemetry-skeleton" id="val-codename">—</div>
-      </div>
       <div class="metric-tile">
         <div class="metric-label">Resolution</div>
         <div class="metric-value telemetry-skeleton" id="val-screen">—</div>
       </div>
+      <div class="metric-tile">
+        <div class="metric-label">Density (DPI)</div>
+        <div class="metric-value telemetry-skeleton" id="val-density">—</div>
+      </div>
     </div>
 
-    <!-- Row 4: Battery Status | Temperature -->
     <div class="telem-grid">
       <div class="metric-tile">
-        <div class="metric-label">Battery</div>
-        <div class="metric-value telemetry-skeleton" id="val-battery">—</div>
+        <div class="metric-label">CPU Architecture</div>
+        <div class="metric-value telemetry-skeleton" id="val-cpu-abi">—</div>
       </div>
+    </div>
+    </div>
+
+    <!-- Section: Battery & Diagnostics -->
+    <div class="telem-section">
+    <div class="section-heading"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="10" x2="23" y2="14"/><line x1="7" y1="10" x2="7" y2="14"/><line x1="11" y1="10" x2="11" y2="14"/><line x1="15" y1="10" x2="15" y2="14"/></svg> Extra Info</div>
+    <div class="telem-grid">
       <div class="metric-tile">
         <div class="metric-label">Temperature</div>
         <div class="metric-value telemetry-skeleton" id="val-temp">—</div>
       </div>
+      <div class="metric-tile">
+        <div class="metric-label">Health</div>
+        <div class="metric-value telemetry-skeleton" id="val-health">—</div>
+      </div>
+    </div>
+
+    <div class="telem-grid">
+      <div class="metric-tile">
+        <div class="metric-label">Voltage</div>
+        <div class="metric-value telemetry-skeleton" id="val-voltage">—</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-label">Technology</div>
+        <div class="metric-value telemetry-skeleton" id="val-technology">—</div>
+      </div>
+    </div>
+
+    <div class="telem-grid">
+      <div class="metric-tile">
+        <div class="metric-label">SDK Level</div>
+        <div class="metric-value telemetry-skeleton" id="val-sdk-level">—</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-label">Security Patch</div>
+        <div class="metric-value telemetry-skeleton" id="val-security-patch">—</div>
+      </div>
+    </div>
     </div>
   `;
 }
@@ -63,7 +121,7 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
   const panel = document.createElement("div");
   panel.className = "telem-panel";
 
-  const refreshIconSvg = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
+  const refreshIconSvg = `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
 
   panel.innerHTML = `
     <div class="telem-header">
@@ -84,28 +142,73 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
   // ── Data fetching ─────────────────────────────────────────────────────
   async function loadData(): Promise<void> {
     refreshBtn.disabled = true;
-    refreshBtn.innerHTML = `
-      <svg class="spinner-stroke" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-        <circle cx="12" cy="12" r="9" stroke-dasharray="40 10"/>
-      </svg>
-    `;
+    const icon = refreshBtn.querySelector("svg")!;
+    icon.classList.add("rotating");
 
     try {
       const info = state.device || await fetchDeviceInfo(adb);
       state.device = info;
 
-      const battery = await fetchBattery(adb);
+      const [battery, sys] = await Promise.all([
+        fetchBattery(adb),
+        fetchSystemDetails(adb),
+      ]);
 
       const q = (id: string) => body.querySelector<HTMLElement>(`#${id}`)!;
       q("val-brand").textContent           = info.brand;
       q("val-model-marketing").textContent = info.marketingName;
       q("val-model-number").textContent    = info.model;
-      q("val-codename").textContent        = adb.device ?? adb.model ?? "—";
-      q("val-os").textContent              = `Android ${info.osVersion}`;
       q("val-screen").textContent          = info.screenSize;
-      const isCharging = battery.status === "Charging";
-      q("val-battery").innerHTML = `${battery.level}%${isCharging ? ` <svg width="28" height="28" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.4945 57.97C22.098 57.8027 21.7685 57.508 21.558 57.1327C21.3475 56.7573 21.268 56.3225 21.332 55.8969L24.8582 32.9375H15.5001C15.2034 32.9455 14.9089 32.8852 14.6392 32.7613C14.3695 32.6374 14.1319 32.4532 13.9447 32.223C13.7574 31.9927 13.6256 31.7225 13.5594 31.4332C13.4931 31.1439 13.4942 30.8432 13.5626 30.5544L19.3751 5.3669C19.4774 4.93342 19.7259 4.54841 20.0788 4.27669C20.4317 4.00497 20.8674 3.86312 21.3126 3.87502H40.6876C40.9771 3.87404 41.2631 3.93792 41.5246 4.06197C41.7861 4.18603 42.0165 4.36711 42.1989 4.5919C42.3838 4.81923 42.5147 5.08554 42.5819 5.3708C42.649 5.65606 42.6505 5.95283 42.5864 6.23877L39.2345 21.3125H48.4376C48.8007 21.3118 49.1568 21.4131 49.4651 21.605C49.7734 21.7968 50.0216 22.0714 50.1814 22.3975C50.3202 22.7105 50.3736 23.0547 50.3362 23.395C50.2987 23.7354 50.1718 24.0597 49.9682 24.335L24.7807 57.2725C24.6105 57.5249 24.3832 57.7335 24.1173 57.8817C23.8514 58.0298 23.5543 58.1131 23.2501 58.125C22.9909 58.1197 22.7348 58.0672 22.4945 57.97Z" fill="#095F4C"/></svg>` : ` (${battery.status})`}`;
+      q("val-sdk").textContent             = `Android ${info.osVersion}`;
+      q("val-sdk-level").textContent        = sys.sdkVersion;
+      q("val-security-patch").textContent    = sys.securityPatch;
+      q("val-device-codename").textContent    = sys.deviceName;
+      q("val-density").textContent           = sys.densityDpi ? `${sys.densityDpi} dpi` : "—";
+      q("val-cpu-abi").textContent            = sys.cpuAbi;
+      const totalNum = parseFloat(sys.totalMemory);
+      const availNum = parseFloat(sys.availMemory);
+      const usedGb = (totalNum - availNum).toFixed(1);
+      const usedPct = totalNum > 0 ? Math.round((1 - availNum / totalNum) * 100) : 0;
+      q("val-memory").textContent = `${usedGb} GB / ${sys.totalMemory}`;
+
+      const ring = body.querySelector<SVGPathElement>("#mem-ring")!;
+      const ringUnfilled = body.querySelector<SVGPathElement>("#mem-ring-unfilled")!;
+      const pctText = body.querySelector<HTMLElement>("#mem-pct")!;
+      if (ring && ringUnfilled && pctText) {
+        const CX = 50, CY = 50, R = 43, AMP = 3, FREQ = 20, N = 300, GAP = 2;
+        const splitIdx = Math.floor(N * usedPct / 100);
+        const filledStart = GAP;
+        const filledEnd = Math.max(filledStart, Math.min(splitIdx - GAP, N - GAP));
+        const unfilledStart = Math.max(splitIdx + GAP, GAP);
+        const unfilledEnd = N - GAP;
+
+        function pt(i: number, rad: number): string {
+          const theta = (i / N) * 2 * Math.PI;
+          return `${(CX + rad * Math.cos(theta)).toFixed(1)} ${(CY + rad * Math.sin(theta)).toFixed(1)}`;
+        }
+
+        // Build filled (sine wave) path from GAP to splitIdx - GAP
+        const fPts: string[] = [];
+        for (let i = filledStart; i <= filledEnd; i++) {
+          const rad = R + AMP * 0.5 * (1 + Math.sin((i / N) * 2 * Math.PI * FREQ));
+          fPts.push(`${i === filledStart ? 'M' : 'L'}${pt(i, rad)}`);
+        }
+        ring.setAttribute("d", fPts.join(''));
+
+        // Build unfilled (circle) path from splitIdx + GAP to N - GAP
+        const uPts: string[] = [];
+        for (let i = unfilledStart; i <= unfilledEnd; i++) {
+          uPts.push(`${i === unfilledStart ? 'M' : 'L'}${pt(i, R)}`);
+        }
+        ringUnfilled.setAttribute("d", uPts.join(''));
+
+        pctText.textContent = `${usedPct}%`;
+      }
+
       q("val-temp").textContent            = `${battery.tempCelsius.toFixed(1)}°C`;
+      q("val-health").textContent           = battery.health;
+      q("val-voltage").textContent           = battery.voltage || "—";
+      q("val-technology").textContent        = battery.technology || "—";
 
       // Remove shimmer
       body.querySelectorAll<HTMLElement>(".telemetry-skeleton")
@@ -115,10 +218,7 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
       toast(`Telemetry error: ${String(err)}`, "error");
     } finally {
       refreshBtn.disabled = false;
-      refreshBtn.innerHTML = `
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-        <span class="btn-refresh-text">Reload</span>
-      `;
+      refreshBtn.querySelector("svg")?.classList.remove("rotating");
     }
   }
 

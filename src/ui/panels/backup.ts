@@ -69,7 +69,7 @@ export function renderBackupPanel(adb: Adb): HTMLElement {
         </div>
 
         <!-- File list -->
-        <div class="backup-file-list card" id="backup-file-list" style="display:none;margin-bottom:16px;max-height:260px; overflow-y:auto;"></div>
+        <div class="backup-file-list" id="backup-file-list" style="display:none;margin-bottom:16px;max-height:260px; overflow-y:auto;"></div>
 
         <!-- Log output -->
         <div class="backup-log" id="backup-log" style="display:none">

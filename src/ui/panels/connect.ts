@@ -141,32 +141,32 @@ export function renderConnectScreen(): HTMLElement {
 
       <!-- Bottom Pill Buttons -->
       <div class="connect-bottom-buttons">
-        <button class="bottom-btn-m3 help-btn" id="btn-help">
-          <span class="bottom-btn-icon">
-            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <md-filled-tonal-button id="btn-help">
+          <span slot="icon">
+            <svg width="18" height="18" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 0C19.4037 0 25 5.59625 25 12.5C25 19.4037 19.4037 25 12.5 25C5.59625 25 0 19.4037 0 12.5C0 5.59625 5.59625 0 12.5 0ZM12.4888 17.5C12.1572 17.5 11.8393 17.6317 11.6049 17.8661C11.3704 18.1005 11.2388 18.4185 11.2388 18.75C11.2388 19.0815 11.3704 19.3995 11.6049 19.6339C11.8393 19.8683 12.1572 20 12.4888 20H12.5C12.8315 20 13.1495 19.8683 13.3839 19.6339C13.6183 19.3995 13.75 19.0815 13.75 18.75C13.75 18.4185 13.6183 18.1005 13.3839 17.8661C13.1495 17.6317 12.8315 17.5 12.5 17.5H12.4888ZM15.8888 7.0875C14.7262 5.105 12.2213 4.3875 10.1988 5.57375L10.18 5.58625C8.9725 6.32375 8.125 7.63 8.125 9.175C8.125 9.50652 8.2567 9.82446 8.49112 10.0589C8.72554 10.2933 9.04348 10.425 9.375 10.425C9.70652 10.425 10.0245 10.2933 10.2589 10.0589C10.4933 9.82446 10.625 9.50652 10.625 9.175C10.625 8.5875 10.9412 8.05125 11.4787 7.72125C12.2675 7.26875 13.2475 7.525 13.7312 8.35125C14.195 9.14125 13.9438 10.1275 13.1163 10.6163C12.4835 10.9819 11.9581 11.5076 11.593 12.1407C11.2279 12.7737 11.0359 13.4917 11.0363 14.2225V15C11.0363 15.3315 11.1679 15.6495 11.4024 15.8839C11.6368 16.1183 11.9547 16.25 12.2863 16.25C12.6178 16.25 12.9357 16.1183 13.1701 15.8839C13.4046 15.6495 13.5363 15.3315 13.5363 15V14.2237C13.5363 13.64 13.8412 13.0862 14.3687 12.7825L14.375 12.7787C16.3575 11.6162 17.075 9.11125 15.8875 7.08875" fill="currentColor"/>
             </svg>
           </span>
-          <span class="bottom-btn-label">HELP</span>
-        </button>
+          HELP
+        </md-filled-tonal-button>
 
-        <button class="bottom-btn-m3 about-btn" id="btn-about">
-          <span class="bottom-btn-icon">
-            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <md-filled-tonal-button id="btn-about">
+          <span slot="icon">
+            <svg width="18" height="18" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 0C19.4036 0 25 5.5964 25 12.5C25 19.4035 19.4036 25 12.5 25C5.59646 25 0 19.4035 0 12.5C0 5.5964 5.59646 0 12.5 0ZM13.7527 11.25H11.2527V18.75H13.7527V11.25ZM12.5127 5.93748C11.6013 5.93748 10.9402 6.5949 10.9402 7.48265C10.9402 8.40632 11.5839 9.06251 12.5127 9.06251C13.4054 9.06251 14.0652 8.40626 14.0652 7.49999C14.0652 6.59496 13.4054 5.93748 12.5127 5.93748Z" fill="currentColor"/>
             </svg>
           </span>
-          <span class="bottom-btn-label">ABOUT</span>
-        </button>
+          ABOUT
+        </md-filled-tonal-button>
 
-        <a href="https://www.github.com" target="_blank" class="bottom-btn-m3 github-btn" id="btn-github">
-          <span class="bottom-btn-icon">
-            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <md-filled-tonal-button id="btn-github">
+          <span slot="icon">
+            <svg width="18" height="18" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12.5 0C10.8585 0 9.23303 0.331349 7.71646 0.975129C6.19989 1.61891 4.8219 2.56251 3.66117 3.75206C1.31696 6.15447 0 9.41282 0 12.8103C0 18.4725 3.5875 23.2764 8.55 24.9802C9.175 25.0826 9.375 24.6855 9.375 24.3396V22.1747C5.9125 22.9433 5.175 20.4581 5.175 20.4581C4.6 18.9721 3.7875 18.575 3.7875 18.575C2.65 17.7807 3.875 17.8064 3.875 17.8064C5.125 17.896 5.7875 19.1258 5.7875 19.1258C6.875 21.073 8.7125 20.4965 9.425 20.1891C9.5375 19.3564 9.8625 18.7928 10.2125 18.4725C7.4375 18.1522 4.525 17.0506 4.525 12.1698C4.525 10.7479 5 9.60775 5.8125 8.69822C5.6875 8.37796 5.25 7.04569 5.9375 5.31629C5.9375 5.31629 6.9875 4.97041 9.375 6.62294C10.3625 6.34112 11.4375 6.2002 12.5 6.2002C13.5625 6.2002 14.6375 6.34112 15.625 6.62294C18.0125 4.97041 19.0625 5.31629 19.0625 5.31629C19.75 7.04569 19.3125 8.37796 19.1875 8.69822C20 9.60775 20.475 10.7479 20.475 12.1698C20.475 17.0634 17.55 18.1394 14.7625 18.4597C15.2125 18.8568 15.625 19.6382 15.625 20.8296V24.3396C15.625 24.6855 15.825 25.0955 16.4625 24.9802C21.425 23.2636 25 18.4725 25 12.8103C25 11.1281 24.6767 9.46226 24.0485 7.90803C23.4203 6.35381 22.4996 4.94161 21.3388 3.75206C20.1781 2.56251 18.8001 1.61891 17.2835 0.975129C15.767 0.331349 14.1415 0 12.5 0Z" fill="currentColor"/>
             </svg>
           </span>
-          <span class="bottom-btn-label">GITHUB</span>
-        </a>
+          GITHUB
+        </md-filled-tonal-button>
       </div>
     </div>
   `;
@@ -273,15 +273,14 @@ export function renderConnectScreen(): HTMLElement {
           </div>
 
           <!-- Connect Button -->
-          <button class="btn-connect-m3" id="btn-connect" ${state.connection === "connecting" || state.connection === "authorizing" ? "disabled" : ""}>
+          <md-filled-button id="btn-connect" ${state.connection === "connecting" || state.connection === "authorizing" ? "disabled" : ""}>
             Connect
-          </button>
+          </md-filled-button>
         </div>
       `;
 
       // Wire connection trigger
-      const btnConnect = cardContainer.querySelector<HTMLButtonElement>("#btn-connect")!;
-      btnConnect.addEventListener("click", () => connectDevice());
+      cardContainer.querySelector<HTMLElement>("#btn-connect")!.addEventListener("click", () => connectDevice());
     } else if (cardState === "help") {
       cardContainer.innerHTML = `
         <div class="card-content-wrapper text-layout">
@@ -321,9 +320,9 @@ export function renderConnectScreen(): HTMLElement {
               </div>
             </div>
           </div>
-          <button class="btn-connect-m3" id="btn-close-card">
+          <md-filled-button id="btn-close-card">
             Close Help
-          </button>
+          </md-filled-button>
         </div>
       `;
 
@@ -349,9 +348,9 @@ export function renderConnectScreen(): HTMLElement {
               </div>
             </div>
           </div>
-          <button class="btn-connect-m3" id="btn-close-card">
+          <md-filled-button id="btn-close-card">
             Awesome
-          </button>
+          </md-filled-button>
         </div>
       `;
 
@@ -373,17 +372,21 @@ export function renderConnectScreen(): HTMLElement {
     changeCardState("about");
   });
 
+  screen.querySelector("#btn-github")!.addEventListener("click", () => {
+    window.open("https://www.github.com", "_blank");
+  });
+
   // React to connection state changes
   const updateStatus = (s: ConnectionStatus) => {
     if (cardState === "main") {
       const statusEl = cardContainer.querySelector<HTMLElement>("#conn-status");
-      const btnConnect = cardContainer.querySelector<HTMLButtonElement>("#btn-connect");
+      const btnConnect = cardContainer.querySelector<HTMLElement>("#btn-connect");
       if (statusEl) {
         statusEl.className = `status-badge-m3 ${s}`;
         statusEl.innerHTML = getStatusBadgeHtml(s, state.error);
       }
       if (btnConnect) {
-        btnConnect.disabled = s === "connecting" || s === "authorizing";
+        btnConnect.toggleAttribute("disabled", s === "connecting" || s === "authorizing");
       }
     }
   };

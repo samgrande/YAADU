@@ -3,6 +3,7 @@ import {
   listUserApps, mergeDisabledState,
   forceStop, clearAppData, uninstallApp,
   disableApp, enableApp, installApk,
+  fetchAppLabel,
   type AppEntry, type InstallProgress,
 } from "../../adb/apps.js";
 import { toast } from "../toast.js";
@@ -11,7 +12,7 @@ import { toast } from "../toast.js";
 
 function shortPkg(pkg: string): string {
   const parts = pkg.split(".");
-  return parts.slice(-2).join(".");
+  return parts.slice(-2).join(" ");
 }
 
 function pkgInitial(pkg: string): string {
@@ -19,71 +20,72 @@ function pkgInitial(pkg: string): string {
   return (parts[parts.length - 1]?.[0] ?? "?").toUpperCase();
 }
 
-// ── App Row ────────────────────────────────────────────────────────────────
+function esc(s: string): string {
+  const d = document.createElement("div");
+  d.textContent = s;
+  return d.innerHTML;
+}
 
-function createAppRow(entry: AppEntry, _onRemove: (pkg: string) => void): HTMLElement {
-  const row = document.createElement("div");
-  row.className = `app-row${entry.disabled ? " disabled-app" : ""}`;
-  row.dataset["pkg"] = entry.packageName;
+// ── App Card ───────────────────────────────────────────────────────────────
 
-  row.innerHTML = `
-    <div class="app-icon-placeholder">${pkgInitial(entry.packageName)}</div>
+function createAppCard(entry: AppEntry, _onRemove: (pkg: string) => void): HTMLElement {
+  const card = document.createElement("div");
+  card.className = `app-card${entry.disabled ? " disabled-app" : ""}`;
+  card.dataset["pkg"] = entry.packageName;
+
+  const displayName = entry.label ?? shortPkg(entry.packageName);
+
+  card.innerHTML = `
+    <div class="app-icon-wrap"><div class="app-icon-placeholder">${pkgInitial(entry.packageName)}</div></div>
     <div class="app-info">
-      <div class="app-pkg">${entry.packageName}</div>
-      <div class="app-pkg-short">${shortPkg(entry.packageName)}${entry.disabled ? ' <span class="badge badge-amber" style="font-size:9px;padding:1px 6px;margin-left:6px;">DISABLED</span>' : ""}</div>
+      <div class="app-pkg">${esc(displayName)}</div>
+      <div class="app-pkg-short">${esc(entry.packageName)}${entry.disabled ? ' <span class="badge badge-amber" style="font-size:9px;padding:1px 6px;margin-left:6px;">DISABLED</span>' : ""}</div>
     </div>
     <div class="app-actions">
-      <md-outlined-button class="btn-sm" data-action="stop" title="Force Stop" style="--md-outlined-button-label-text-color: var(--md-sys-color-on-surface-variant); --md-outlined-button-outline-color: var(--md-sys-color-outline-variant);">
-        <svg slot="icon" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+      <md-text-button data-action="stop" title="Force Stop">
+        <span slot="icon"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg></span>
         Stop
-      </md-outlined-button>
-      <md-outlined-button class="btn-sm" data-action="clear" title="Clear Data" style="--md-outlined-button-label-text-color: var(--md-sys-color-primary); --md-outlined-button-outline-color: var(--md-sys-color-primary);">
-        <svg slot="icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      </md-text-button>
+      <md-text-button data-action="clear" title="Clear Data">
+        <span slot="icon"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span>
         Clear
-      </md-outlined-button>
-      <md-outlined-button class="btn-sm" data-action="uninstall" title="Uninstall" style="--md-outlined-button-label-text-color: var(--md-sys-color-error); --md-outlined-button-outline-color: var(--md-sys-color-error);">
-        <svg slot="icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </md-text-button>
+      <md-text-button class="btn-action-danger" data-action="uninstall" title="Uninstall">
+        <span slot="icon"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
         Uninstall
-      </md-outlined-button>
-      <md-outlined-button class="btn-sm" data-action="toggle-disable" title="${entry.disabled ? "Enable" : "Disable"}" style="--md-outlined-button-label-text-color: var(--md-sys-color-secondary); --md-outlined-button-outline-color: var(--md-sys-color-secondary);">
-        ${entry.disabled
-          ? `<svg slot="icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Enable`
-          : `<svg slot="icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Disable`
-        }
-      </md-outlined-button>
+      </md-text-button>
+      <md-text-button data-action="toggle-disable" title="${entry.disabled ? "Enable" : "Disable"}">
+        <span slot="icon">${entry.disabled
+          ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+          : `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`
+        }</span>
+        ${entry.disabled ? "Enable" : "Disable"}
+      </md-text-button>
     </div>
   `;
 
-  return row;
+  return card;
 }
 
 // ── APK Installer ──────────────────────────────────────────────────────────
 
 function createApkInstaller(adb: Adb, onInstalled: () => void): HTMLElement {
   const wrap = document.createElement("div");
-  wrap.className = "apk-wrapper";
+  wrap.style.display = "flex";
+  wrap.style.flexDirection = "column";
+  wrap.style.gap = "16px";
   wrap.innerHTML = `
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          <svg class="ct-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          APK Sideloader
-        </div>
+    <input type="file" id="apk-file-input" accept=".apk" style="display:none"/>
+    <div class="apk-drop-zone" id="apk-drop-zone">
+      <div class="apk-drop-title">Drop APK here or click to browse</div>
+      <div class="apk-drop-sub">Supports Android APK files · Will push to /data/local/tmp then install</div>
+    </div>
+    <div class="apk-progress" id="apk-progress" style="display:none; flex-direction:column; gap:8px; padding-top:16px;">
+      <div class="apk-progress-label" style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted);">
+        <span id="apk-progress-msg">Installing…</span>
+        <span id="apk-progress-pct">0%</span>
       </div>
-      <div class="card-body">
-        <input type="file" id="apk-file-input" accept=".apk" style="display:none"/>
-        <div class="apk-drop-zone" id="apk-drop-zone">
-          <div class="apk-drop-title">Drop APK here or click to browse</div>
-          <div class="apk-drop-sub">Supports Android APK files · Will push to /data/local/tmp then install</div>
-        </div>
-        <div class="apk-progress" id="apk-progress" style="display:none; flex-direction:column; gap:8px; padding-top:16px;">
-          <div class="apk-progress-label" style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted);">
-            <span id="apk-progress-msg">Installing…</span>
-            <span id="apk-progress-pct">0%</span>
-          </div>
-          <md-linear-progress id="apk-progress-fill" value="0" style="width:100%;"></md-linear-progress>
-        </div>
-      </div>
+      <md-linear-progress id="apk-progress-fill" value="0" style="width:100%;"></md-linear-progress>
     </div>
   `;
 
@@ -150,21 +152,24 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
   const panel = document.createElement("div");
   let apps: AppEntry[] = [];
 
-  const refreshIcon = `<svg slot="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
+  const refreshIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
+  const apkIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`;
 
   panel.innerHTML = `
     <div class="card apps-list-card">
       <div class="card-header" style="align-items: center;">
         <div class="card-title">
           <svg class="ct-icon" width="16" height="16" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M26.2125 7.75194L15.9 2.10937C15.6245 1.95712 15.3148 1.87726 15 1.87726C14.6852 1.87726 14.3755 1.95712 14.1 2.10937L3.7875 7.75429C3.49299 7.91543 3.24715 8.15268 3.07565 8.44127C2.90414 8.72986 2.81326 9.05921 2.8125 9.39491V20.6027C2.81326 20.9384 2.90414 21.2678 3.07565 21.5564C3.24715 21.845 3.49299 22.0822 3.7875 22.2433L14.1 27.8883C14.3755 28.0405 14.6852 28.1204 15 28.1204C15.3148 28.1204 15.6245 28.0405 15.9 27.8883L26.2125 22.2433C26.507 22.0822 26.7528 21.845 26.9244 21.5564C27.0959 21.2678 27.1867 20.9384 27.1875 20.6027V9.39608C27.1874 9.05978 27.0968 8.7297 26.9252 8.44044C26.7537 8.15117 26.5075 7.91337 26.2125 7.75194ZM15 3.74999L24.416 8.90624L20.9262 10.8152L11.5102 5.65897L15 3.74999ZM15 14.0625L5.58398 8.90624L9.55781 6.73007L18.9738 11.8863L15 14.0625ZM25.3125 20.6074L15.9375 25.7391V15.6832L19.6875 13.6312V17.8125C19.6875 18.0611 19.7863 18.2996 19.9621 18.4754C20.1379 18.6512 20.3764 18.75 20.625 18.75C20.8736 18.75 21.1121 18.6512 21.2879 18.4754C21.4637 18.2996 21.5625 18.0611 21.5625 17.8125V12.6047L25.3125 10.5527V20.6027V20.6074Z" fill="currentColor"/>
+<path d="M26.2125 7.75194L15.9 2.10937C15.6245 1.95712 15.3148 1.87726 15 1.87726C14.6852 1.87726 14.3755 1.95712 14.1 2.10937L3.7875 7.75429C3.49299 7.91543 3.24715 8.15268 3.07565 8.44127C2.90414 8.72986 2.81326 9.05921 2.8125 9.39491V20.6027C2.81326 20.9384 2.90414 21.2678 3.07565 21.5564C3.24715 21.845 3.49299 22.0822 3.7875 22.2433L14.1 27.8883C14.3755 28.0405 14.3148 28.1204 15 28.1204C15.6852 28.1204 15.6245 28.0405 15.9 27.8883L26.2125 22.2433C26.507 22.0822 26.7528 21.845 26.9244 21.5564C27.0959 21.2678 27.1867 20.9384 27.1875 20.6027V9.39608C27.1874 9.05978 27.0968 8.7297 26.9252 8.44044C26.7537 8.15117 26.5075 7.91337 26.2125 7.75194ZM15 3.74999L24.416 8.90624L20.9262 10.8152L11.5102 5.65897L15 3.74999ZM15 14.0625L5.58398 8.90624L9.55781 6.73007L18.9738 11.8863L15 14.0625ZM25.3125 20.6074L15.9375 25.7391V15.6832L19.6875 13.6312V17.8125C19.6875 18.0611 19.7863 18.2996 19.9621 18.4754C20.1379 18.6512 20.3764 18.75 20.625 18.75C20.8736 18.75 21.1121 18.6512 21.2879 18.4754C21.4637 18.2996 21.5625 18.0611 21.5625 17.8125V12.6047L25.3125 10.5527V20.6027V20.6074Z" fill="currentColor"/>
 </svg>
           Installed Apps
         </div>
-        <md-outlined-button id="btn-refresh-apps">
+        <div style="display:flex; gap:4px;">
+          <md-icon-button id="btn-apk-sideloader" title="Install APK">${apkIcon}</md-icon-button>
+          <md-icon-button id="btn-refresh-apps" title="Reload apps">
           ${refreshIcon}
-          Reload
-        </md-outlined-button>
+        </md-icon-button>
+        </div>
       </div>
       <div class="apps-toolbar" style="display:flex; align-items:center; gap:16px; padding:14px 20px;">
         <md-outlined-text-field id="apps-search" label="Filter packages…" placeholder="Search by name…" style="flex:1;"></md-outlined-text-field>
@@ -181,14 +186,38 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
     </div>
   `;
 
-  // APK installer
-  const installerEl = createApkInstaller(adb, () => loadApps());
-  panel.appendChild(installerEl);
+  // APK installer overlay dialog
+  const overlay = document.createElement("div");
+  overlay.id = "apk-sideloader-overlay";
+  overlay.innerHTML = `
+    <div class="apk-dialog">
+      <div class="apk-dialog-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        APK Sideloader
+      </div>
+      <div class="apk-dialog-body"></div>
+      <div class="apk-dialog-footer">
+        <md-text-button id="apk-dialog-close">Close</md-text-button>
+      </div>
+    </div>
+  `;
+  const dialogContent = createApkInstaller(adb, () => loadApps());
+  overlay.querySelector<HTMLElement>(".apk-dialog-body")!.appendChild(dialogContent);
+  panel.appendChild(overlay);
+
+  overlay.querySelector<HTMLElement>("#apk-dialog-close")!
+    .addEventListener("click", () => overlay.classList.remove("open"));
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) overlay.classList.remove("open");
+  });
 
   const grid     = panel.querySelector<HTMLElement>("#apps-grid")!;
   const searchEl = panel.querySelector<any>("#apps-search")!;
   const countEl  = panel.querySelector<HTMLElement>("#apps-count")!;
   const refreshBtn = panel.querySelector<any>("#btn-refresh-apps")!;
+  const apkBtn = panel.querySelector<any>("#btn-apk-sideloader")!;
+  apkBtn.addEventListener("click", () => overlay.classList.add("open"));
 
   // ── Render list ─────────────────────────────────────────────────────────
   function renderList(filter = ""): void {
@@ -206,9 +235,9 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
     }
 
     filtered.forEach((entry) => {
-      const row = createAppRow(entry, removeApp);
-      wireRowActions(row, entry);
-      grid.appendChild(row);
+      const card = createAppCard(entry, removeApp);
+      wireRowActions(card, entry);
+      grid.appendChild(card);
     });
   }
 
@@ -226,14 +255,14 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
 
   // ── Wire action buttons ─────────────────────────────────────────────────
   function wireRowActions(row: HTMLElement, entry: AppEntry): void {
-    row.querySelectorAll<any>("md-outlined-button[data-action]").forEach((btn) => {
+    row.querySelectorAll<any>("button[data-action]").forEach((btn) => {
       btn.addEventListener("click", async (e: Event) => {
         e.stopPropagation();
         const action = btn.dataset["action"]!;
         btn.disabled = true;
         const origHtml = btn.innerHTML;
         btn.innerHTML = `
-          <svg class="spinner-stroke" slot="icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <svg class="spinner-stroke" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
             <circle cx="12" cy="12" r="9" stroke-dasharray="40 10"/>
           </svg>
         `;
@@ -263,7 +292,7 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
           }
           // Re-render this row to update the button state
           if (result.success) {
-            const fresh = createAppRow(entry, removeApp);
+            const fresh = createAppCard(entry, removeApp);
             wireRowActions(fresh, entry);
             row.replaceWith(fresh);
             return;
@@ -281,7 +310,7 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
   async function loadApps(): Promise<void> {
     refreshBtn.disabled = true;
     refreshBtn.innerHTML = `
-      <svg class="spinner-stroke" slot="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+      <svg class="spinner-stroke" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
         <circle cx="12" cy="12" r="9" stroke-dasharray="40 10"/>
       </svg>
     `;
@@ -299,15 +328,32 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
       entries = await mergeDisabledState(adb, entries);
       apps = entries.sort((a, b) => a.packageName.localeCompare(b.packageName));
       renderList(searchEl.value);
+
+      // Fetch human-readable labels in the background
+      (async () => {
+        const CONCURRENCY = 5;
+        for (let i = 0; i < apps.length; i += CONCURRENCY) {
+          const batch = apps.slice(i, i + CONCURRENCY);
+          await Promise.all(batch.map(async (app) => {
+            const label = await fetchAppLabel(adb, app.packageName);
+            if (label && label !== app.label) {
+              app.label = label;
+              // Update card in-place if it exists
+              const card = grid.querySelector<HTMLElement>(`[data-pkg="${app.packageName}"]`);
+              if (card) {
+                const pkgEl = card.querySelector<HTMLElement>(".app-pkg");
+                if (pkgEl) pkgEl.textContent = label;
+              }
+            }
+          }));
+        }
+      })();
     } catch (err) {
       toast(`Failed to list apps: ${String(err)}`, "error");
       grid.innerHTML = `<div class="empty-state"><p style="color:var(--red)">Error: ${String(err)}</p></div>`;
     } finally {
       refreshBtn.disabled = false;
-      refreshBtn.innerHTML = `
-        ${refreshIcon}
-        Reload
-      `;
+      refreshBtn.innerHTML = `${refreshIcon}`;
     }
   }
 

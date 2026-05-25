@@ -376,6 +376,13 @@ export function renderConnectScreen(): HTMLElement {
     window.open("https://www.github.com", "_blank");
   });
 
+  // Developer mock trigger
+  screen.querySelector(".connect-brand-header")!.addEventListener("dblclick", () => {
+    state.error = null;
+    state.adb = { isMock: true, model: "Pixel 8 Pro", product: "husky" } as any;
+    state.connection = "connected";
+  });
+
   // React to connection state changes
   const updateStatus = (s: ConnectionStatus) => {
     if (cardState === "main") {

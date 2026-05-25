@@ -811,7 +811,7 @@ md-dialog {
   padding: 24px;
 }
 
-.card-header > div[style*="display:flex"] {
+.card-header>div[style*="display:flex"] {
   flex-shrink: 0;
   flex-wrap: wrap;
   gap: 6px;
@@ -975,49 +975,97 @@ md-dialog {
 }
 
 /* ── Telemetry Panel ─────────────────────────────────── */
-.telem-panel {
-  padding: 16px 20px;
+.telem-panel-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  overflow: hidden;
+}
+
+.telem-panel {
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   flex: 1;
   max-width: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;    /* Firefox */
+  --fade-size: 64px;
+  transition: mask-image 0.25s cubic-bezier(0.4, 0, 0.2, 1), -webkit-mask-image 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.telem-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0;
+.telem-panel::-webkit-scrollbar { display: none; }
+
+/* ── Custom scroll pill ──────────────────────────────── */
+.telem-scroll-pill {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 80px; /* matches PILL_H in telemetry.ts */
+  background: rgba(9, 95, 76, 0.1);
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
-.telem-title {
-  font-family: 'Roboto', sans-serif;
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--md-sys-color-on-primary-container);
-  letter-spacing: -0.5px;
+.telem-scroll-pill.pill-visible {
+  opacity: 1;
 }
 
-.telem-body {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 20px;
-  align-items: flex-start;
+.telem-scroll-thumb {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  min-height: 16px;
+  background: rgba(9, 95, 76, 0.38);
+  border-radius: 999px;
+  transition: top 0.08s linear, height 0.08s linear;
 }
 
-.telem-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  flex: 1;
-  min-width: 240px;
+/* ── Card click-to-copy flash ────────────────────────── */
+.metric-tile-m3 {
+  cursor: pointer;
 }
 
-.telem-grid {
-  display: flex;
-  gap: 10px;
+@keyframes tileCopiedFlash {
+  0%   { box-shadow: 0 0 0 0 rgba(9, 95, 76, 0.35); }
+  50%  { box-shadow: 0 0 0 6px rgba(9, 95, 76, 0.12); }
+  100% { box-shadow: 0 0 0 0 rgba(9, 95, 76, 0); }
+}
+
+.metric-tile-m3.tile-copied {
+  animation: tileCopiedFlash 0.5s ease forwards;
+}
+
+/* Faded ONLY bottom (when scrolled to top, can scroll down) */
+.telem-panel.can-scroll-bottom:not(.can-scroll-top) {
+  mask-image: linear-gradient(to bottom, black 0%, black calc(100% - var(--fade-size)), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - var(--fade-size)), transparent 100%);
+}
+
+/* Faded ONLY top (when scrolled to bottom, can scroll up) */
+.telem-panel.can-scroll-top:not(.can-scroll-bottom) {
+  mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black 100%);
+}
+
+/* Faded BOTH top and bottom */
+.telem-panel.can-scroll-top.can-scroll-bottom {
+  mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black calc(100% - var(--fade-size)), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black calc(100% - var(--fade-size)), transparent 100%);
+}
+
+/* No fade (when content fits perfectly) */
+.telem-panel:not(.can-scroll-top):not(.can-scroll-bottom) {
+  mask-image: none;
+  -webkit-mask-image: none;
 }
 
 .telem-header {
@@ -1029,7 +1077,7 @@ md-dialog {
 
 .telem-title {
   font-family: 'Roboto', sans-serif;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
   color: var(--md-sys-color-on-primary-container);
   letter-spacing: -0.5px;
@@ -1040,14 +1088,11 @@ md-dialog {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 26px 38px;
-  gap: 9px;
-
-  min-width: 40px;
-  height: 65px;
-
+  padding: 12px 24px;
+  gap: 8px;
+  height: 48px;
   border: none;
-  border-radius: 12px;
+  border-radius: 100px;
   background: var(--md-sys-color-primary-container);
   cursor: pointer;
   transition: all 0.15s ease-in-out;
@@ -1065,57 +1110,293 @@ md-dialog {
 }
 
 .btn-refresh-green svg {
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
   color: var(--md-sys-color-on-primary-container);
   stroke: var(--md-sys-color-on-primary-container);
   fill: none;
-  flex: none;
 }
 
 .btn-refresh-text {
   font-family: 'Roboto', sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 20px;
-  line-height: 26px;
+  font-weight: 500;
+  font-size: 15px;
   color: var(--md-sys-color-on-primary-container);
-  flex: none;
 }
 
+/* 3-Column Layout */
 .telem-body {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 20px;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(280px, 1fr));
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+  padding-bottom: 24px;
 }
 
-.telem-section {
+@media (max-width: 1300px) {
+  .telem-body {
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .telem-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.telem-column {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  flex: 1;
-  min-width: 0;
+  gap: 16px;
 }
 
-.telem-grid {
-  display: flex;
-  gap: 10px;
+.telem-column.col-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: max-content;
+  gap: 16px;
+  align-content: start;
 }
 
-/* Battery indicator */
-.battery-block {
+.telem-column.col-flex {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
-.batt-header {
+.col-span-2 {
+  grid-column: span 2;
+}
+
+.column-heading {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 10px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--md-sys-color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-mid);
 }
+
+.column-heading svg {
+  color: var(--md-sys-color-primary);
+  flex-shrink: 0;
+}
+
+/* Metric Tiles styling */
+.metric-tile-m3 {
+  background: var(--surface-mid, #ffffff);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius, 16px);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.metric-tile-m3:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  border-color: var(--md-sys-color-primary);
+}
+
+.metric-tile-m3.tall-card {
+  align-items: flex-start;
+  aspect-ratio: 1 / 1;
+}
+
+.metric-tile-m3.wide-card {
+  width: 100%;
+}
+
+.metric-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary-container);
+  flex-shrink: 0;
+}
+
+.metric-icon-badge.large-badge {
+  width: 56px;
+  height: 56px;
+}
+
+.metric-icon-badge svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.metric-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.metric-label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.metric-value {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Memory progress card */
+.metric-tile-m3.mem-card {
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  aspect-ratio: 1 / 1;
+}
+
+.mem-label {
+  align-self: flex-start;
+}
+
+.mem-container {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mem-bg-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+#mem-ring {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mem-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 1;
+  padding: 8px;
+}
+
+.mem-pct {
+  font-family: 'Roboto', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--md-sys-color-primary);
+  line-height: 1;
+}
+
+.mem-avail {
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 4px;
+  max-width: 130px;
+  white-space: normal;
+}
+
+/* Security patch card (calendar block) */
+.metric-tile-m3.security-card {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 12px;
+  aspect-ratio: 1 / 0.92;
+}
+
+.security-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.security-calendar-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--md-sys-color-primary-container);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 8px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  flex: 1;
+}
+
+
+.sec-day {
+  font-family: 'Roboto', sans-serif;
+  font-size: 80px;
+  font-weight: 900;
+  color: var(--md-sys-color-primary);
+  line-height: 1;
+}
+
+.sec-month-weekday {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 4px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.sec-year {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+
+/* Skeleton Loading styles */
+.telemetry-skeleton {
+  animation: shimmer 1.5s ease-in-out infinite;
+  background-color: var(--border-mid);
+  color: transparent !important;
+}
+
 
 /* Web Components defaults override */
 md-outlined-button {
@@ -1273,12 +1554,12 @@ md-linear-progress {
   background: #FFF;
   border: 1px solid var(--border);
   border-radius: 14px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   transition: box-shadow var(--dur) var(--ease);
 }
 
 .app-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .app-card.disabled-app {

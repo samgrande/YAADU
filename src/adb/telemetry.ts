@@ -84,6 +84,19 @@ function parseHealth(code: string): string {
 }
 
 export async function fetchDeviceInfo(adb: Adb): Promise<DeviceInfo> {
+  if ((adb as any).isMock) {
+    return {
+      brand: "Google",
+      model: "Pixel 8 Pro",
+      marketingName: "Google Pixel 8 Pro",
+      osVersion: "14",
+      screenSize: "1344x2992",
+      batteryLevel: 80,
+      batteryTemp: 34.5,
+      batteryCharging: true,
+    };
+  }
+
   // Query product details. Wrap all calls in catch fallbacks to be extremely resilient.
   const [brand, model, marketName1, marketName2, osVersion, wmSizeOut, battOut] = await Promise.all([
     getProp(adb, "ro.product.brand").catch(() => ""),
@@ -117,6 +130,17 @@ export async function fetchDeviceInfo(adb: Adb): Promise<DeviceInfo> {
 }
 
 export async function fetchBattery(adb: Adb): Promise<BatteryData> {
+  if ((adb as any).isMock) {
+    return {
+      level: 80,
+      tempCelsius: 34.5,
+      status: "Charging",
+      plugged: "AC",
+      health: "Good",
+      voltage: "4.21V",
+      technology: "Li-poly",
+    };
+  }
   const out = await shell(adb, "dumpsys battery");
   return parseBattery(out);
 }
@@ -133,6 +157,26 @@ function parseMeminfo(output: string): { total: string; avail: string } {
 }
 
 export async function fetchSystemDetails(adb: Adb): Promise<SystemDetails> {
+  if ((adb as any).isMock) {
+    return {
+      sdkVersion: "34",
+      buildId: "AP1A.240305.019.A1",
+      buildDate: "Tue Mar  5 12:00:00 PST 2024",
+      securityPatch: "2024-03-05",
+      fingerprint: "google/husky/husky:14/AP1A.240305.019.A1/11467431:user/release-keys",
+      productName: "husky",
+      manufacturer: "Google",
+      board: "husky",
+      deviceName: "husky",
+      densityDpi: "480",
+      cpuAbi: "arm64-v8a",
+      totalMemory: "12.0 GB",
+      availMemory: "4.8 GB",
+      health: "Good",
+      voltage: "4.21V",
+      technology: "Li-poly",
+    };
+  }
   // Batch property lookups in a single shell command for speed
   const multiPropCmd = [
     'echo "---sdk---"',  'getprop ro.build.version.sdk',

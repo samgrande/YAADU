@@ -250,14 +250,14 @@ function renderPanel(adb: Adb, panelId: ActivePanel): HTMLElement {
   }
   wrapper.appendChild(PANEL_FACTORIES[panelId](adb));
   requestAnimationFrame(() => {
-    if (panelId !== "apps") fitPanelContent(wrapper);
+    if (panelId !== "apps" && panelId !== "telemetry") fitPanelContent(wrapper);
   });
   return wrapper;
 }
 
 function onDashResize() {
   fitSidebar();
-  if (currentPanelEl && currentPanelEl.getAttribute("data-panel-id") !== "apps") fitPanelContent(currentPanelEl);
+  if (currentPanelEl && currentPanelEl.getAttribute("data-panel-id") !== "apps" && currentPanelEl.getAttribute("data-panel-id") !== "telemetry") fitPanelContent(currentPanelEl);
 }
 
 // ── Dashboard Root ─────────────────────────────────────────────────────────

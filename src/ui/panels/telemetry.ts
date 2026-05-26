@@ -1,5 +1,5 @@
 import type { Adb } from "@yume-chan/adb";
-import { fetchDeviceInfo, fetchBattery, fetchSystemDetails } from "../../adb/telemetry.js";
+import { fetchDeviceInfo, fetchBattery, fetchSystemDetails, fetchConnectivity, fetchSensors } from "../../adb/telemetry.js";
 import { state } from "../../state.js";
 import { toast } from "../toast.js";
 
@@ -61,6 +61,31 @@ const SVG_SECURITY_PATCH = `<svg width="28" height="34" viewBox="0 0 28 34" fill
 <path d="M28 15.4545C28 24.0318 22.0267 32.0527 14 34C5.97333 32.0527 0 24.0318 0 15.4545V6.18182L14 0L28 6.18182V15.4545ZM14 30.9091C19.8333 29.3636 24.8889 22.4709 24.8889 15.7945V8.19091L14 3.36909L3.11111 8.19091V15.7945C3.11111 22.4709 8.16667 29.3636 14 30.9091ZM18.3556 15.4545V13.1364C18.3556 10.9727 16.1778 9.27273 14 9.27273C11.8222 9.27273 9.64444 10.9727 9.64444 13.1364V15.4545C8.71111 15.4545 7.77778 16.3818 7.77778 17.3091V22.7182C7.77778 23.8 8.71111 24.7273 9.64444 24.7273H18.2C19.2889 24.7273 20.2222 23.8 20.2222 22.8727V17.4636C20.2222 16.3818 19.2889 15.4545 18.3556 15.4545ZM16.3333 15.4545H11.6667V13.1364C11.6667 11.9 12.7556 11.1273 14 11.1273C15.2444 11.1273 16.3333 11.9 16.3333 13.1364V15.4545Z" fill="#095F4C"/>
 </svg>`;
 
+// ── Android version logos (Wikimedia Commons) ────────────────────────────
+
+const SVG_ANDROID_LOGO: Record<string, string> = {
+  "9": `<svg viewBox="0 0 372.6 500" xmlns="http://www.w3.org/2000/svg"><path fill="#75BE5E" d="M156.8,500H0V186.3C0,110.7,45.1,43.2,115,14.3c69.8-28.9,149.5-13.1,203,40.4c53.5,53.5,69.3,133.1,40.4,203c-28.9,69.8-96.5,115-172.1,115c0,0,0,0,0,0h-29.4V500z M156.8,215.7h29.4c0,0,0,0,0,0c11.9,0,22.6-7.1,27.2-18.2c4.6-11,2.1-23.6-6.4-32c-8.4-8.4-21-10.9-32-6.4c-11,4.6-18.2,15.2-18.2,27.2V215.7z"/><path fill="#FFFFFF" d="M117.6,500H39.2V186.3c0-59.7,35.6-113,90.8-135.8c55.1-22.8,118-10.3,160.2,31.9c42.2,42.2,54.7,105.1,31.9,160.2c-22.8,55.1-76.2,90.8-135.8,90.8c0,0,0,0,0,0h-29.4V255h29.4c0,0,0,0,0,0c27.9,0,52.7-16.6,63.4-42.4c10.7-25.7,4.8-55.1-14.9-74.8c-19.7-19.7-49-25.5-74.8-14.9c-25.7,10.7-42.4,35.5-42.4,63.4V500z"/></svg>`,
+  "10": `<svg viewBox="0 0 697.5 697.5" xmlns="http://www.w3.org/2000/svg"><path fill="#FEFEFE" d="M348.6,697.5L348.6,697.5C156.1,697.5,0,541.5,0,348.9v0C0,156.4,156.1,0.4,348.6,0.4h0c192.5,0,348.6,156.1,348.6,348.6v0C697.2,541.5,541.1,697.5,348.6,697.5z"/><path fill="#3DDC84" d="M348.9,697.5c-88.4-1-166.4-30-232.5-89C58,556.3,21.6,491.2,6.3,414.4c-3.4-17.6-5.4-35.5-5.8-53.5c-2.4-80.4,19.6-153.4,67.1-218C119.5,72.4,188.7,27.6,274.1,8.2c29.4-6.7,59.6-9.3,89.8-7.7c72.8,3.5,138.5,27.1,196.6,71.2c40.7,30.8,74,70.3,97.5,115.5c19,36.1,31.5,74.5,36.5,115c12,97.7-12,185.8-72.7,263.6c-7.1,8.9-14.6,17.5-22.5,25.7c-1.7,1.8-2.6,2.1-4.5,0.2c-17.2-17.4-34.5-34.7-51.9-51.9c-1.5-1.5-1.7-2.2-0.1-3.9c36.5-38.2,59.9-83.2,70.1-135c5-25.3,6.2-51.2,3.6-76.8c-5.2-52.7-23.9-100.1-57-141.4c-40.8-50.9-93.2-83.1-157.3-96.4c-21.2-4.5-42.8-6.2-64.4-5.1C265,84.9,203.1,112.9,153,165.9c-36.7,38.8-59.8,84.7-68.5,137.4c-12.8,77.3,4,147.9,51.8,210.2c41.1,53.6,95.5,87,162,99.9c61.3,11.8,119.8,3,175.3-25.7c2.6-1.4,4.1-1.2,6.2,1c17.4,17.6,34.9,35.1,52.4,52.4c2.2,2.2,2.3,3.1-0.5,4.8c-39.9,24.5-84.3,40.7-130.5,47.6C383.8,696.2,366.4,697.5,348.9,697.5z"/><path fill="#3DDC84" d="M159.1,356.7c-0.6-13.9,0.3-27.8,2.8-41.5c6.5-37.3,24.3-71.8,50.9-98.8c27.5-28.2,60.5-46.8,99.2-53.9c62.2-11.5,117.6,3.6,164.7,45.8c32.8,29.4,52.9,66.3,59.6,109.9c8.8,56.6-5.5,107.3-41.5,151.9c-3.1,3.9-6.2,7.9-10.3,10.9c-3.3-3.2-213.8-213.4-221.2-221.2c-2.5-2.6-3.8-2.9-6.5-0.1c-31.2,31.4-62.4,62.7-93.8,93.9c-1,1.2-2,2.4-2.9,3.6L159.1,356.7z"/><path fill="#3DDC84" d="M417,526.2c-13.9,5.4-28.4,9.1-43.1,11c-38.4,4.9-75-1.2-109.6-18.5c-32.4-16.2-58-39.8-77.2-70.5c-1.6-2.6-1.9-4.1,0.6-6.5c23.4-23.2,46.8-46.6,70-70c2-2.1,3.1-2.1,5.1,0c50.6,50.8,101.3,101.5,152,152.1C415.4,524.5,416,525.1,417,526.2z"/></svg>`,
+  "11": `<svg viewBox="0 0 196 196" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M98 196C152.124 196 196 152.124 196 98C196 43.8761 152.124 0 98 0C43.8761 0 0 43.8761 0 98C0 152.124 43.8761 196 98 196Z" fill="#3DDC84"/><path d="M49.7656 52.2922C53.8108 52.3165 57.682 53.9405 60.5339 56.8095C63.3857 59.6785 64.9863 63.5594 64.9862 67.6047V143.708" stroke="white" stroke-width="6.13" stroke-linecap="round"/><path d="M146.234 143.708H85.3059V128.472C85.3059 120.39 88.5163 112.64 94.2309 106.925C99.9455 101.21 107.696 98 115.778 98H131.09C133.097 98 135.084 97.6033 136.936 96.8327C138.789 96.062 140.471 94.9327 141.886 93.5096C143.3 92.0864 144.419 90.3977 145.179 88.5404C145.938 86.6831 146.323 84.694 146.311 82.6875C146.313 75.4873 143.766 68.5188 139.121 63.0176C134.475 57.5163 128.032 53.8378 120.933 52.6342C113.834 51.4305 106.538 52.7796 100.339 56.4421C94.1399 60.1046 89.438 65.8439 87.0668 72.6425C86.4909 74.283 86.0505 75.9679 85.75 77.6803" stroke="white" stroke-width="6.13" stroke-linecap="round"/></svg>`,
+  "12": `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><circle style="fill:#083042;" cx="256" cy="256" r="256"/><g><path style="fill:#F86734;" d="M416.233,236.621h-10.671c-1.465,0-2.653-1.188-2.653-2.653v-9.848c0-1.465,1.188-2.653,2.653-2.653h23.372c1.465,0,2.653,1.188,2.653,2.653v66.896c0,1.465-1.188,2.653-2.653,2.653h-10.048c-1.465,0-2.653-1.188-2.653-2.653V236.621z"/></g><g><path style="fill:#F86734;" d="M455.512,236.621H444.84c-1.465,0-2.653-1.188-2.653-2.653v-9.848c0-1.465,1.188-2.653,2.653-2.653h23.372c1.465,0,2.653,1.188,2.653,2.653v66.896c0,1.465-1.188,2.653-2.653,2.653h-10.048c-1.465,0-2.653-1.188-2.653-2.653V236.621z"/></g><g><circle style="fill:#D6F0FF;" cx="364.119" cy="404.59" r="4.339"/><circle style="fill:#D6F0FF;" cx="275.463" cy="438.373" r="4.842"/><circle style="fill:#D6F0FF;" cx="184.516" cy="424.185" r="5.362"/><circle style="fill:#D6F0FF;" cx="110.417" cy="365.081" r="5.894"/><circle style="fill:#D6F0FF;" cx="75.94" cy="276.596" r="6.435"/><circle style="fill:#D6F0FF;" cx="89.477" cy="185.548" r="6.984"/><circle style="fill:#D6F0FF;" cx="147.972" cy="111.081" r="7.538"/><circle style="fill:#D6F0FF;" cx="236.628" cy="74.799" r="8.096"/><circle style="fill:#D6F0FF;" cx="327.091" cy="86.963" r="8.658"/><circle style="fill:#D6F0FF;" cx="401.052" cy="146.186" r="9.223"/></g><g><circle style="fill:#3DDB85;" cx="255.449" cy="257.568" r="128.109"/><circle style="fill:#FFFFFF;" cx="339.231" cy="257.568" r="21.476"/></g></svg>`,
+  "13": `<svg viewBox="0 0 135.46667 134.61392" xmlns="http://www.w3.org/2000/svg" width="512" height="508.777"><g transform="matrix(1.1185693,0,0,1.1185693,-18.839073,-103.70265)"><path style="fill:#3ddc84" d="m 62.776071,212.7743 c -2.044591,-0.48187 -3.755747,-1.60855 -6.150482,-4.04968 -4.000072,-4.07757 -7.246199,-5.77525 -12.888327,-6.74039 -5.852983,-1.00121 -8.453937,-3.16308 -10.01763,-8.32649 -1.930234,-6.37376 -3.947629,-9.42615 -8.380212,-12.67958 -5.028379,-3.69073 -6.318522,-6.94526 -5.091205,-12.84316 1.136761,-5.46273 0.701463,-9.34654 -1.607242,-14.34011 -2.754593,-5.95799 -2.41455,-9.14161 1.497791,-14.02292 3.586674,-4.47498 4.712409,-7.43292 5.249565,-13.79355 0.542064,-6.41876 2.339206,-9.05215 7.63199,-11.18332 4.417267,-1.77863 8.196106,-4.86624 10.291167,-8.40868 2.42266,-4.09637 2.776363,-4.56595 4.277389,-5.6788 2.422276,-1.795861 4.380759,-2.293565 8.110672,-2.061146 6.479156,0.403731 9.951849,-0.369331 14.302858,-3.183985 5.673048,-3.669876 9.112901,-3.669876 14.785948,0 4.351009,2.814654 7.823703,3.587716 14.302859,3.183985 6.126988,-0.381785 8.676458,1.216537 12.411128,7.780816 1.85082,3.25313 5.63393,6.41916 9.77419,8.17988 5.89708,2.50785 7.61104,4.79679 8.04592,10.74501 0.47097,6.44188 1.80018,10.04362 5.32156,14.41979 3.92084,4.8726 4.26301,8.05921 1.50578,14.02292 -2.30871,4.99357 -2.74401,8.87738 -1.60725,14.34011 1.22732,5.8979 -0.0628,9.15243 -5.0912,12.84316 -4.43258,3.25343 -6.44998,6.30582 -8.38021,12.67958 -1.5637,5.16341 -4.16465,7.32528 -10.01763,8.32649 -5.65408,0.96719 -8.90397,2.67009 -12.88833,6.75336 -4.416954,4.52658 -7.583254,5.27338 -13.758333,3.24498 -5.050559,-1.65901 -8.939124,-1.66609 -13.969576,-0.0254 -3.523773,1.14927 -5.402026,1.34961 -7.66119,0.81716 z"/><path style="fill:#ffffff" d="m 78.521658,185.52892 1.173214,-2.83703 c 29.925718,-2.97312 30.746208,-26.4283 11.855715,-34.68707 l -5.336863,-1.12972 5.057112,-10.24773 4.909957,-9.55393 -8.069791,-0.26598 h -9.072953 v -1.85208 -1.85209 H 90.35996 l 12.96458,0.13362 -5.680919,10.96365 -4.622588,9.7717 0.389359,0.42085 1.447691,0.42086 c 28.332387,6.06098 16.072507,51.06853 -16.336425,40.71495 z M 62.31413,156.44072 v -29.63333 h -7.011458 -7.011458 v -1.85208 -1.85209 h 8.466666 8.466667 v 32.01459 31.48541 H 63.769338 62.31413 Z"/><path style="fill:#073042" d="m 77.013529,189.27848 1.508129,-3.74956 c 15.329442,4.7955 29.651742,-4.86589 29.651742,-20.16937 0,-10.26052 -7.76057,-18.70007 -16.43952,-20.97639 l 5.092484,-10.40019 5.173776,-10.4139 H 90.557652 79.037894 v -2.11952 -2.05052 H 93.921309 108.882 l -5.68748,11.37255 -5.687483,11.37256 c 10.038213,5.05194 14.780303,14.02911 14.780303,23.30123 0,17.83542 -17.744747,30.55186 -35.273811,23.83311 z m -18.932732,-30.5888 v -27.91354 h -4.894792 -4.894791 v -2.11667 -2.11666 h 7.011458 7.011458 v 30.03021 30.0302 h -2.116667 -2.116666 z m 7.14375,-3.57187 V 123.63239 H 56.75788 48.291214 v -2.11666 -2.11667 H 58.874547 69.45788 v 33.60208 33.60208 h -2.116667 -2.116666 z m 14.470325,27.57408 1.470021,-3.97964 c 10.155072,3.47586 19.473427,-3.54931 19.583457,-13.00094 0,-10.35136 -7.982292,-14.52729 -15.244588,-15.03278 l -4.665472,-0.57578 4.742093,-9.76744 4.775764,-9.54866 -5.62048,-0.0714 -5.697773,-0.0714 v -2.05052 -2.05052 h 9.06266 9.139933 l -5.026126,10.04953 -5.026125,10.04954 c 10.698663,1.5643 17.956204,9.07918 17.956204,18.66238 0,12.95816 -12.430244,21.85689 -25.449568,17.38763 z"/></g></svg>`,
+  "14": `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="a14" x1="256" y1="21.811" x2="256" y2="350.423" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#073042"/><stop offset="1" stop-color="#073042"/></linearGradient><clipPath id="b14"><circle cx="256" cy="256" r="200"/></clipPath></defs><circle cx="256" cy="256" r="200" fill="url(#a14)"/><g clip-path="url(#b14)"><path d="m195.27,187.642l2.253-6.689c13.913,78.126,50.844,284.385,50.844,50.331,0-.973.723-1.81,1.615-1.81h12.695c.896,0,1.623.827,1.623,1.804-.201,409.907-69.03-43.636-69.03-43.636Z" fill="#3ddc84"/><path d="m158.775,180.678l-33.166,57.446c-1.905,3.299-.774,7.518,2.525,9.423,3.299,1.905,7.518.774,9.423-2.525l33.586-58.17c54.27,24.328,116.344,24.328,170.614,0l33.586,58.17c1.972,3.259,6.213,4.303,9.472,2.331,3.166-1.915,4.256-5.988,2.472-9.229l-33.164-57.446c56.952-30.973,95.908-88.642,101.607-156.764H57.168c5.7,68.122,44.655,125.791,101.607,156.764Z" fill="#fff"/><rect x="248.14" y="187.656" width="16.16" height="32.321" rx="2.125" fill="#3ddc84"/><rect x="248.14" y="170.286" width="16.16" height="8.08" rx="1.976" fill="#3ddc84"/></g><rect x="171.917" y="216.823" width="4.04" height="4.04" fill="#fff"/><rect x="188.802" y="275.727" width="4.04" height="4.04" fill="#fff"/><rect x="369.04" y="337.634" width="4.04" height="4.04" fill="#fff"/><rect x="285.926" y="252.221" width="4.04" height="4.04" fill="#fff"/><rect x="318.96" y="218.843" width="4.04" height="4.04" fill="#fff"/><rect x="294.055" y="288.555" width="4.04" height="4.04" fill="#fff"/><rect x="330.819" y="273.31" width="8.08" height="8.08" fill="#fff"/><rect x="188.802" y="298.949" width="4.04" height="4.04" fill="#fff"/><rect x="220.141" y="238.941" width="8.08" height="8.08" fill="#fff"/><rect x="272.099" y="318.902" width="8.08" height="8.08" fill="#fff"/><rect x="293.338" y="349.248" width="8.08" height="8.08" fill="#fff"/><rect x="161.052" y="254.241" width="8.08" height="8.08" fill="#fff"/><rect x="378.916" y="192.001" width="8.08" height="8.08" fill="#fff"/><rect x="137.87" y="323.702" width="8.08" height="8.08" fill="#fff"/><circle cx="256" cy="256" r="200" fill="none" stroke="#f86734" stroke-width="56.561"/><path d="m256.22,126.565c-6.694,0-12.12,5.27-12.12,11.771v14.519c0,1.255,1.017,2.273,2.273,2.273h0c1.255,0,2.273-1.017,2.273-2.273v-3.914c0-2.51,2.035-4.545,4.545-4.545h6.06c2.51,0,4.545,2.035,4.545,4.545v3.914c0,1.255,1.017,2.273,2.273,2.273s2.273-1.017,2.273-2.273v-14.519c0-6.501-5.426-11.771-12.12-11.771Z" fill="#3ddc84"/></svg>`,
+  "15": `<svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M256.001 446.355C229.626 446.355 212.19 428.059 194.799 397.937C177.408 367.815 91.5356 219.08 74.1446 188.958C56.7536 158.836 49.6266 134.588 62.8136 111.747C76.0006 88.906 100.564 82.954 135.346 82.954C170.128 82.954 341.872 82.954 376.654 82.954C411.436 82.954 435.999 88.906 449.186 111.747C462.373 134.588 455.246 158.836 437.855 188.958C420.464 219.08 334.592 367.815 317.201 397.937C299.81 428.059 282.374 446.355 256 446.355Z" fill="#202124"/><mask id="m15" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="56" y="82" width="400" height="365"><path d="M256.001 446.355C229.626 446.355 212.19 428.059 194.799 397.937C177.408 367.815 91.5356 219.08 74.1446 188.958C56.7536 158.836 49.6266 134.588 62.8136 111.747C76.0006 88.906 100.564 82.954 135.346 82.954C170.128 82.954 341.872 82.954 376.654 82.954C411.436 82.954 435.999 88.906 449.186 111.747C462.373 134.588 455.246 158.836 437.855 188.958C420.464 219.08 334.592 367.815 317.201 397.937C299.81 428.059 282.374 446.355 256 446.355Z" fill="white"/></mask><g mask="url(#m15)"><path d="M344.016 285.041C286.329 262.165 262.181 187.482 259 153H256V399L449 320.364C438.042 318.121 401.704 307.917 344.016 285.041Z" fill="#C6FF00"/><path d="M167.984 285.041C225.671 262.165 249.819 187.482 253 153H256V399L63 320.364C73.9579 318.121 110.296 307.917 167.984 285.041Z" fill="#C6FF00"/><path d="M297.5 284.816C270.3 261.979 260.5 187.423 259 153H256V398.58L347 320.078C341.833 317.84 324.7 307.653 297.5 284.816Z" fill="white"/><path d="M214.5 284.816C241.7 261.979 251.5 187.423 253 153H256V398.58L165 320.078C170.167 317.84 187.3 307.653 214.5 284.816Z" fill="white"/><circle cx="256" cy="153" r="3" fill="white"/><rect x="151" y="350" width="199" height="104" fill="#5F6368"/><path d="M358.423 350.438C358.356 350.016 358.293 349.6 358.222 349.181C357.797 346.596 357.267 344.042 356.65 341.521C355.571 337.116 354.213 332.819 352.591 328.656C351.22 325.13 349.661 321.7 347.928 318.376C345.699 314.108 343.185 310.01 340.409 306.113C337.007 301.338 333.209 296.864 329.059 292.741C327.316 291.009 325.515 289.337 323.652 287.735C319.622 284.256 315.315 281.087 310.78 278.255C310.82 278.19 310.853 278.119 310.894 278.054C312.972 274.463 315.054 270.878 317.132 267.288C319.166 263.783 321.198 260.278 323.229 256.773C324.691 254.257 326.152 251.736 327.607 249.22C327.952 248.623 328.224 248.005 328.428 247.373C328.998 245.61 329.022 243.757 328.566 242.034C328.449 241.608 328.311 241.191 328.14 240.784C327.969 240.377 327.768 239.981 327.54 239.599C326.762 238.293 325.653 237.159 324.258 236.33C323.024 235.597 321.643 235.16 320.229 235.034C319.635 234.984 319.039 234.989 318.445 235.049C317.956 235.099 317.47 235.19 316.988 235.316C315.264 235.773 313.669 236.717 312.425 238.082C311.979 238.575 311.577 239.117 311.229 239.714C309.771 242.229 308.309 244.75 306.854 247.266L300.757 257.781C298.678 261.371 296.596 264.957 294.518 268.547C294.29 268.939 294.059 269.33 293.835 269.727C293.519 269.601 293.208 269.476 292.892 269.356C281.431 264.987 269.001 262.597 256.007 262.597C255.65 262.597 255.299 262.597 254.943 262.601C243.389 262.717 232.288 264.726 221.934 268.331C220.734 268.748 219.55 269.19 218.375 269.652C218.165 269.285 217.949 268.918 217.738 268.552C215.66 264.961 213.577 261.376 211.5 257.786C209.467 254.281 207.434 250.776 205.402 247.271C203.941 244.755 202.481 242.234 201.025 239.719C200.679 239.121 200.278 238.579 199.83 238.087C198.585 236.721 196.99 235.777 195.268 235.32C194.786 235.195 194.299 235.104 193.808 235.054C193.216 234.994 192.618 234.989 192.026 235.039C190.611 235.16 189.23 235.597 187.996 236.335C186.6 237.164 185.497 238.298 184.713 239.604C184.487 239.985 184.287 240.382 184.116 240.789C183.946 241.196 183.8 241.613 183.69 242.039C183.233 243.762 183.258 245.615 183.825 247.378C184.031 248.01 184.302 248.628 184.649 249.225C186.109 251.741 187.57 254.262 189.025 256.778C191.058 260.283 193.09 263.788 195.123 267.292C197.201 270.883 199.284 274.468 201.361 278.059C201.376 278.089 201.397 278.119 201.412 278.149C197.221 280.756 193.23 283.643 189.467 286.801C187.213 288.694 185.04 290.678 182.957 292.751C178.812 296.874 175.012 301.348 171.604 306.123C168.824 310.02 166.309 314.112 164.086 318.386C162.355 321.71 160.794 325.14 159.423 328.666C157.802 332.829 156.442 337.127 155.363 341.531C154.746 344.052 154.224 346.599 153.792 349.191C153.722 349.61 153.656 350.032 153.591 350.448C153.361 351.95 153.165 353.462 152.999 354.984L359 354.984C358.836 353.462 358.638 351.95 358.407 350.448Z" fill="#5F6368"/></g><path d="M256.001 446.355C229.626 446.355 212.19 428.059 194.799 397.937C177.408 367.815 91.5356 219.08 74.1446 188.958C56.7536 158.836 49.6266 134.588 62.8136 111.747C76.0006 88.906 100.564 82.954 135.346 82.954C170.128 82.954 341.872 82.954 376.654 82.954C411.436 82.954 435.999 88.906 449.186 111.747C462.373 134.588 455.246 158.836 437.855 188.958C420.464 219.08 334.592 367.815 317.201 397.937C299.81 428.059 282.374 446.355 256 446.355Z" stroke="#34A853" stroke-width="55"/></svg>`,
+  "16": `<svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="58.5" y="58.5" width="395" height="395" rx="68.5" fill="#1D2126" stroke="#4285F4" stroke-width="55"/><path d="M152.157 72C149.469 72 148.125 72 148.125 72C148.125 72 148.581 70.818 149.493 68.454L157.269 48.222C157.773 46.89 158.025 46.224 158.025 46.224C158.025 46.224 158.913 46.224 160.689 46.224C162.405 46.224 163.263 46.224 163.263 46.224C163.263 46.224 163.521 46.884 164.037 48.204L171.759 68.418C172.683 70.806 173.145 72 173.145 72C173.145 72 171.831 72 169.203 72C167.643 72 166.863 72 166.863 72C166.863 72 166.683 71.448 166.323 70.344L161.481 56.376L160.617 53.496H160.509L159.645 56.358L154.767 70.308C154.419 71.436 154.245 72 154.245 72C154.245 72 153.549 72 152.157 72Z" fill="white"/></svg>`,
+  "17": `<svg viewBox="0 0 453.11 451.37" xmlns="http://www.w3.org/2000/svg"><circle cx="226" cy="225" r="182" fill="#0d242f"/><path d="m402.73 243.76 9.54-33.54-15.54-31.21zM393.52 144.29l-25.77-23.49 28.98 58.21-3.22-34.72zM293.93 53.51h-34.87L319.69 77l-25.77-23.49zM352.21 89.6 319.7 77l48.05 43.8-15.54-31.21z" fill="#0d242f"/><path d="m226.56 40.92-32.51 12.59h65.02zM192.28 410.77l34.27-6.41-63.91-11.95z" fill="#0d242f"/><path d="m260.83 410.77 29.64-18.36-63.92 11.95 34.27 6.41zM324.74 386.01l21.01-27.82-55.28 34.23zM375.4 339.83l9.54-33.53-39.18 51.89 29.64-18.35zM405.95 278.47l-3.22-34.72-17.79 62.54zM128.37 386.01l34.27 6.41-55.28-34.23zM40.84 210.22l9.54 33.54 6-64.75zM100.9 89.6l-15.54 31.21 48.05-43.8-32.51 12.6zM77.71 339.83l29.64 18.35-39.18-51.89 9.54 33.53zM59.6 144.29l-3.22 34.72 28.98-58.21-25.77 23.49zM159.18 53.51 133.41 77l60.63-23.49h-34.87z" fill="#0d242f"/><path d="m47.16 278.47 21.01 27.82-17.79-62.54z" fill="#0d242f"/><path d="m396.73 179.01 15.54 31.21 11.03-38.77-29.79-27.16zM259.07 53.51h34.87l-29.79-27.16-37.59 14.56 32.51 12.59zM319.7 77l32.51 12.59-17.97-36.08h-40.31z" fill="#66245a"/><path d="m367.75 120.81 25.77 23.49-3.72-40.14-37.59-14.56zM345.75 358.18 324.74 386l39.62-7.41 11.03-38.77-29.64 18.35zM226.56 404.36l-34.27 6.41 34.27 21.22 34.27-21.22zM194.05 53.51l32.51-12.59-37.59-14.56-29.79 27.16h34.87zM162.64 392.41 128.37 386l24.29 32.17 39.62-7.41-29.64-18.36zM384.94 306.3l-9.54 33.53 34.27-21.22-3.72-40.14-21.01 27.82z" fill="#66245a"/><path d="m402.73 243.76 3.22 34.72 24.29-32.17-17.97-36.08-9.54 33.54zM290.47 392.41l-29.64 18.36 39.62 7.41 24.29-32.17-34.27 6.41zM56.38 179.01l3.22-34.72-29.79 27.16 11.03 38.77z" fill="#66245a"/><path d="m85.36 120.81 15.54-31.21-37.59 14.56-3.72 40.14zM133.41 77l25.77-23.49h-40.31L100.9 89.59zM68.17 306.3l-21.01-27.82-3.72 40.14 34.27 21.22-9.54-33.53zM107.36 358.18l-29.64-18.35 11.03 38.77 39.62 7.41-21.01-27.82zM50.38 243.76l-9.54-33.54-17.97 36.08 24.29 32.17 3.22-34.72z" fill="#66245a"/><path d="m389.8 104.16-2.81-30.31c-1.07-11.52-10.73-20.33-22.3-20.33h-30.45l17.97 36.08zM423.31 171.45l8.33-29.28c3.17-11.13-2.66-22.84-13.45-27.01l-28.39-11 3.72 40.14 29.79 27.16zM334.24 53.51l-13.57-27.25c-5.16-10.36-17.35-15.08-28.14-10.9l-28.39 11 29.79 27.16h40.31zM264.14 26.36l-22.5-20.51c-8.55-7.79-21.63-7.79-30.18 0l-22.5 20.51 37.59 14.56zM300.45 418.18l29.93 5.59c11.37 2.12 22.49-4.76 25.66-15.89l8.33-29.28-39.62 7.41-24.29 32.17zM226.56 431.99l25.88 16.03c9.84 6.09 22.69 3.69 29.66-5.55l18.35-24.3-39.62-7.41-34.27 21.22zM152.66 418.18l18.35 24.3c6.97 9.23 19.83 11.64 29.66 5.55L226.55 432l-34.27-21.22-39.62 7.41z" fill="#b31f7f"/><path d="m445.8 191.96-22.5-20.51-11.03 38.77 17.97 36.08 18.35-24.29c6.97-9.23 5.76-22.26-2.79-30.05M409.67 318.61l25.88-16.03c9.84-6.09 13.42-18.67 8.26-29.02l-13.57-27.25-24.29 32.17 3.72 40.14zM364.37 378.6l29.92-5.59c11.37-2.12 19.25-12.56 18.19-24.08l-2.81-30.31-34.27 21.22-11.03 38.77zM88.75 378.6l8.33 29.28c3.17 11.13 14.29 18.01 25.66 15.89l29.93-5.59-24.29-32.17-39.62-7.41zM63.32 104.16l-28.39 11c-10.79 4.18-16.62 15.89-13.45 27.01l8.33 29.28 29.79-27.16 3.72-40.14zM118.87 53.51H88.43c-11.57 0-21.23 8.81-22.3 20.33l-2.81 30.31 37.59-14.56 17.97-36.08zM188.97 26.36l-28.39-11c-10.79-4.18-22.98.55-28.14 10.9l-13.57 27.25h40.31l29.79-27.16z" fill="#b31f7f"/><path d="m29.81 171.45-22.5 20.51c-8.55 7.79-9.76 20.82-2.78 30.05l18.35 24.29 17.97-36.08-11.03-38.77zM43.44 318.61l-2.81 30.32c-1.07 11.52 6.81 21.96 18.19 24.08l29.93 5.59-11.03-38.77-34.27-21.22zM22.87 246.31 9.3 273.56c-5.16 10.35-1.58 22.93 8.26 29.02l25.88 16.03 3.72-40.14-24.29-32.17z" fill="#b31f7f"/><circle cx="226.37" cy="225.37" r="76.63" fill="#34a853" stroke="#61dd82" stroke-width="8"/></svg>`,
+};
+
+function osVersionKey(v: string): string {
+  const m = v.match(/^(\d+)/);
+  return m ? m[1] : "";
+}
+
+const SVG_WIFI = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg>`;
+
+const SVG_SENSOR = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>`;
+
+const SVG_TOUCH = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20v-2a2 2 0 0 1 2-2h1"/><path d="M16 20v-2a2 2 0 0 0-2-2h-1"/><path d="M8 4v2a2 2 0 0 0 2 2h1"/><path d="M16 4v2a2 2 0 0 1-2 2h-1"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>`;
+
 // ── Template ───────────────────────────────────────────────────────────────
 
 function renderSkeleton(): string {
@@ -88,12 +113,13 @@ function renderSkeleton(): string {
         </div>
       </div>
 
-      <div class="metric-tile-m3 tall-card col-span-2">
+      <div class="metric-tile-m3 tall-card col-span-2 android-version-card">
+        <div class="android-version-bg" id="android-version-bg"></div>
         <div class="metric-icon-badge">${SVG_ANDROID}</div>
         <div class="metric-details">
           <span class="metric-label">ANDROID VERSION</span>
-          <span class="metric-value telemetry-skeleton" id="val-sdk">—</span>
         </div>
+        <div class="android-version-hover-pill"><span id="pill-version-text">Android —</span></div>
       </div>
 
       <div class="metric-tile-m3">
@@ -114,18 +140,18 @@ function renderSkeleton(): string {
     </div>
 
     <!-- Column 2: Hardware & Display -->
-    <div class="telem-column col-flex">
-      <div class="column-heading">
+    <div class="telem-column col-grid-2">
+      <div class="column-heading col-span-2">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         Hardware &amp; Display
       </div>
 
-      <div class="metric-tile-m3 mem-card">
+      <div class="metric-tile-m3 mem-card col-span-2">
         <span class="metric-label mem-label">MEMORY</span>
         <div class="mem-container">
           <svg class="mem-bg-ring" viewBox="0 0 100 100">
             <path id="mem-ring-unfilled" fill="none" stroke="#E1E4DC" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path id="mem-ring" fill="none" stroke="#095F4C" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path id="mem-ring" fill="none" stroke="#095F4C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <div class="mem-overlay">
             <div class="mem-pct" id="mem-pct">0%</div>
@@ -134,7 +160,7 @@ function renderSkeleton(): string {
         </div>
       </div>
 
-      <div class="metric-tile-m3 wide-card">
+      <div class="metric-tile-m3">
         <div class="metric-icon-badge">${SVG_RESOLUTION}</div>
         <div class="metric-details">
           <span class="metric-label">RESOLUTION</span>
@@ -142,11 +168,27 @@ function renderSkeleton(): string {
         </div>
       </div>
 
-      <div class="metric-tile-m3 wide-card">
+      <div class="metric-tile-m3">
         <div class="metric-icon-badge">${SVG_SCREEN_DPI}</div>
         <div class="metric-details">
           <span class="metric-label">SCREEN DPI</span>
           <span class="metric-value telemetry-skeleton" id="val-density">—</span>
+        </div>
+      </div>
+
+      <div class="metric-tile-m3">
+        <div class="metric-icon-badge">${SVG_TOUCH}</div>
+        <div class="metric-details">
+          <span class="metric-label">TOUCH SCREEN</span>
+          <span class="metric-value telemetry-skeleton" id="val-touch">—</span>
+        </div>
+      </div>
+
+      <div class="metric-tile-m3">
+        <div class="metric-icon-badge">${SVG_SENSOR}</div>
+        <div class="metric-details">
+          <span class="metric-label">ACTIVE SENSORS</span>
+          <span class="metric-value telemetry-skeleton" id="val-sensors">—</span>
         </div>
       </div>
     </div>
@@ -155,17 +197,36 @@ function renderSkeleton(): string {
     <div class="telem-column col-grid-2">
       <div class="column-heading col-span-2">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="10" x2="23" y2="14"/><line x1="7" y1="10" x2="7" y2="14"/><line x1="11" y1="10" x2="11" y2="14"/><line x1="15" y1="10" x2="15" y2="14"/></svg>
-        System and build
+        Extra Hardware Info
       </div>
 
-      <div class="metric-tile-m3">
-        <div class="metric-icon-badge">${SVG_TEMPERATURE}</div>
-        <div class="metric-details">
-          <span class="metric-label">TEMPERATURE</span>
-          <span class="metric-value telemetry-skeleton" id="val-temp">—</span>
+      <div class="metric-tile-m3 security-card">
+        <div class="security-card-header">
+          <div class="metric-icon-badge">${SVG_TEMPERATURE}</div>
+          <div class="metric-details">
+            <span class="metric-label">TEMPERATURE</span>
+          </div>
+        </div>
+        <div class="temp-display">
+          <span class="temp-value telemetry-skeleton" id="val-temp">—</span>
+          <span class="temp-unit telemetry-skeleton" id="val-temp-unit">°C</span>
         </div>
       </div>
-      
+
+      <div class="metric-tile-m3 security-card">
+        <div class="security-card-header">
+          <div class="metric-icon-badge">${SVG_SECURITY_PATCH}</div>
+          <div class="metric-details">
+            <span class="metric-label">SECURITY PATCH</span>
+          </div>
+        </div>
+        <div class="security-calendar-display telemetry-skeleton" id="sec-calendar">
+          <span class="sec-day" id="sec-day">—</span>
+          <span class="sec-month-weekday" id="sec-month-weekday">— —</span>
+          <span class="sec-year" id="sec-year">—</span>
+        </div>
+      </div>
+
       <div class="metric-tile-m3">
         <div class="metric-icon-badge">${SVG_HEALTH}</div>
         <div class="metric-details">
@@ -177,8 +238,8 @@ function renderSkeleton(): string {
       <div class="metric-tile-m3">
         <div class="metric-icon-badge">${SVG_BATTERY}</div>
         <div class="metric-details">
-          <span class="metric-label">VOLTAGE</span>
-          <span class="metric-value telemetry-skeleton" id="val-voltage">—</span>
+          <span class="metric-label">CAPACITY</span>
+          <span class="metric-value telemetry-skeleton" id="val-capacity">—</span>
         </div>
       </div>
       
@@ -206,20 +267,48 @@ function renderSkeleton(): string {
         </div>
       </div>
 
-      <div class="metric-tile-m3 security-card">
-        <div class="security-card-header">
-          <div class="metric-icon-badge">${SVG_SECURITY_PATCH}</div>
-          <div class="metric-details">
-            <span class="metric-label">SECURITY PATCH</span>
-          </div>
-        </div>
-        <div class="security-calendar-display telemetry-skeleton" id="sec-calendar">
-          <span class="sec-day" id="sec-day">—</span>
-          <span class="sec-month-weekday" id="sec-month-weekday">— —</span>
-          <span class="sec-year" id="sec-year">—</span>
+      <div class="metric-tile-m3">
+        <div class="metric-icon-badge">${SVG_WIFI}</div>
+        <div class="metric-details">
+          <span class="metric-label">Wi-Fi SSID</span>
+          <span class="metric-value telemetry-skeleton" id="val-wifi-ssid">—</span>
         </div>
       </div>
+
+      <div class="metric-tile-m3">
+        <div class="metric-icon-badge">${SVG_WIFI}</div>
+        <div class="metric-details">
+          <span class="metric-label">IP ADDRESS</span>
+          <span class="metric-value telemetry-skeleton" id="val-ip">—</span>
+        </div>
+      </div>
+
+      <div class="metric-tile-m3">
+        <div class="metric-icon-badge">${SVG_WIFI}</div>
+        <div class="metric-details">
+          <span class="metric-label">SIGNAL (RSSI)</span>
+          <span class="metric-value telemetry-skeleton" id="val-rssi">—</span>
+        </div>
+      </div>
+
+      <div class="metric-tile-m3">
+        <div class="metric-icon-badge">${SVG_WIFI}</div>
+        <div class="metric-details">
+          <span class="metric-label">LINK SPEED</span>
+          <span class="metric-value telemetry-skeleton" id="val-link-speed">—</span>
+        </div>
+      </div>
+
+      <div class="metric-tile-m3">
+        <div class="metric-icon-badge">${SVG_WIFI}</div>
+        <div class="metric-details">
+          <span class="metric-label">FREQUENCY</span>
+          <span class="metric-value telemetry-skeleton" id="val-frequency">—</span>
+        </div>
+      </div>
+
     </div>
+
   `;
 }
 
@@ -272,19 +361,30 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
       const info = state.device || await fetchDeviceInfo(adb);
       state.device = info;
 
-      const [battery, sys] = await Promise.all([
+      const [battery, sys, conn, sens] = await Promise.all([
         fetchBattery(adb),
         fetchSystemDetails(adb),
+        fetchConnectivity(adb),
+        fetchSensors(adb),
       ]);
 
       const q = (id: string) => body.querySelector<HTMLElement>(`#${id}`)!;
-      q("val-brand").textContent           = info.brand;
+      q("val-brand").textContent = info.brand;
       q("val-model-marketing").textContent = info.marketingName;
-      q("val-model-number").textContent    = info.model;
-      q("val-screen").textContent          = info.screenSize;
-      q("val-sdk").textContent             = `Android ${info.osVersion}`;
-      q("val-sdk-level").textContent        = sys.sdkVersion;
-      
+      q("val-model-number").textContent = info.model;
+      q("val-screen").textContent = info.screenSize;
+      const pillEl = body.querySelector<HTMLElement>("#pill-version-text");
+      if (pillEl) pillEl.textContent = `Android ${info.osVersion}`;
+      const logoKey = osVersionKey(info.osVersion);
+      const logoSvg = SVG_ANDROID_LOGO[logoKey];
+      const bgEl = body.querySelector<HTMLElement>("#android-version-bg");
+      if (logoSvg && bgEl) {
+        bgEl.innerHTML = logoSvg;
+      } else if (bgEl) {
+        bgEl.innerHTML = '';
+      }
+      q("val-sdk-level").textContent = sys.sdkVersion;
+
       // Parse security patch for calendar format
       let dayStr = "—";
       let monthWeekdayStr = "— —";
@@ -311,9 +411,9 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
       q("sec-month-weekday").textContent = monthWeekdayStr;
       q("sec-year").textContent = yearStr;
 
-      q("val-device-codename").textContent    = sys.deviceName;
-      q("val-density").textContent           = sys.densityDpi ? `${sys.densityDpi} dpi` : "—";
-      q("val-cpu-abi").textContent            = sys.cpuAbi;
+      q("val-device-codename").textContent = sys.deviceName;
+      q("val-density").textContent = sys.densityDpi ? `${sys.densityDpi} dpi` : "—";
+      q("val-cpu-abi").textContent = sys.cpuAbi;
       const totalNum = parseFloat(sys.totalMemory);
       const availNum = parseFloat(sys.availMemory);
       const usedGb = (totalNum - availNum).toFixed(1);
@@ -324,45 +424,71 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
       const ringUnfilled = body.querySelector<SVGPathElement>("#mem-ring-unfilled")!;
       const pctText = body.querySelector<HTMLElement>("#mem-pct")!;
       if (ring && ringUnfilled && pctText) {
-        const CX = 50, CY = 50, R = 43, AMP = 3, FREQ = 20, N = 300, GAP = 2;
+        const CX = 50, CY = 50, R = 43, AMP = 3, FREQ = 20, N = 300, GAP = 4;
         const splitIdx = Math.floor(N * usedPct / 100);
         const filledStart = GAP;
         const filledEnd = Math.max(filledStart, Math.min(splitIdx - GAP, N - GAP));
         const unfilledStart = Math.max(splitIdx + GAP, GAP);
         const unfilledEnd = N - GAP;
+        const uR = R + 2;
 
         function pt(i: number, rad: number): string {
           const theta = (i / N) * 2 * Math.PI;
           return `${(CX + rad * Math.cos(theta)).toFixed(1)} ${(CY + rad * Math.sin(theta)).toFixed(1)}`;
         }
 
-        // Build filled (sine wave) path from GAP to splitIdx - GAP
-        const fPts: string[] = [];
-        for (let i = filledStart; i <= filledEnd; i++) {
-          const rad = R + AMP * 0.5 * (1 + Math.sin((i / N) * 2 * Math.PI * FREQ));
-          fPts.push(`${i === filledStart ? 'M' : 'L'}${pt(i, rad)}`);
+        function buildFilled(phase: number): string {
+          const pts: string[] = [];
+          for (let i = filledStart; i <= filledEnd; i++) {
+            const rad = R + AMP * 0.5 * (1 + Math.sin(phase + (i / N) * 2 * Math.PI * FREQ));
+            pts.push(`${i === filledStart ? 'M' : 'L'}${pt(i, rad)}`);
+          }
+          return pts.join('');
         }
-        ring.setAttribute("d", fPts.join(''));
 
         // Build unfilled (circle) path from splitIdx + GAP to N - GAP
         const uPts: string[] = [];
         for (let i = unfilledStart; i <= unfilledEnd; i++) {
-          uPts.push(`${i === unfilledStart ? 'M' : 'L'}${pt(i, R)}`);
+          uPts.push(`${i === unfilledStart ? 'M' : 'L'}${pt(i, uR)}`);
         }
         ringUnfilled.setAttribute("d", uPts.join(''));
 
         pctText.textContent = `${usedPct}%`;
+
+        // Animate the wavy ring
+        let animId: number;
+        let prevPhase = -1;
+        function tick(t: number) {
+          if (!ring.isConnected) return;
+          const phase = (t / 1000) * 2.5;
+          if (Math.abs(phase - prevPhase) > 0.02) {
+            ring.setAttribute("d", buildFilled(phase));
+            prevPhase = phase;
+          }
+          animId = requestAnimationFrame(tick);
+        }
+        animId = requestAnimationFrame(tick);
       }
 
-      q("val-temp").textContent            = `${battery.tempCelsius.toFixed(1)}°C`;
-      q("val-health").textContent           = battery.health;
-      q("val-voltage").textContent           = battery.voltage || "—";
-      q("val-technology").textContent        = battery.technology || "—";
+      q("val-temp").textContent = battery.tempCelsius.toFixed(1);
+      q("val-temp-unit").textContent = "°C";
+      q("val-health").textContent = battery.health;
+      q("val-capacity").textContent = battery.capacity ? `${battery.capacity} mAh` : "—";
+      q("val-technology").textContent = battery.technology || "—";
+
+      q("val-wifi-ssid").textContent = conn.wifiSsid;
+      q("val-ip").textContent = conn.ipAddress;
+      q("val-rssi").textContent = conn.rssi;
+      q("val-link-speed").textContent = conn.linkSpeed;
+      q("val-frequency").textContent = conn.frequency;
+
+      q("val-touch").textContent = sens.touchScreen;
+      q("val-sensors").textContent = sens.activeSensors;
 
       // Remove shimmer
       body.querySelectorAll<HTMLElement>(".telemetry-skeleton")
-          .forEach((el) => el.classList.remove("telemetry-skeleton"));
-      
+        .forEach((el) => el.classList.remove("telemetry-skeleton"));
+
       const cal = body.querySelector<HTMLElement>("#sec-calendar");
       if (cal) cal.classList.remove("telemetry-skeleton");
 
@@ -379,19 +505,19 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
   // ── Scroll state: drives fade mask + custom pill thumb ─────────────────
   function updateScrollState() {
     const { scrollTop, scrollHeight, clientHeight } = panel;
-    const canScrollTop    = scrollTop > 1;
+    const canScrollTop = scrollTop > 1;
     const canScrollBottom = scrollTop + clientHeight < scrollHeight - 1;
-    const isScrollable    = canScrollTop || canScrollBottom;
+    const isScrollable = canScrollTop || canScrollBottom;
 
-    panel.classList.toggle("can-scroll-top",    canScrollTop);
+    panel.classList.toggle("can-scroll-top", canScrollTop);
     panel.classList.toggle("can-scroll-bottom", canScrollBottom);
-    scrollPill.classList.toggle("pill-visible",  isScrollable);
+    scrollPill.classList.toggle("pill-visible", isScrollable);
 
     if (isScrollable && scrollHeight > clientHeight) {
-      const thumbH   = Math.max(16, (clientHeight / scrollHeight) * PILL_H);
+      const thumbH = Math.max(16, (clientHeight / scrollHeight) * PILL_H);
       const thumbTop = (scrollTop / (scrollHeight - clientHeight)) * (PILL_H - thumbH);
       scrollThumb.style.height = `${thumbH}px`;
-      scrollThumb.style.top    = `${thumbTop}px`;
+      scrollThumb.style.top = `${thumbTop}px`;
     }
   }
 
@@ -412,25 +538,41 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
     if (!value) value = tile.querySelector(".mem-pct")?.textContent?.trim();
     // Security card – join all calendar spans
     if (!value) {
-      const day  = tile.querySelector(".sec-day")?.textContent?.trim();
-      const mw   = tile.querySelector(".sec-month-weekday")?.textContent?.trim();
-      const yr   = tile.querySelector(".sec-year")?.textContent?.trim();
+      const day = tile.querySelector(".sec-day")?.textContent?.trim();
+      const mw = tile.querySelector(".sec-month-weekday")?.textContent?.trim();
+      const yr = tile.querySelector(".sec-year")?.textContent?.trim();
       if (day || mw || yr) value = [mw, day, yr].filter(Boolean).join(" ");
     }
 
     if (!label || !value || value === "—") return;
-    const text = `"${label}": "${value}"`;
+    const text = `${label} : ${value}`;
 
     navigator.clipboard.writeText(text).then(() => {
       tile.classList.add("tile-copied");
       setTimeout(() => tile.classList.remove("tile-copied"), 1200);
+      showCopyPill();
     });
   });
 
   // Auto-load on mount
   setTimeout(() => {
-    loadData().then(updateScrollState).catch(() => {});
+    loadData().then(updateScrollState).catch(() => { });
   }, 80);
 
   return wrap;
+}
+
+function showCopyPill(): void {
+  const existing = document.querySelector(".copy-pill");
+  if (existing) existing.remove();
+
+  const pill = document.createElement("div");
+  pill.className = "copy-pill";
+  pill.textContent = "info copied";
+  document.body.appendChild(pill);
+
+  setTimeout(() => {
+    pill.classList.add("exit");
+    pill.addEventListener("animationend", () => pill.remove(), { once: true });
+  }, 400);
 }

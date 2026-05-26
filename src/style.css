@@ -674,21 +674,50 @@ md-dialog {
 
 .nav-item-m3 {
   width: 100%;
-  --md-filled-tonal-button-container-color: transparent;
-  --md-filled-tonal-button-hover-state-layer-color: color-mix(in srgb, var(--md-sys-color-primary) 12%, transparent);
-  --md-filled-tonal-button-label-text-color: var(--md-sys-color-on-surface);
-  --md-filled-tonal-button-container-height: 56px;
-  --md-filled-tonal-button-container-shape: 28px;
-  --md-filled-tonal-button-container-elevation: 0;
-  --md-filled-tonal-button-hover-container-elevation: 0;
-  --md-filled-tonal-button-focus-container-elevation: 0;
-  --md-filled-tonal-button-pressed-container-elevation: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 22px;
+  padding: 20px 18px 20px 50px;
+  border: none;
+  border-radius: 28px;
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.nav-item-m3:hover {
+  background: color-mix(in srgb, var(--md-sys-color-primary) 12%, transparent);
 }
 
 .nav-item-m3.active {
-  --md-filled-tonal-button-container-color: var(--md-sys-color-primary-container);
-  --md-filled-tonal-button-label-text-color: var(--md-sys-color-on-primary-container);
-  --md-filled-tonal-button-hover-state-layer-color: transparent;
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.nav-icon {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.nav-label {
+  line-height: 1.5rem;
 }
 
 .sidebar-device-card {
@@ -992,12 +1021,15 @@ md-dialog {
   flex: 1;
   max-width: 100%;
   overflow-y: auto;
-  scrollbar-width: none;    /* Firefox */
+  scrollbar-width: none;
+  /* Firefox */
   --fade-size: 64px;
   transition: mask-image 0.25s cubic-bezier(0.4, 0, 0.2, 1), -webkit-mask-image 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.telem-panel::-webkit-scrollbar { display: none; }
+.telem-panel::-webkit-scrollbar {
+  display: none;
+}
 
 /* ── Custom scroll pill ──────────────────────────────── */
 .telem-scroll-pill {
@@ -1006,7 +1038,8 @@ md-dialog {
   top: 50%;
   transform: translateY(-50%);
   width: 4px;
-  height: 80px; /* matches PILL_H in telemetry.ts */
+  height: 80px;
+  /* matches PILL_H in telemetry.ts */
   background: rgba(9, 95, 76, 0.1);
   border-radius: 999px;
   pointer-events: none;
@@ -1035,9 +1068,17 @@ md-dialog {
 }
 
 @keyframes tileCopiedFlash {
-  0%   { box-shadow: 0 0 0 0 rgba(9, 95, 76, 0.35); }
-  50%  { box-shadow: 0 0 0 6px rgba(9, 95, 76, 0.12); }
-  100% { box-shadow: 0 0 0 0 rgba(9, 95, 76, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(9, 95, 76, 0.35);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(9, 95, 76, 0.12);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(9, 95, 76, 0);
+  }
 }
 
 .metric-tile-m3.tile-copied {
@@ -1213,6 +1254,70 @@ md-dialog {
   aspect-ratio: 1 / 1;
 }
 
+.android-version-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.android-version-card .metric-icon-badge,
+.android-version-card .metric-details {
+  position: relative;
+  z-index: 1;
+}
+
+.android-version-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.android-version-bg svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 20px;
+}
+
+.android-version-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--md-sys-color-primary);
+  mix-blend-mode: color;
+  pointer-events: none;
+}
+
+.android-version-hover-pill {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.2s var(--ease);
+}
+
+.android-version-card:hover .android-version-hover-pill {
+  opacity: 1;
+}
+
+.android-version-hover-pill span {
+  display: inline-block;
+  padding: 6px 20px;
+  border-radius: 100px;
+  background: var(--md-sys-color-primary-container);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-size: 25px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  white-space: nowrap;
+}
+
 .metric-tile-m3.wide-card {
   width: 100%;
 }
@@ -1238,6 +1343,8 @@ md-dialog {
   height: 24px;
   flex-shrink: 0;
 }
+
+
 
 .metric-details {
   display: flex;
@@ -1360,6 +1467,40 @@ md-dialog {
   overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
   flex: 1;
+}
+
+.temp-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--md-sys-color-primary-container);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 8px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  flex: 1;
+}
+
+.temp-value {
+  font-family: 'Roboto', sans-serif;
+  font-size: 56px;
+  font-weight: 900;
+  color: var(--md-sys-color-primary);
+  line-height: 1;
+}
+
+.temp-unit {
+  font-family: 'Roboto', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--md-sys-color-primary);
+  line-height: 1;
+  align-self: flex-start;
+  position: relative;
+  top: 30%;
 }
 
 
@@ -1893,6 +2034,52 @@ md-linear-progress {
 
 .toast.exit {
   animation: toastOut 0.25s var(--ease) both;
+}
+
+/* ── Copy pill (Android-style top toast) ── */
+.copy-pill {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 20px;
+  border-radius: 100px;
+  background: var(--md-sys-color-inverse-surface);
+  color: var(--md-sys-color-inverse-on-surface);
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  animation: copyPillIn 0.15s ease-out forwards;
+}
+
+.copy-pill.exit {
+  animation: copyPillOut 0.15s ease-in forwards;
+}
+
+@keyframes copyPillIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes copyPillOut {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
 }
 
 /* ── Keyframes ── */

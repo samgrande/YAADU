@@ -105,7 +105,11 @@ const SVG_LINK_SPEED = `<svg width="30" height="29" viewBox="0 0 30 29" fill="no
 
 const SVG_SENSOR = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>`;
 
-const SVG_TOUCH = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20v-2a2 2 0 0 1 2-2h1"/><path d="M16 20v-2a2 2 0 0 0-2-2h-1"/><path d="M8 4v2a2 2 0 0 0 2 2h1"/><path d="M16 4v2a2 2 0 0 1-2 2h-1"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>`;
+const SVG_TOUCH = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20v-2a2 2 0 0 1 2-2h1"/><path d="M16 20v-2a2 2 0 0 0-2-2h-1"/><path d="M8 4v2a2 2 0 0 0 2 2h1"/><path d="M16 4v2a2 2 0 0 1-2 2h-1"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="18" y1="12" x2="22" y2="12"/></svg>`;
+
+const SVG_RAM = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="7" y1="11" x2="7" y2="15"/><line x1="12" y1="11" x2="12" y2="15"/><line x1="17" y1="11" x2="17" y2="15"/><path d="M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>`;
+
+const SVG_BATTERY_TYPE_ICON = `<svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 4H1M21 4V19H1V4M21 4H17V1H21V4ZM1 4V1H5V4H1ZM4 8.5H7M15 8.5H18M5.5 7V10" stroke="var(--md-sys-color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 // ── Template ───────────────────────────────────────────────────────────────
 
@@ -168,7 +172,10 @@ function renderSkeleton(): string {
       </div>
 
       <div class="metric-tile-m3 mem-card col-span-2">
-        <span class="metric-label mem-label">MEMORY</span>
+        <div class="mem-card-header">
+          <div class="metric-icon-badge">${SVG_RAM}</div>
+          <span class="metric-label mem-label">MEMORY</span>
+        </div>
         <div class="mem-container">
           <svg class="mem-bg-ring" viewBox="0 0 100 100">
             <path id="mem-ring-unfilled" fill="none" stroke="#E1E4DC" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -265,7 +272,7 @@ function renderSkeleton(): string {
       </div>
       
       <div class="metric-tile-m3">
-        <div class="metric-icon-badge">${SVG_BATTERY}</div>
+        <div class="metric-icon-badge">${SVG_BATTERY_TYPE_ICON}</div>
         <div class="metric-details">
           <span class="metric-label">BATTERY TYPE</span>
           <span class="metric-value telemetry-skeleton" id="val-technology">—</span>
@@ -358,7 +365,10 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
 
   panel.innerHTML = `
     <div class="telem-header">
-      <span class="telem-title">Device Info</span>
+      <div class="telem-title-row">
+        <div class="telem-title-icon">${SVG_BATTERY_TYPE_ICON}</div>
+        <span class="telem-title">Device Info</span>
+      </div>
       <button class="btn-refresh-green" id="btn-refresh-telem">
         ${refreshIconSvg}
         <span class="btn-refresh-text">Reload</span>

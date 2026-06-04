@@ -28,39 +28,57 @@ function esc(s: string): string {
 
 // ── App Card ───────────────────────────────────────────────────────────────
 
+const SHAPES = [
+  // Squircle shape
+  "M334.285 259.457C331.711 284.036 330.424 296.325 325.697 306.022C318.858 320.055 306.923 330.89 292.372 336.277C282.317 340 270.067 340 245.568 340L121.863 340C92.2359 340 77.4221 340 66.1134 335.146C49.7395 328.118 37.2802 314.151 32.0729 296.985C28.4765 285.129 30.0331 270.267 33.1463 240.543L45.7147 120.543C48.289 95.9642 49.5762 83.6748 54.3026 73.9777C61.142 59.9453 73.0768 49.1101 87.6278 43.7229C97.6833 40 109.933 40 134.432 40L258.137 40C287.764 40 302.578 40 313.887 44.8539C330.261 51.8819 342.72 65.8495 347.927 83.0153C351.524 94.871 349.967 109.733 346.854 139.457L334.285 259.457Z",
+  // Tombstone shape
+  "M40 182.857C40 103.959 107.157 40 190 40C272.843 40 340 103.959 340 182.857L340 282.857C340 314.416 313.137 340 280 340C270.178 340 260.907 337.752 252.724 333.768C248.554 331.737 244.394 329.512 240.216 327.277C225.513 319.411 210.592 311.429 194.27 311.429H185.73C169.408 311.429 154.487 319.411 139.784 327.277C135.606 329.512 131.446 331.737 127.276 333.768C119.093 337.752 109.822 340 100 340C66.8629 340 40 314.416 40 282.857L40 182.857Z",
+  // Starburst shape
+  "M166.725 43.1869C177.261 25.6044 202.739 25.6044 213.275 43.1868L225.124 62.9597C231.268 73.2136 243.399 78.2385 254.995 75.3327L277.355 69.7294C297.237 64.7468 315.253 82.7627 310.271 102.645L304.667 125.005C301.762 136.601 306.786 148.732 317.04 154.876L336.813 166.725C354.396 177.261 354.396 202.739 336.813 213.275L317.04 225.124C306.786 231.268 301.762 243.399 304.667 254.995L310.271 277.355C315.253 297.237 297.237 315.253 277.355 310.271L254.995 304.667C243.399 301.762 231.268 306.786 225.124 317.04L213.275 336.813C202.739 354.396 177.261 354.396 166.725 336.813L154.876 317.04C148.732 306.786 136.601 301.762 125.005 304.667L102.646 310.271C82.7627 315.253 64.7468 297.237 69.7294 277.355L75.3327 254.995C78.2385 243.399 73.2136 231.268 62.9597 225.124L43.1869 213.275C25.6044 202.739 25.6044 177.261 43.1868 166.725L62.9597 154.876C73.2136 148.732 78.2385 136.601 75.3327 125.005L69.7294 102.646C64.7468 82.7627 82.7627 64.7468 102.645 69.7294L125.005 75.3327C136.601 78.2385 148.732 73.2136 154.876 62.9597L166.725 43.1869Z"
+];
+
 function createAppCard(entry: AppEntry, _onRemove: (pkg: string) => void): HTMLElement {
   const card = document.createElement("div");
   card.className = `app-card${entry.disabled ? " disabled-app" : ""}`;
   card.dataset["pkg"] = entry.packageName;
 
   const displayName = entry.label ?? shortPkg(entry.packageName);
+  const initial = (displayName.trim()[0] ?? "?").toUpperCase();
 
   card.innerHTML = `
-    <div class="app-icon-wrap"><div class="app-icon-placeholder">${pkgInitial(entry.packageName)}</div></div>
-    <div class="app-info">
-      <div class="app-pkg">${esc(displayName)}</div>
-      <div class="app-pkg-short">${esc(entry.packageName)}${entry.disabled ? ' <span class="badge badge-amber" style="font-size:9px;padding:1px 6px;margin-left:6px;">DISABLED</span>' : ""}</div>
+    <div class="app-icon-wrap">
+      <div class="app-icon-placeholder">
+        <!-- Top Shape (Squircle) -->
+        <svg class="avatar-shape avatar-shape-top" viewBox="0 0 380 380">
+          <path d="${SHAPES[0]}" fill="var(--md-sys-color-primary)" fill-opacity="0.16"/>
+        </svg>
+        <!-- Bottom Left Shape (Tombstone) -->
+        <svg class="avatar-shape avatar-shape-left" viewBox="0 0 380 380">
+          <path d="${SHAPES[1]}" fill="var(--md-sys-color-primary)" fill-opacity="0.16"/>
+        </svg>
+        <!-- Bottom Right Shape (Starburst) -->
+        <svg class="avatar-shape avatar-shape-right" viewBox="0 0 380 380">
+          <path d="${SHAPES[2]}" fill="var(--md-sys-color-primary)" fill-opacity="0.16"/>
+        </svg>
+        <span class="avatar-letter">${esc(initial)}</span>
+      </div>
     </div>
-    <div class="app-actions">
-      <md-text-button data-action="stop" title="Force Stop">
-        <span slot="icon"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg></span>
-        Stop
-      </md-text-button>
-      <md-text-button data-action="clear" title="Clear Data">
-        <span slot="icon"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span>
-        Clear
-      </md-text-button>
-      <md-text-button class="btn-action-danger" data-action="uninstall" title="Uninstall">
-        <span slot="icon"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-        Uninstall
-      </md-text-button>
-      <md-text-button data-action="toggle-disable" title="${entry.disabled ? "Enable" : "Disable"}">
-        <span slot="icon">${entry.disabled
-          ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
-          : `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`
-        }</span>
-        ${entry.disabled ? "Enable" : "Disable"}
-      </md-text-button>
+    <div class="app-details-wrap">
+      <div class="app-info">
+        <div class="app-pkg">${esc(displayName)}</div>
+        <div class="app-pkg-short">
+          ${esc(entry.packageName)}
+          ${entry.disabled ? ' <span class="badge badge-amber" style="font-size:9px;padding:1px 6px;margin-left:6px;">DISABLED</span>' : ""}
+        </div>
+      </div>
+      <div class="app-actions">
+        <button class="btn-app-action" data-action="stop" title="Force Stop">Stop</button>
+        <button class="btn-app-action" data-action="clear" title="Clear Data">Clear</button>
+        <button class="btn-app-action" data-action="toggle-disable" title="${entry.disabled ? "Enable" : "Disable"}">
+          ${entry.disabled ? "Enable" : "Disable"}
+        </button>
+        <button class="btn-app-action btn-action-danger" data-action="uninstall" title="Uninstall">Uninstall</button>
+      </div>
     </div>
   `;
 
@@ -152,28 +170,47 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
   const panel = document.createElement("div");
   let apps: AppEntry[] = [];
 
-  const refreshIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
-  const apkIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`;
+  const refreshIcon = `<svg class="reload-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
+  const sideloadIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+  const navbarAppsIcon = `<svg class="ct-icon" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M9.91667 9.5625L12.75 8.14583L15.5833 9.5625V2.83333H9.91667V9.5625ZM5.66667 19.8333V17H12.75V19.8333H5.66667ZM2.83333 25.5C2.05417 25.5 1.38739 25.2228 0.833 24.6684C0.278611 24.114 0.000944444 23.4468 0 22.6667V2.83333C0 2.05417 0.277667 1.38739 0.833 0.833C1.38833 0.278611 2.05511 0.000944444 2.83333 0H22.6667C23.4458 0 24.1131 0.277667 24.6684 0.833C25.2237 1.38833 25.5009 2.05511 25.5 2.83333V22.6667C25.5 23.4458 25.2228 24.1131 24.6684 24.6684C24.114 25.2237 23.4468 25.5009 22.6667 25.5H2.83333ZM2.83333 22.6667H22.6667V2.83333H18.4167V14.1667L12.75 11.3333L7.08333 14.1667V2.83333H2.83333V22.6667Z" fill="currentColor"/>
+  </svg>`;
 
   panel.innerHTML = `
     <div class="card apps-list-card">
       <div class="card-header" style="align-items: center;">
         <div class="card-title">
-          <svg class="ct-icon" width="16" height="16" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M26.2125 7.75194L15.9 2.10937C15.6245 1.95712 15.3148 1.87726 15 1.87726C14.6852 1.87726 14.3755 1.95712 14.1 2.10937L3.7875 7.75429C3.49299 7.91543 3.24715 8.15268 3.07565 8.44127C2.90414 8.72986 2.81326 9.05921 2.8125 9.39491V20.6027C2.81326 20.9384 2.90414 21.2678 3.07565 21.5564C3.24715 21.845 3.49299 22.0822 3.7875 22.2433L14.1 27.8883C14.3755 28.0405 14.3148 28.1204 15 28.1204C15.6852 28.1204 15.6245 28.0405 15.9 27.8883L26.2125 22.2433C26.507 22.0822 26.7528 21.845 26.9244 21.5564C27.0959 21.2678 27.1867 20.9384 27.1875 20.6027V9.39608C27.1874 9.05978 27.0968 8.7297 26.9252 8.44044C26.7537 8.15117 26.5075 7.91337 26.2125 7.75194ZM15 3.74999L24.416 8.90624L20.9262 10.8152L11.5102 5.65897L15 3.74999ZM15 14.0625L5.58398 8.90624L9.55781 6.73007L18.9738 11.8863L15 14.0625ZM25.3125 20.6074L15.9375 25.7391V15.6832L19.6875 13.6312V17.8125C19.6875 18.0611 19.7863 18.2996 19.9621 18.4754C20.1379 18.6512 20.3764 18.75 20.625 18.75C20.8736 18.75 21.1121 18.6512 21.2879 18.4754C21.4637 18.2996 21.5625 18.0611 21.5625 17.8125V12.6047L25.3125 10.5527V20.6027V20.6074Z" fill="currentColor"/>
-</svg>
+          ${navbarAppsIcon}
           Installed Apps
         </div>
-        <div style="display:flex; gap:4px;">
-          <md-icon-button id="btn-apk-sideloader" title="Install APK">${apkIcon}</md-icon-button>
-          <md-icon-button id="btn-refresh-apps" title="Reload apps">
-          ${refreshIcon}
-        </md-icon-button>
+        <div class="apps-header-actions">
+          <button id="btn-apk-sideloader" class="btn-m3-sideloader" title="Install APK">
+            ${sideloadIcon}
+          </button>
+          <button id="btn-refresh-apps" class="btn-m3-reload" title="Reload apps">
+            ${refreshIcon}
+            <span>Reload</span>
+          </button>
         </div>
       </div>
-      <div class="apps-toolbar" style="display:flex; align-items:center; gap:16px; padding:14px 20px;">
-        <md-outlined-text-field id="apps-search" label="Filter packages…" placeholder="Search by name…" style="flex:1;"></md-outlined-text-field>
-        <span class="apps-count" id="apps-count" style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-muted);">— apps</span>
+      <div class="apps-toolbar">
+        <div class="search-wrapper">
+          <input type="text" id="apps-search" placeholder="Filter Packages" />
+        </div>
+        <div class="count-pill">
+          <svg class="nine-dots-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="5" cy="5" r="2"/>
+            <circle cx="12" cy="5" r="2"/>
+            <circle cx="19" cy="5" r="2"/>
+            <circle cx="5" cy="12" r="2"/>
+            <circle cx="12" cy="12" r="2"/>
+            <circle cx="19" cy="12" r="2"/>
+            <circle cx="5" cy="19" r="2"/>
+            <circle cx="12" cy="19" r="2"/>
+            <circle cx="19" cy="19" r="2"/>
+          </svg>
+          <span id="apps-count">—</span>
+        </div>
       </div>
       <div class="card-body no-pad">
         <div class="apps-grid" id="apps-grid">
@@ -226,7 +263,7 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
       ? apps.filter((a) => a.packageName.toLowerCase().includes(lc))
       : apps;
 
-    countEl.textContent = `${filtered.length} / ${apps.length} apps`;
+    countEl.textContent = `${filtered.length} / ${apps.length}`;
     grid.innerHTML = "";
 
     if (filtered.length === 0) {
@@ -250,7 +287,7 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
       row.style.transform = "translateX(12px)";
       setTimeout(() => row.remove(), 300);
     }
-    countEl.textContent = `${apps.length} apps`;
+    countEl.textContent = `${apps.length} / ${apps.length}`;
   }
 
   // ── Wire action buttons ─────────────────────────────────────────────────
@@ -310,9 +347,10 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
   async function loadApps(): Promise<void> {
     refreshBtn.disabled = true;
     refreshBtn.innerHTML = `
-      <svg class="spinner-stroke" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+      <svg class="spinner-stroke" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
         <circle cx="12" cy="12" r="9" stroke-dasharray="40 10"/>
       </svg>
+      <span>Reloading...</span>
     `;
     grid.innerHTML = `
       <div class="empty-state">
@@ -353,12 +391,54 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
       grid.innerHTML = `<div class="empty-state"><p style="color:var(--red)">Error: ${String(err)}</p></div>`;
     } finally {
       refreshBtn.disabled = false;
-      refreshBtn.innerHTML = `${refreshIcon}`;
+      refreshBtn.innerHTML = `
+        ${refreshIcon}
+        <span>Reload</span>
+      `;
     }
   }
 
   searchEl.addEventListener("input", () => renderList(searchEl.value));
   refreshBtn.addEventListener("click", loadApps);
+
+  // ── Custom scroll pill (mirrors telemetry) ──────────────────────────────
+  const PILL_H = 80; // px — must match CSS height of .apps-scroll-pill
+  const cardBody = panel.querySelector<HTMLElement>(".card-body.no-pad")!;
+
+  // Wrap card-body in a relative container so the pill can be positioned inside it
+  const scrollWrap = document.createElement("div");
+  scrollWrap.className = "apps-scroll-wrap";
+  cardBody.parentElement!.insertBefore(scrollWrap, cardBody);
+  scrollWrap.appendChild(cardBody);
+
+  // Build pill + thumb
+  const scrollPill = document.createElement("div");
+  scrollPill.className = "apps-scroll-pill";
+  const scrollThumb = document.createElement("div");
+  scrollThumb.className = "apps-scroll-thumb";
+  scrollPill.appendChild(scrollThumb);
+  scrollWrap.appendChild(scrollPill);
+
+  function updateScrollState(): void {
+    const { scrollTop, scrollHeight, clientHeight } = cardBody;
+    const canScrollTop = scrollTop > 1;
+    const canScrollBottom = scrollTop + clientHeight < scrollHeight - 1;
+    const isScrollable = canScrollTop || canScrollBottom;
+
+    cardBody.classList.toggle("can-scroll-top", canScrollTop);
+    cardBody.classList.toggle("can-scroll-bottom", canScrollBottom);
+    scrollPill.classList.toggle("pill-visible", isScrollable);
+
+    if (isScrollable) {
+      const thumbH = Math.max(16, (clientHeight / scrollHeight) * PILL_H);
+      const thumbTop = (scrollTop / (scrollHeight - clientHeight)) * (PILL_H - thumbH);
+      scrollThumb.style.height = `${thumbH}px`;
+      scrollThumb.style.top = `${thumbTop}px`;
+    }
+  }
+
+  cardBody.addEventListener("scroll", updateScrollState, { passive: true });
+  new ResizeObserver(updateScrollState).observe(cardBody);
 
   // Auto-load
   setTimeout(loadApps, 80);

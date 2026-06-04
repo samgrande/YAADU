@@ -28,7 +28,9 @@ import "@material/web/select/select-option.js";
 import "@material/web/dialog/dialog.js";
 
 import {styles as typescaleStyles} from "@material/web/typography/md-typescale-styles.js";
-document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+if (typescaleStyles.styleSheet) {
+  document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+}
 
 import { themeFromSourceColor, argbFromHex, applyTheme } from "@material/material-color-utilities";
 

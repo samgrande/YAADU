@@ -109,7 +109,11 @@ const SVG_TOUCH = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" s
 
 const SVG_RAM = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="7" y1="11" x2="7" y2="15"/><line x1="12" y1="11" x2="12" y2="15"/><line x1="17" y1="11" x2="17" y2="15"/><path d="M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>`;
 
-const SVG_BATTERY_TYPE_ICON = `<svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 4H1M21 4V19H1V4M21 4H17V1H21V4ZM1 4V1H5V4H1ZM4 8.5H7M15 8.5H18M5.5 7V10" stroke="var(--md-sys-color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_BATTERY_TYPE_ICON = `<svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 4H1M21 4V19H1V4M21 4H17V1H21V4ZM1 4V1H5V4H1ZM4 8.5H7M15 8.5H18M5.5 7V10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+const NAVBAR_INFO_ICON = `<svg viewBox="0 0 20 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.66667 29.3333C1.93333 29.3333 1.30578 29.0724 0.784 28.5507C0.262222 28.0289 0.000888889 27.4009 0 26.6667V2.66667C0 1.93333 0.261333 1.30578 0.784 0.784C1.30667 0.262222 1.93422 0.000888889 2.66667 0H16C16.7333 0 17.3613 0.261333 17.884 0.784C18.4067 1.30667 18.6676 1.93422 18.6667 2.66667V6.8C19.0667 6.95556 19.3889 7.2 19.6333 7.53333C19.8778 7.86667 20 8.24444 20 8.66667V11.3333C20 11.7556 19.8778 12.1333 19.6333 12.4667C19.3889 12.8 19.0667 13.0444 18.6667 13.2V26.6667C18.6667 27.4 18.4058 28.028 17.884 28.5507C17.3622 29.0733 16.7342 29.3342 16 29.3333H2.66667ZM2.66667 26.6667H16V2.66667H2.66667V26.6667ZM10.284 20.9493C10.5391 20.6951 10.6667 20.3787 10.6667 20C10.6667 19.6213 10.5387 19.3049 10.2827 19.0507C10.0267 18.7964 9.71022 18.6684 9.33333 18.6667C8.95644 18.6649 8.64 18.7929 8.384 19.0507C8.128 19.3084 8 19.6249 8 20C8 20.3751 8.128 20.692 8.384 20.9507C8.64 21.2093 8.95644 21.3369 9.33333 21.3333C9.71022 21.3298 10.0271 21.2018 10.284 20.9493ZM10.284 15.616C10.5391 15.3609 10.6667 15.0444 10.6667 14.6667V9.33333C10.6667 8.95556 10.5387 8.63911 10.2827 8.384C10.0267 8.12889 9.71022 8.00089 9.33333 8C8.95644 7.99911 8.64 8.12711 8.384 8.384C8.128 8.64089 8 8.95733 8 9.33333V14.6667C8 15.0444 8.128 15.3613 8.384 15.6173C8.64 15.8733 8.95644 16.0009 9.33333 16C9.71022 15.9991 10.0271 15.8711 10.284 15.616Z" fill="currentColor"/>
+</svg>`;
 
 // ── Template ───────────────────────────────────────────────────────────────
 
@@ -361,17 +365,17 @@ export function renderTelemetryPanel(adb: Adb): HTMLElement {
   wrap.appendChild(scrollPill);
 
 
-  const refreshIconSvg = `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
+  const refreshIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
 
   panel.innerHTML = `
-    <div class="telem-header">
-      <div class="telem-title-row">
-        <div class="telem-title-icon">${SVG_BATTERY_TYPE_ICON}</div>
-        <span class="telem-title">Device Info</span>
+    <div class="page-header">
+      <div class="page-title-row">
+        <div class="page-title-icon">${NAVBAR_INFO_ICON}</div>
+        <span class="page-title">Device Info</span>
       </div>
-      <button class="btn-refresh-green" id="btn-refresh-telem">
+      <button class="btn-refresh" id="btn-refresh-telem">
         ${refreshIconSvg}
-        <span class="btn-refresh-text">Reload</span>
+        <span>Reload</span>
       </button>
     </div>
     <div class="telem-body" id="telem-body">

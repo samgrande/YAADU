@@ -170,7 +170,7 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
   const panel = document.createElement("div");
   let apps: AppEntry[] = [];
 
-  const refreshIcon = `<svg class="reload-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
+  const refreshIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
   const sideloadIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
   const navbarAppsIcon = `<svg class="ct-icon" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M9.91667 9.5625L12.75 8.14583L15.5833 9.5625V2.83333H9.91667V9.5625ZM5.66667 19.8333V17H12.75V19.8333H5.66667ZM2.83333 25.5C2.05417 25.5 1.38739 25.2228 0.833 24.6684C0.278611 24.114 0.000944444 23.4468 0 22.6667V2.83333C0 2.05417 0.277667 1.38739 0.833 0.833C1.38833 0.278611 2.05511 0.000944444 2.83333 0H22.6667C23.4458 0 24.1131 0.277667 24.6684 0.833C25.2237 1.38833 25.5009 2.05511 25.5 2.83333V22.6667C25.5 23.4458 25.2228 24.1131 24.6684 24.6684C24.114 25.2237 23.4468 25.5009 22.6667 25.5H2.83333ZM2.83333 22.6667H22.6667V2.83333H18.4167V14.1667L12.75 11.3333L7.08333 14.1667V2.83333H2.83333V22.6667Z" fill="currentColor"/>
@@ -178,16 +178,16 @@ export function renderAppsPanel(adb: Adb): HTMLElement {
 
   panel.innerHTML = `
     <div class="card apps-list-card">
-      <div class="card-header" style="align-items: center;">
-        <div class="card-title">
-          ${navbarAppsIcon}
-          Installed Apps
+      <div class="card-header" style="align-items: center; padding: clamp(16px, 2vh, 24px) clamp(20px, 2.5vw, 32px);">
+        <div class="page-title-row">
+          <div class="page-title-icon">${navbarAppsIcon}</div>
+          <span class="page-title">Installed Apps</span>
         </div>
         <div class="apps-header-actions">
           <button id="btn-apk-sideloader" class="btn-m3-sideloader" title="Install APK">
             ${sideloadIcon}
           </button>
-          <button id="btn-refresh-apps" class="btn-m3-reload" title="Reload apps">
+          <button id="btn-refresh-apps" class="btn-refresh" title="Reload apps">
             ${refreshIcon}
             <span>Reload</span>
           </button>

@@ -181,30 +181,6 @@ const PANEL_FACTORIES: Record<ActivePanel, (adb: Adb) => HTMLElement> = {
   tweaks:    renderTweaksPanel,
 };
 
-function scaleToFit(el: HTMLElement, avail: number) {
-  const h = el.scrollHeight;
-  if (h > avail && avail > 0) {
-    el.style.transformOrigin = "center top";
-    el.style.transform = `scale(${(avail / h).toFixed(3)})`;
-  } else {
-    el.style.transform = "";
-  }
-}
-
-function fitPanelContent(wrapper: HTMLElement) {
-  const mc = wrapper.closest<HTMLElement>(".main-content");
-  const inner = wrapper.firstElementChild as HTMLElement | null;
-  if (!mc || !inner) return;
-  scaleToFit(inner, mc.clientHeight);
-}
-
-function fitSidebar() {
-  const sb = document.querySelector<HTMLElement>(".sidebar");
-  const inner = sb?.querySelector<HTMLElement>(".sidebar-inner");
-  if (!sb || !inner) return;
-  scaleToFit(inner, sb.clientHeight);
-}
-
 let currentPanelEl: HTMLElement | null = null;
 
 function renderPanel(adb: Adb, panelId: ActivePanel): HTMLElement {
@@ -218,15 +194,7 @@ function renderPanel(adb: Adb, panelId: ActivePanel): HTMLElement {
     wrapper.style.flexDirection = "column";
   }
   wrapper.appendChild(PANEL_FACTORIES[panelId](adb));
-  requestAnimationFrame(() => {
-    if (panelId !== "apps" && panelId !== "telemetry" && panelId !== "tweaks") fitPanelContent(wrapper);
-  });
   return wrapper;
-}
-
-function onDashResize() {
-  fitSidebar();
-  if (currentPanelEl && currentPanelEl.getAttribute("data-panel-id") !== "apps" && currentPanelEl.getAttribute("data-panel-id") !== "telemetry" && currentPanelEl.getAttribute("data-panel-id") !== "tweaks") fitPanelContent(currentPanelEl);
 }
 
 // ── Dashboard Root ─────────────────────────────────────────────────────────
@@ -248,9 +216,6 @@ export function renderDashboard(adb: Adb): HTMLElement {
   currentPanelEl = renderPanel(adb, state.panel);
   panelContainer.appendChild(currentPanelEl);
 
-  requestAnimationFrame(fitSidebar);
-  window.addEventListener("resize", onDashResize);
-
   state.on("panelChanged", (rawPanelId) => {
     const panelId = rawPanelId as ActivePanel;
 
@@ -265,7 +230,7 @@ export function renderDashboard(adb: Adb): HTMLElement {
 
   const observer = new MutationObserver(() => {
     if (!document.contains(dash)) {
-      window.removeEventListener("resize", onDashResize);
+      // Fluid CSS handles resize — no JS needed
       observer.disconnect();
     }
   });

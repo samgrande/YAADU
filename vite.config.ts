@@ -3,9 +3,10 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  base: "/YAADU/",
   build: {
     target: "esnext",
-    outDir: "dist",
+    outDir: "docs",
   },
   optimizeDeps: {
     // These packages are already ESM — skip pre-bundling to avoid transformation conflicts

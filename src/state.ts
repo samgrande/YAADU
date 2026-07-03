@@ -10,73 +10,48 @@ export type ConnectionStatus =
 export type ActivePanel = "telemetry" | "apps" | "backup" | "tweaks";
 
 export interface DeviceInfo {
-  brand:         string;
-  model:         string;
-  marketingName: string;
-  osVersion:     string;
-  screenSize:    string;
+  brand:           string;
+  model:           string;
+  marketingName:   string;
+  osVersion:       string;
+  screenSize:      string;
   batteryLevel:    number;
   batteryTemp:     number;
   batteryCharging: boolean;
 }
 
-// ── Simple event emitter ───────────────────────────────────────────────────
-
-type Handler<T> = (value: T) => void;
-type Unsub = () => void;
-
-class EventBus {
-  private listeners = new Map<string, Set<Handler<unknown>>>();
-
-  on<T>(event: string, handler: Handler<T>): Unsub {
-    if (!this.listeners.has(event)) this.listeners.set(event, new Set());
-    this.listeners.get(event)!.add(handler as Handler<unknown>);
-    return () => this.listeners.get(event)?.delete(handler as Handler<unknown>);
-  }
-
-  emit<T>(event: string, payload: T): void {
-    this.listeners.get(event)?.forEach((h) => h(payload as unknown));
-  }
+export interface AppState {
+  connection: ConnectionStatus;
+  adb:        Adb | null;
+  device:     DeviceInfo | null;
+  panel:      ActivePanel;
+  error:      string | null;
 }
 
-// ── App State ──────────────────────────────────────────────────────────────
+export type AppAction =
+  | { type: "SET_CONNECTION"; status: ConnectionStatus }
+  | { type: "SET_ADB"; adb: Adb | null }
+  | { type: "SET_DEVICE"; device: DeviceInfo | null }
+  | { type: "SET_PANEL"; panel: ActivePanel }
+  | { type: "SET_ERROR"; error: string | null }
+  | { type: "RESET" };
 
-class AppState extends EventBus {
-  private _connection: ConnectionStatus = "disconnected";
-  private _adb:        Adb | null       = null;
-  private _device:     DeviceInfo | null = null;
-  private _panel:      ActivePanel       = "telemetry";
-  private _error:      string | null     = null;
+export const initialState: AppState = {
+  connection: "disconnected",
+  adb:        null,
+  device:     null,
+  panel:      "telemetry",
+  error:      null,
+};
 
-  get connection() { return this._connection; }
-  set connection(v: ConnectionStatus) {
-    this._connection = v; this.emit("connectionChanged", v);
-  }
-
-  get adb() { return this._adb; }
-  set adb(v: Adb | null) {
-    this._adb = v; this.emit("adbChanged", v);
-  }
-
-  get device() { return this._device; }
-  set device(v: DeviceInfo | null) {
-    this._device = v; this.emit("deviceChanged", v);
-  }
-
-  get panel() { return this._panel; }
-  set panel(v: ActivePanel) {
-    this._panel = v; this.emit("panelChanged", v);
-  }
-
-  get error() { return this._error; }
-  set error(v: string | null) {
-    this._error = v; this.emit("errorChanged", v);
-  }
-
-  reset(): void {
-    this.adb = null; this.device = null; this.error = null;
-    this.connection = "disconnected"; this.panel = "telemetry";
+export function appReducer(state: AppState, action: AppAction): AppState {
+  switch (action.type) {
+    case "SET_CONNECTION": return { ...state, connection: action.status };
+    case "SET_ADB":        return { ...state, adb: action.adb };
+    case "SET_DEVICE":     return { ...state, device: action.device };
+    case "SET_PANEL":      return { ...state, panel: action.panel };
+    case "SET_ERROR":      return { ...state, error: action.error };
+    case "RESET":          return { ...initialState };
+    default:               return state;
   }
 }
-
-export const state = new AppState();

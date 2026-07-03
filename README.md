@@ -2,7 +2,7 @@
 
 A fully client-side Android dashboard that communicates with a physical device over USB via the **WebUSB API** and **@yume-chan/adb (Tango) 0.0.19**.
 
-No backend. No companion app. No native binaries. Just a browser tab.
+Built with **React 19** and **Material 3** web components. No backend. No companion app. No native binaries. Just a browser tab.
 
 ---
 
@@ -23,7 +23,7 @@ No backend. No companion app. No native binaries. Just a browser tab.
 # 1 — Install dependencies (Node 18+)
 npm install
 
-# 2 — Start dev server (auto opens on http://localhost:5173)
+# 2 — Start dev server (http://localhost:5173)
 npm run dev
 
 # 3 — Build production bundle
@@ -37,33 +37,55 @@ npm run preview        # preview at localhost:4173
 
 ```
 yaadu/
-├── index.html                   Entry point (Google Fonts, style.css link)
-├── vite.config.ts               Vite build config (ESM, excludes yume-chan from pre-bundling)
+├── index.html                   Entry HTML — fonts, #app mount point
+├── vite.config.ts               Vite + React plugin; excludes yume-chan from pre-bundling
 ├── tsconfig.json
 └── src/
-    ├── main.ts                  App bootstrapper — theme generator, MWC imports, ripple handler
-    ├── state.ts                 Reactive AppState singleton (EventBus)
-    ├── style.css                Full design system — M3 token mapping, MWC theming, layout
+    ├── main.tsx                 React bootstrap (createRoot)
+    ├── App.tsx                  Theme generation, MWC imports, WebUSB gate, routing
+    ├── state.ts                 AppState types + useReducer reducer
+    ├── context.tsx              React context (state + dispatch)
+    ├── global.d.ts              JSX types for Material Web Components
+    ├── style.css                Full design system — M3 token mapping, layout, clamp() sizing
     │
     ├── adb/                     ── ADB Protocol Layer ──────────────────────
-    │   ├── credential.ts        AdbCredentialStore — RSA-2048 via Web Crypto, localStorage
-    │   ├── connection.ts        Module 1: WebUSB lifecycle, Adb.authenticate()
+    │   ├── credential.ts        YaaduCredentialStore — RSA-2048 via Web Crypto, localStorage
+    │   ├── connection.ts        WebUSB lifecycle, Adb.authenticate(), disconnect handling
     │   ├── helpers.ts           shell() / shellFull() / getProp() / formatBytes()
-    │   ├── telemetry.ts         Module 2: getprop, wm size, dumpsys battery parsers
-    │   ├── apps.ts              Module 3: pm/am commands + APK push via sync.write()
-    │   ├── backup.ts            Module 4: AdbSync readdir/read → Blob → anchor download
-    │   └── tweaks.ts            Module 5: settings put global/secure, wm density
+    │   ├── telemetry.ts         Device info, battery, system, connectivity, sensors
+    │   ├── device-names.ts      Marketing name resolution from model/build props
+    │   ├── apps.ts              pm/am commands + APK push via sync.write()
+    │   ├── app-names.ts         Live app label lookup via pm dump
+    │   ├── backup.ts            AdbSync readdir/read → JSZip archive → browser download
+    │   └── tweaks.ts            settings put global/secure, wm density
     │
-    └── ui/                      ── Presentation Layer ──────────────────────
-        ├── toast.ts             Global toast notification system
-        ├── dashboard.ts         Sidebar nav + panel router + device card
+    ├── data/
+    │   └── common-apps.json     Package name → display name map (160+ apps)
+    │
+    ├── assets/                  SVG illustrations (tweaks panel)
+    │
+    └── ui/                      ── Presentation Layer (React) ─────────────
+        ├── Dashboard.tsx        Sidebar nav + panel router + device card
+        ├── Toast.tsx            Global toast notification system
+        ├── ScrollPill.tsx       Scroll-position indicator for long panels
         └── panels/
-            ├── connect.ts       Connect screen with 3-state UI
-            ├── telemetry.ts     Device Identity + Extra Info + Memory ring
-            ├── apps.ts          App grid + APK sideloader overlay
-            ├── backup.ts        Media backup engine with progress log
-            └── tweaks.ts        Animation scale / Night mode / DPI controls
+            ├── ConnectScreen.tsx   Connect / help / about landing screen
+            ├── TelemetryPanel.tsx  Device identity, battery, system, connectivity, sensors
+            ├── AppsPanel.tsx       App grid + APK sideloader overlay
+            ├── BackupPanel.tsx     Media backup engine with progress log
+            └── TweaksPanel.tsx     Animation scale / Night mode / DPI controls
 ```
+
+### State management
+
+Global state lives in a React `useReducer` hook (`App.tsx`) and is exposed via `AppContext`:
+
+- `connection` — `disconnected | connecting | authorizing | connected | error`
+- `adb` — live `@yume-chan/adb` instance after authentication
+- `device` — cached `DeviceInfo` (pre-fetched on connect)
+- `panel` — active sidebar panel (`telemetry | apps | backup | tweaks`)
+
+ADB modules receive `dispatch` from the connection layer; panels read state through `useAppContext()`.
 
 ---
 
@@ -74,30 +96,40 @@ yaadu/
 - `AdbWebUsbBackendManager.BROWSER.requestDevice()` — triggers the browser's native USB picker (requires user gesture)
 - `Adb.authenticate(connection, credentialStore)` — RSA challenge/response handshake via `@yume-chan/adb`'s built-in authenticator
 - `YaaduCredentialStore` — stores the PKCS#8 RSA-2048 private key in `localStorage`; generates a new one automatically on first run
-- Manages state transitions: `disconnected → connecting → authorizing → connected`
+- Manages state transitions: `disconnected → connecting → authorizing → connected → error`
+- Pre-fetches device info asynchronously after connect
 - Watches `adb.disconnected` promise for unexpected cable pulls
 
 ### Module 2 — Device Telemetry
 
-- Queries `ro.product.brand`, `ro.product.model`, `ro.product.cpu.abi`, `ro.build.display.id`, `ro.build.version.sdk`, `ro.build.version.security_patch` via `adb.getProp()`
-- Parses `wm size` output for physical screen resolution
-- Parses `dumpsys battery` with regex for `level`, `temperature` (÷10 → °C), `status`, and `plugged` type
-- Displays memory info with an SVG progress ring (see Design System below)
-- Auto-refreshes on panel load; manual refresh button available
+Core identity via `getProp()` and `resolveDeviceDetails()`:
+
+- Brand, model, marketing name, OS version, screen resolution
+- Battery level, temperature, charging state, health, voltage, technology
+
+Extended telemetry fetched in parallel:
+
+- **System details** — SDK version, build ID/date, security patch, fingerprint, CPU ABI, RAM, DPI
+- **Connectivity** — WiFi SSID, IP, RSSI, link speed, frequency, DNS, gateway (parsed from `dumpsys wifi`, `ip`, `iw`)
+- **Sensors** — touchscreen and active sensor list
+
+The telemetry panel displays Android version logos (9–16), a memory usage SVG ring with a sine-wave progress arc, and a unified reload button. Data auto-refreshes on panel load.
 
 ### Module 3 — App Management
 
 - Lists user-installed packages via `pm list packages -3`
 - Merges disabled state from `pm list packages -d`
+- Resolves display names from `common-apps.json`, falling back to live `pm dump` / `fetchAppLabel()`
 - Per-app controls: Force Stop (`am force-stop`), Clear Data (`pm clear`), Uninstall (`pm uninstall`), Disable/Enable (`pm disable-user --user 0` / `pm enable`)
 - APK Installer: drag-and-drop or file picker → chunks file into a `ReadableStream<Consumable<Uint8Array>>` → pushes via `sync.write()` to `/data/local/tmp/` → `pm install -r` → cleanup
 
 ### Module 4 — Media Backup Engine
 
 - Opens `adb.sync()` per-file to avoid stream interleaving
-- `sync.readdir()` scans `/sdcard/DCIM/Camera`, filters by `LinuxFileType.File === 8`
-- `sync.read()` returns a `ReadableStream<Uint8Array>`; collected into a `Uint8Array`, wrapped in a `Blob`, saved via `URL.createObjectURL` + `<a download>`
-- Supports AbortController cancellation mid-backup
+- `sync.readdir()` scans `/sdcard/DCIM/Camera`, filters by `LinuxFileType.File`
+- **Single file**: `sync.read()` → buffer → Blob → anchor download
+- **Bulk backup**: downloads all selected files, assembles a `.zip` via **JSZip**, saves as `<device>_media_backup.zip`
+- Supports `AbortController` cancellation mid-backup
 
 ### Module 5 — System Tweaks
 
@@ -109,20 +141,21 @@ yaadu/
 
 ## UI Design System
 
-The entire UI is built on **Material 3 (Material You)** using two libraries:
+The UI is built on **Material 3 (Material You)** with **React** rendering and **Material Web Components** for interactive controls.
 
 ### Theme Generation (`@material/material-color-utilities 0.4.0`)
 
-In `main.ts`, a programmatic green theme is generated from a single source color:
+In `App.tsx`, a programmatic green theme is generated from a single source color:
 
-```ts
+```tsx
 import { argbFromHex, themeFromSourceColor, applyTheme } from '@material/material-color-utilities';
 
 const theme = themeFromSourceColor(argbFromHex('#376A3E'));
-applyTheme(theme, { dark: false });  // light-only theme
+applyTheme(theme, { target: document.documentElement, dark: false });
 ```
 
-`applyTheme()` sets `--md-sys-color-*` CSS custom properties as inline styles on `document.documentElement`, replacing what were previously hardcoded hex values in `style.css :root`. The source color `#376A3E` produces a green-toned light scheme with:
+`applyTheme()` sets `--md-sys-color-*` CSS custom properties on `document.documentElement`. The source color `#376A3E` produces a green-toned light scheme with:
+
 - `--md-sys-color-primary`: ≈ `#376A3E`
 - `--md-sys-color-primary-container`: `#B7F1B9` (tonal green)
 - `--md-sys-color-on-primary-container`: `#095F4C` (dark green text)
@@ -131,31 +164,27 @@ The theme is always **light-only** — `dark: false` is passed to `applyTheme()`
 
 ### Material Web Components (`@material/web 2.4.1`)
 
-MWC replaces nearly all native HTML controls:
+MWC web components are registered globally in `App.tsx` and used as JSX custom elements (typed in `global.d.ts`):
 
 | Element | Usage |
 |---|---|
 | `<md-filled-button>` | Primary connect button (landing page) |
-| `<md-filled-tonal-button>` | Sidebar nav items, landing HELP/ABOUT/GITHUB, disconnect |
+| `<md-filled-tonal-button>` | Sidebar nav items, help/about/github, disconnect |
+| `<md-outlined-button>` | Secondary actions |
 | `<md-text-button>` | App action buttons (Stop, Clear, Uninstall, etc.) |
 | `<md-icon-button>` | Refresh buttons, APK sideloader trigger |
 | `<md-outlined-select>` + `<md-select-option>` | DPI preset dropdown |
-| `<md-dialog>` | (Available but replaced by custom overlay for APK) |
-| `<md-icon-button>` | (Imported for future use) |
+| `<md-switch>` | Toggle controls in tweaks panel |
+| `<md-linear-progress>` / `<md-circular-progress>` | APK install and backup progress |
+| `<md-outlined-text-field>` | Custom DPI input |
+| `<md-list>` / `<md-list-item>` | Structured lists |
+| `<md-dialog>` | Available; APK sideloader uses a custom overlay instead |
 
-MWC components are imported in `main.ts`:
-```ts
-import '@material/web/button/filled-button.js';
-import '@material/web/button/filled-tonal-button.js';
-import '@material/web/button/text-button.js';
-import '@material/web/iconbutton/icon-button.js';
-import '@material/web/select/outlined-select.js';
-import '@material/web/select/select-option.js';
-```
+MWC typography styles are adopted via `document.adoptedStyleSheets`.
 
 ### CSS Variable Strategy
 
-Legacy CSS variables from the original design are mapped to M3 tokens so all existing styles reference the dynamic theme:
+Legacy CSS variables are mapped to M3 tokens so all styles reference the dynamic theme:
 
 ```css
 :root {
@@ -179,6 +208,8 @@ For dim/glow color variants (e.g. status indicators), `color-mix()` is used inst
 --green-dim: color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
 ```
 
+Layout, typography, and component sizing use **fluid `clamp()` values** in `style.css` so the dashboard scales across viewport sizes without fixed breakpoints.
+
 ### Button Theming
 
 Buttons are themed via MWC's custom CSS properties rather than fighting shadow DOM styles:
@@ -201,9 +232,13 @@ Buttons are themed via MWC's custom CSS properties rather than fighting shadow D
 ```
 
 **Important MWC Button Behavior:**
-- MWC buttons render visible text via `<slot>`, not the `label` property
-- `.label` on an MWC button only sets `aria-label`
-- Dynamic text must use `.textContent` (plain text) or `.innerHTML` (with icon slot)
+- MWC buttons render visible text via their `<slot>`, not the `label` property
+- In React, pass button text as **children**: `<md-filled-button>Connect</md-filled-button>`
+- The `label` attribute only sets `aria-label`
+
+### Global Ripple
+
+`App.tsx` attaches a document-level `mousedown` listener that injects a Material-style ripple span into clicked buttons and interactive elements.
 
 ### APK Sideloader — Custom Overlay Dialog
 
@@ -224,7 +259,7 @@ Instead of using MWC's `<md-dialog>` (which has unreliable centering), the APK s
 }
 ```
 
-The overlay appears when `.visible` class is added, and a trigger button (`#btn-apk-sideloader`) sits next to the refresh button in the apps card header.
+The overlay appears when `.visible` class is added, and a trigger button sits next to the refresh button in the apps card header.
 
 ### Memory Progress Ring
 
@@ -235,9 +270,9 @@ The telemetry panel shows memory usage with an SVG progress ring. The filled por
 
 This creates visible gaps at both the start and the progress boundary.
 
-### Panel Sizing
+### Panel Transitions
 
-The telemetry panel uses `fitPanelContent()` in `dashboard.ts` to scale content to fit within `main-content`, guarded by a `ResizeObserver`. The panel wrapper has `overflow: hidden` so the telemetry page never scrolls — content is scaled down instead.
+`Dashboard.tsx` crossfades between panels with a 200 ms exit/enter transition. Long scrollable panels use `ScrollPill` (a `ResizeObserver`-driven scroll indicator) to hint at off-screen content.
 
 ---
 
@@ -266,11 +301,14 @@ The telemetry panel uses `fitPanelContent()` in `dashboard.ts` to scale content 
 
 | Package | Version | Purpose |
 |---|---|---|
+| `react` / `react-dom` | 19.x | UI framework |
+| `@vitejs/plugin-react` | 4.x | Vite React transform (Fast Refresh) |
 | `@yume-chan/adb` | 0.0.19 | ADB daemon protocol (subprocess, sync, props) |
 | `@yume-chan/adb-backend-webusb` | 0.0.19 | WebUSB transport for the ADB protocol |
 | `@yume-chan/stream-extra` | 0.0.19 | `Consumable<T>` wrapper + stream utilities |
-| `@material/web` | 2.4.1 | Material 3 web components (buttons, selects, dialogs) |
+| `@material/web` | 2.4.1 | Material 3 web components (buttons, selects, switches, progress) |
 | `@material/material-color-utilities` | 0.4.0 | Programmatic M3 theme generation from source color |
+| `jszip` | 3.x | Bulk media backup archive creation |
 | `vite` | 5.4.0 | Build tool |
 | `typescript` | 5.4.5 | Type safety |
 

@@ -8,19 +8,13 @@
 
 import { Adb } from "@yume-chan/adb";
 import { AdbWebUsbBackendManager } from "@yume-chan/adb-backend-webusb";
-import { state } from "../state.js";
+import type { AppAction } from "../state.js";
 import { credentialStore } from "./credential.js";
 import { fetchDeviceInfo } from "./telemetry.js";
 
-export async function connectDevice(): Promise<void> {
-  if (
-    state.connection === "connected" ||
-    state.connection === "connecting" ||
-    state.connection === "authorizing"
-  ) return;
-
-  state.error = null;
-  state.connection = "connecting";
+export async function connectDevice(dispatch: React.Dispatch<AppAction>): Promise<void> {
+  dispatch({ type: "SET_ERROR", error: null });
+  dispatch({ type: "SET_CONNECTION", status: "connecting" });
 
   try {
     const manager = AdbWebUsbBackendManager.BROWSER;
@@ -31,7 +25,7 @@ export async function connectDevice(): Promise<void> {
     // Step 1: User picks device — must be inside user gesture
     const backend = await manager.requestDevice();
     if (!backend) {
-      state.connection = "disconnected";
+      dispatch({ type: "SET_CONNECTION", status: "disconnected" });
       return;
     }
 
@@ -39,56 +33,56 @@ export async function connectDevice(): Promise<void> {
     const connection = await backend.connect();
 
     // Step 3: RSA handshake — triggers "Allow USB Debugging?" on phone
-    state.connection = "authorizing";
+    dispatch({ type: "SET_CONNECTION", status: "authorizing" });
     console.info("[YAADU] Auth started:", backend.serial);
 
     // 0.0.19 API: Adb.authenticate(connection, credentialStore)
     const adb = await Adb.authenticate(connection, credentialStore);
 
-    state.adb = adb;
-    state.connection = "connected";
+    dispatch({ type: "SET_ADB", adb });
+    dispatch({ type: "SET_CONNECTION", status: "connected" });
     console.info("[YAADU] Connected. Model:", adb.model);
 
     // Asynchronously pre-fetch device info so it is available to the UI immediately
     fetchDeviceInfo(adb)
-      .then((info) => {
-        state.device = info;
-      })
-      .catch((err) => {
-        console.warn("[YAADU] Failed to pre-fetch device info:", err);
-      });
+      .then((info) => { dispatch({ type: "SET_DEVICE", device: info }); })
+      .catch((err) => { console.warn("[YAADU] Failed to pre-fetch device info:", err); });
 
     // Step 4: Watch for disconnects
     adb.disconnected
-      .then(() => handleDisconnect("Device disconnected unexpectedly."))
+      .then(() => handleDisconnect(dispatch, "Device disconnected unexpectedly."))
       .catch((err: unknown) =>
-        handleDisconnect(`Connection lost: ${err instanceof Error ? err.message : String(err)}`)
+        handleDisconnect(dispatch, `Connection lost: ${err instanceof Error ? err.message : String(err)}`)
       );
 
   } catch (err: unknown) {
     const isDomException = err instanceof DOMException;
     if (isDomException && err.name === "NotFoundError") {
-      state.connection = "disconnected";
+      dispatch({ type: "SET_CONNECTION", status: "disconnected" });
       return;
     }
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[YAADU] Connection failed:", err);
-    state.error = msg;
-    state.connection = "error";
+    dispatch({ type: "SET_ERROR", error: msg });
+    dispatch({ type: "SET_CONNECTION", status: "error" });
   }
 }
 
-export async function disconnectDevice(): Promise<void> {
-  const adb = state.adb;
-  if (!adb) { state.reset(); return; }
+export async function disconnectDevice(
+  dispatch: React.Dispatch<AppAction>,
+  adb: Adb | null
+): Promise<void> {
+  if (!adb) { dispatch({ type: "RESET" }); return; }
   try { await adb.close(); } catch { /* ignore */ }
-  finally { state.reset(); console.info("[YAADU] Disconnected."); }
+  finally {
+    dispatch({ type: "RESET" });
+    console.info("[YAADU] Disconnected.");
+  }
 }
 
-function handleDisconnect(reason: string): void {
-  if (state.connection !== "connected") return;
-  state.error = reason;
-  state.adb = null;
-  state.device = null;
-  state.connection = "error";
+function handleDisconnect(dispatch: React.Dispatch<AppAction>, reason: string): void {
+  dispatch({ type: "SET_ERROR", error: reason });
+  dispatch({ type: "SET_ADB", adb: null });
+  dispatch({ type: "SET_DEVICE", device: null });
+  dispatch({ type: "SET_CONNECTION", status: "error" });
 }

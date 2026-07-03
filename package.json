@@ -2,11 +2,17 @@
   "dependencies": {
     "@material/material-color-utilities": "^0.4.0",
     "@material/web": "^2.4.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "@yume-chan/adb": "^0.0.19",
     "@yume-chan/adb-backend-webusb": "^0.0.19",
-    "@yume-chan/stream-extra": "^0.0.19"
+    "@yume-chan/stream-extra": "^0.0.19",
+    "jszip": "^3.10.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
     "typescript": "^5.4.5",
     "vite": "^5.4.0"
   },

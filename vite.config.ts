@@ -6,7 +6,7 @@ export default defineConfig({
   base: "/YAADU/",
   build: {
     target: "esnext",
-    outDir: "docs",
+    outDir: "dist",
   },
   optimizeDeps: {
     // These packages are already ESM — skip pre-bundling to avoid transformation conflicts

@@ -236,7 +236,7 @@ select {
   line-height: 1.4;
   text-align: center;
   color: var(--text-muted);
-  letter-spacing: 0.0.1875rem;
+  letter-spacing: 0.0625rem;
 }
 
 .connect-card-m3 {
@@ -638,7 +638,7 @@ select {
 
 .about-para-card {
   font-family: 'Roboto', sans-serif;
-  font-size: 13.0.3125rem;
+  font-size: 0.8125rem;
   line-height: 1.6;
   color: var(--text);
   text-align: left;
@@ -706,10 +706,10 @@ select {
 .help-retro-title {
   font-family: 'Roboto Condensed', sans-serif;
   font-weight: 700;
-  font-size: 14.0.3125rem;
+  font-size: 0.875rem;
   color: var(--md-sys-color-on-primary-container);
   text-transform: uppercase;
-  letter-spacing: 0.0.3125rem;
+  letter-spacing: 0.0625rem;
 }
 
 .help-retro-body {
@@ -895,7 +895,7 @@ md-dialog {
   font-size: var(--nav-label-s);
   font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.0.1875rem;
+  letter-spacing: 0.0625rem;
   cursor: pointer;
   text-align: center;
   transition: color 0.15s var(--ease);
@@ -1089,7 +1089,7 @@ md-dialog {
   font-size: clamp(0.5rem, 0.8vw, 0.6875rem);
   font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.0.3125rem;
+  letter-spacing: 0.0625rem;
   color: var(--md-sys-color-primary);
   opacity: 0.7;
   text-align: left;
@@ -1101,7 +1101,7 @@ md-dialog {
   font-size: clamp(0.6875rem, 1.1vw, 1rem);
   font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.0.1875rem;
+  letter-spacing: 0.0625rem;
   color: var(--md-sys-color-primary);
   text-align: left;
 }
@@ -1134,7 +1134,7 @@ md-dialog {
   font-size: clamp(0.6875rem, 1vw, 0.875rem);
   font-weight: 600;
   line-height: 1;
-  letter-spacing: 0.0.1875rem;
+  letter-spacing: 0.0625rem;
   cursor: pointer;
   transition: background 0.2s var(--ease), transform 0.15s var(--ease);
 }
@@ -1249,9 +1249,9 @@ md-dialog {
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--md-sys-color-on-primary-container);
-  letter-spacing: 0.0.125rem;
+  letter-spacing: 0.0625rem;
   padding: 0 0.25rem 0.5rem 0.25rem;
-  border-bottom: 1.0.3125rem solid color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
+  border-bottom: 0.0625rem solid color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
   margin-bottom: 0.125rem;
 }
 
@@ -1285,7 +1285,7 @@ md-dialog {
   font-size: clamp(0.625rem, 0.9vw, 0.8125rem);
   font-weight: 600;
   color: color-mix(in srgb, var(--md-sys-color-primary) 55%, transparent);
-  letter-spacing: 0.0.25rem;
+  letter-spacing: 0.0625rem;
   text-transform: uppercase;
   margin-bottom: 0.375rem;
 }
@@ -1296,7 +1296,7 @@ md-dialog {
   font-weight: 600;
   color: var(--md-sys-color-on-primary-container);
   line-height: 1.15;
-  letter-spacing: 0.0.125rem;
+  letter-spacing: 0.0625rem;
   overflow-wrap: break-word;
   word-break: break-word;
 }
@@ -1531,7 +1531,7 @@ md-dialog {
   font-size: clamp(1.375rem, 2.4vw, 1.875rem);
   font-weight: 700;
   color: var(--md-sys-color-on-primary-container);
-  letter-spacing: -0.0.3125rem;
+  letter-spacing: -0.0625rem;
   line-height: 1.2;
 }
 
@@ -1552,7 +1552,7 @@ md-dialog {
   font-family: 'Roboto', sans-serif;
   font-size: clamp(0.8125rem, 1.1vw, 0.875rem);
   font-weight: 600;
-  letter-spacing: 0.0.125rem;
+  letter-spacing: 0.0625rem;
   cursor: pointer;
   transition: background 0.2s cubic-bezier(0.2, 0, 0, 1),
     transform 0.2s cubic-bezier(0.2, 0, 0, 1),
@@ -1671,7 +1671,7 @@ md-dialog {
   font-weight: 700;
   color: var(--md-sys-color-primary);
   text-transform: uppercase;
-  letter-spacing: 0.0.3125rem;
+  letter-spacing: 0.0625rem;
 }
 
 .column-heading svg {
@@ -1850,7 +1850,7 @@ md-dialog {
   font-size: clamp(0.6rem, 1vw, 0.85rem);
   font-weight: 700;
   color: var(--text-dim);
-  letter-spacing: 0.0.3125rem;
+  letter-spacing: 0.0625rem;
   text-transform: uppercase;
   margin-bottom: 0;
 }
@@ -1997,7 +1997,7 @@ md-dialog {
   font-weight: 500;
   color: var(--text-muted);
   margin-top: 0.125rem;
-  letter-spacing: 0.0.3125rem;
+  letter-spacing: 0.0625rem;
 }
 
 /* Skeleton Loading styles */
@@ -4043,11 +4043,11 @@ md-filled-tonal-button .m3-ripple {
   font-size: 1rem;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.0.9375rem;
+  letter-spacing: -0.0625rem;
 }
 
 .tweak-card-desc {
-  font-size: 12.0.3125rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   line-height: 1.5;
   flex: 1;

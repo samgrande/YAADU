@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import type { Adb } from "@yume-chan/adb";
 import { useAppContext } from "../context.js";
 import { disconnectDevice } from "../adb/connection.js";
-import { TelemetryPanel } from "./panels/TelemetryPanel.js";
-import { AppsPanel } from "./panels/AppsPanel.js";
-import { BackupPanel } from "./panels/BackupPanel.js";
-import { TweaksPanel } from "./panels/TweaksPanel.js";
+import { PanelLoader } from "./PanelLoader.js";
 import type { ActivePanel } from "../state.js";
+
+const TelemetryPanel = lazy(() => import("./panels/TelemetryPanel.js").then(m => ({ default: m.TelemetryPanel })));
+const AppsPanel = lazy(() => import("./panels/AppsPanel.js").then(m => ({ default: m.AppsPanel })));
+const BackupPanel = lazy(() => import("./panels/BackupPanel.js").then(m => ({ default: m.BackupPanel })));
+const TweaksPanel = lazy(() => import("./panels/TweaksPanel.js").then(m => ({ default: m.TweaksPanel })));
 
 interface NavItem {
   id:    ActivePanel;
@@ -184,10 +186,12 @@ export function Dashboard({ adb }: { adb: Adb }) {
               flex: 1,
             }}
           >
-            {activePanel === "telemetry" && <TelemetryPanel adb={adb} />}
-            {activePanel === "apps" && <AppsPanel adb={adb} />}
-            {activePanel === "backup" && <BackupPanel adb={adb} />}
-            {activePanel === "tweaks" && <TweaksPanel adb={adb} />}
+            <Suspense fallback={<PanelLoader />}>
+              {activePanel === "telemetry" && <TelemetryPanel adb={adb} />}
+              {activePanel === "apps" && <AppsPanel adb={adb} />}
+              {activePanel === "backup" && <BackupPanel adb={adb} />}
+              {activePanel === "tweaks" && <TweaksPanel adb={adb} />}
+            </Suspense>
           </div>
         </div>
       </main>

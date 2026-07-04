@@ -1198,6 +1198,22 @@ md-dialog {
   display: none;
 }
 
+/* ── Panel Loader ────────────────────────────────────── */
+.panel-loader {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  gap: 1rem;
+}
+
+.panel-loader dotlottie-player {
+  --theme-color: var(--md-sys-color-primary);
+  filter: drop-shadow(0 0 0.5rem color-mix(in srgb, var(--md-sys-color-primary) 30%, transparent));
+}
+
 .panel-area {
   flex: 1;
   min-height: 0;

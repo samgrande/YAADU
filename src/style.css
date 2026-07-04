@@ -1127,6 +1127,8 @@ md-dialog {
   color: var(--md-sys-color-on-primary-container);
   line-height: 1.15;
   letter-spacing: 0.2px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .metric-value svg {
@@ -1529,7 +1531,7 @@ md-dialog {
 
 .metric-tile-m3.tall-card {
   align-items: flex-start;
-  aspect-ratio: 25 / 26;
+  aspect-ratio: 250 / 247;
 }
 
 .android-version-card {
@@ -1638,7 +1640,7 @@ md-dialog {
   flex-direction: column;
   align-items: center;
   gap: clamp(0.5rem, 1vw, 0.875rem);
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 20 / 19;
   padding: clamp(0.75rem, 1.5vw, 1.25rem);
 }
 
@@ -2077,7 +2079,7 @@ md-linear-progress {
 .search-wrapper input {
   width: 100%;
   height: 48px;
-  background: var(--surface-mid);
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 6%, var(--surface));
   border: none;
   border-radius: 100px;
   padding: 0 24px;
@@ -2099,7 +2101,7 @@ md-linear-progress {
 
 .count-pill {
   height: 48px;
-  background: var(--surface-mid);
+  background: var(--md-sys-color-primary);
   border-radius: 100px;
   padding: 0 20px;
   display: flex;
@@ -2108,7 +2110,7 @@ md-linear-progress {
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text);
+  color: var(--md-sys-color-on-primary);
   flex-shrink: 0;
 }
 
@@ -3527,8 +3529,9 @@ md-linear-progress {
 }
 
 .real-checkbox:checked+.state-layer .checkbox-container {
-  background: var(--md-sys-color-on-surface);
-  border-color: var(--md-sys-color-on-surface);
+  background: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
 }
 
 .check-icon {

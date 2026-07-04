@@ -194,7 +194,7 @@ export function BackupPanel({ adb }: Props) {
           {GRAPHIC_ITEMS.map(({ cls, shapeIdx, iconIdx }, i) => (
             <div key={i} className={`hero-graphic-item ${cls}`}>
               <svg className="hero-shape" width="271" height="271" viewBox="0 0 271 271" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d={SHAPES[shapeIdx].d} fill="var(--md-sys-color-primary)" fillOpacity="0.6"/>
+                <path d={SHAPES[shapeIdx].d} fill="var(--md-sys-color-primary)" fillOpacity="0.85"/>
               </svg>
               <span className="hero-icon">
                 {HERO_ICONS[iconIdx]}

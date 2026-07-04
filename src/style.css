@@ -1,4 +1,37 @@
 /* ═══════════════════════════════════════════════════════
+   SMALL SCREEN LOCK
+   ═══════════════════════════════════════════════════════ */
+.small-screen-lock {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background: var(--shell-bg);
+  z-index: 9999;
+  padding: 2rem;
+  text-align: center;
+}
+
+.small-screen-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 800;
+  color: var(--md-sys-color-primary);
+  line-height: 1;
+}
+
+.small-screen-text {
+  font-family: 'Roboto', sans-serif;
+  font-size: clamp(0.875rem, 3vw, 1.125rem);
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 28rem;
+}
+
+/* ═══════════════════════════════════════════════════════
    YAADU Design System — Material 3 (Light Theme)
    ═══════════════════════════════════════════════════════ */
 

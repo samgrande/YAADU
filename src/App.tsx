@@ -45,7 +45,8 @@ export function App() {
     // Global Ripple Animation
     const handleRipple = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const button = target.closest("button, .anim-btn, .nav-item-m3, .telemetry-skeleton") as HTMLElement;
+      const webButton = target.closest("md-filled-button, md-filled-tonal-button, md-outlined-button, md-text-button") as HTMLElement | null;
+      const button = webButton || target.closest("button, .anim-btn, .nav-item-m3, .telemetry-skeleton") as HTMLElement | null;
       if (!button || button.hasAttribute("disabled") || button.classList.contains("disabled")) return;
 
       const ripple = document.createElement("span");
@@ -61,6 +62,8 @@ export function App() {
       ripple.style.left = `${x}px`;
       ripple.style.top = `${y}px`;
 
+      button.style.position = "relative";
+      button.style.overflow = "hidden";
       button.appendChild(ripple);
 
       setTimeout(() => {

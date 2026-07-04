@@ -332,7 +332,7 @@ export function TelemetryPanel({ adb }: Props) {
               onClick={() => { if (device?.osVersion) copyInfo("ANDROID VERSION", device.osVersion); }}
               style={{ cursor: device?.osVersion ? "pointer" : undefined }}
             >
-              <div className="android-version-bg" dangerouslySetInnerHTML={{ __html: logoHtml || "" }} />
+              <div className="android-version-bg"><span className="android-version-logo" dangerouslySetInnerHTML={{ __html: logoHtml || "" }} /></div>
               <div className="metric-icon-badge" dangerouslySetInnerHTML={{ __html: SVG_ANDROID }} />
               <div className="metric-details">
                 <span className="metric-label">ANDROID VERSION</span>

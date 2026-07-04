@@ -397,6 +397,168 @@ select {
   --md-filled-tonal-button-container-elevation: 0;
 }
 
+.bottom-action-icon {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.375rem;
+  vertical-align: -0.1875rem;
+}
+
+.bottom-action-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+
+
+/* Theme card on connect screen */
+.theme-card-content {
+  width: 100%;
+  min-height: 22rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.theme-graphic-wrap {
+  position: relative;
+  width: clamp(9rem, 25vw, 11.875rem);
+  height: clamp(9rem, 25vw, 11.875rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.125rem;
+}
+
+.theme-pulse {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary-container);
+  pointer-events: none;
+}
+
+.theme-pulse-outer {
+  inset: 0;
+  opacity: 0.38;
+  animation: pulse-outer-2 4s ease-in-out infinite;
+}
+
+.theme-pulse-inner {
+  inset: 1.5rem;
+  opacity: 0.9;
+  animation: pulse-outer-1 4s ease-in-out infinite;
+}
+
+.theme-icon-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--md-sys-color-primary);
+}
+
+.theme-icon-main svg {
+  width: clamp(5.25rem, 14vw, 7.5rem);
+  height: clamp(5.25rem, 14vw, 7.5rem);
+  display: block;
+}
+
+.theme-name {
+  min-height: 1.25rem;
+  color: var(--text-muted);
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.theme-swatch-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: center;
+  justify-items: center;
+  gap: clamp(0.25rem, 1.4vw, 0.625rem);
+  width: min(100%, 19.5rem);
+  padding: clamp(0.375rem, 1.5vw, 0.625rem);
+  overflow: hidden;
+  border: 0.0625rem solid var(--border);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--md-sys-color-surface) 88%, var(--md-sys-color-primary-container));
+}
+
+.theme-swatch {
+  width: min(100%, clamp(1.75rem, 8vw, 3rem));
+  aspect-ratio: 1 / 1;
+  height: auto;
+  border-radius: 50%;
+  border: 0.125rem solid transparent;
+  box-shadow: inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.08);
+  transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease), border-color 0.16s var(--ease);
+  flex-shrink: 0;
+}
+
+.theme-swatch:hover,
+.theme-swatch:focus-visible {
+  transform: translateY(-0.0625rem) scale(1.03);
+  outline: none;
+  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent), inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.08);
+}
+
+.theme-swatch.active {
+  border-color: var(--md-sys-color-on-surface);
+  box-shadow: 0 0 0 0.1875rem var(--md-sys-color-primary-container), inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.08);
+}
+
+.theme-mode-toggle {
+  width: min(100%, 13rem);
+  height: 1.875rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 0.1875rem;
+  border: 0.0625rem solid var(--md-sys-color-primary-container);
+  border-radius: 62.4375rem;
+  background: var(--md-sys-color-primary-container);
+}
+
+.theme-mode-option {
+  height: 100%;
+  border-radius: 62.4375rem;
+  color: var(--md-sys-color-on-primary-container);
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: background 0.18s var(--ease), color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+
+.theme-mode-option.active {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
+}
+
+.theme-mode-option:focus-visible {
+  outline: 0.125rem solid var(--md-sys-color-primary);
+  outline-offset: 0.125rem;
+}
+
+.theme-save-button {
+  width: 10.5rem;
+  margin-top: 0.75rem;
+  --md-filled-button-container-color: var(--md-sys-color-primary);
+  --md-filled-button-label-text-color: var(--md-sys-color-on-primary);
+  --md-filled-button-container-shape: 62.4375rem;
+  --md-filled-button-container-height: 3rem;
+}
+
 /* Card text content for Help/About inline states */
 .card-text-content {
   width: 100%;
@@ -1570,6 +1732,29 @@ md-dialog {
 }
 
 .android-version-bg::after {
+  content: none;
+}
+
+.android-version-bg svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 1.25rem;
+}
+
+.android-version-logo {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.android-version-logo svg {
+  opacity: 0.38;
+  filter: saturate(0.6);
+}
+
+.android-version-logo::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -3811,6 +3996,26 @@ md-filled-tonal-button .m3-ripple {
   height: 70%;
   object-fit: cover;
   transition: transform 0.3s var(--ease);
+}
+
+.tweak-card-illus svg path,
+.tweak-card-illus svg circle,
+.tweak-card-illus svg rect,
+.tweak-card-illus svg ellipse,
+.tweak-card-illus svg polygon {
+  fill: var(--md-sys-color-primary) !important;
+}
+
+.tweak-card-illus svg path:nth-of-type(2n),
+.tweak-card-illus svg circle:nth-of-type(2n),
+.tweak-card-illus svg rect:nth-of-type(2n) {
+  fill: var(--md-sys-color-primary-container) !important;
+}
+
+.tweak-card-illus svg path:nth-of-type(3n),
+.tweak-card-illus svg circle:nth-of-type(3n),
+.tweak-card-illus svg rect:nth-of-type(3n) {
+  fill: var(--md-sys-color-on-primary-container) !important;
 }
 
 .tweak-card:hover .tweak-card-illus svg {

@@ -2,6 +2,14 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useAppContext } from "../../context.js";
 import { connectDevice } from "../../adb/connection.js";
 import type { ConnectionStatus } from "../../state.js";
+import {
+  applyYaaduTheme,
+  loadStoredTheme,
+  saveTheme,
+  THEME_COLORS,
+  type ThemeMode,
+  type YaaduTheme,
+} from "../../theme.js";
 
 // ── Status messages ────────────────────────────────────────────────────────
 
@@ -64,13 +72,24 @@ declare global {
   }
 }
 
-type CardView = "main" | "help" | "about";
+type CardView = "main" | "help" | "about" | "theme";
+
+const THEME_ICON = (
+  <svg width="132" height="132" viewBox="0 0 132 132" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M66 14C37.28 14 14 37.28 14 66C14 94.72 37.28 118 66 118H70.2C75.1 118 78.58 113.22 77.05 108.55L73.92 99.02C72.38 94.33 75.9 89.5 80.84 89.5H91.5C105.31 89.5 116.5 78.31 116.5 64.5C116.5 36.61 93.89 14 66 14Z" stroke="currentColor" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="43" cy="63" r="8" fill="currentColor"/>
+    <circle cx="56" cy="40" r="8" fill="currentColor"/>
+    <circle cx="84" cy="40" r="8" fill="currentColor"/>
+    <circle cx="95" cy="63" r="8" fill="currentColor"/>
+  </svg>
+);
 
 export function ConnectScreen() {
   const { state, dispatch } = useAppContext();
   const [cardView, setCardView] = useState<CardView>("main");
   const [cardPhase, setCardPhase] = useState<"enter" | "exit" | "idle">("idle");
   const [entered, setEntered] = useState(false);
+  const [draftTheme, setDraftTheme] = useState<YaaduTheme>(() => loadStoredTheme());
   const pendingView = useRef<CardView>(cardView);
   const { connection, error } = state;
 
@@ -117,6 +136,21 @@ export function ConnectScreen() {
     if (isConnecting) return;
     await connectDevice(dispatch);
   }, [dispatch, isConnecting]);
+
+  const selectedThemeName = THEME_COLORS.find((entry) => entry.value === draftTheme.color)?.name ?? "Custom Theme";
+
+  const updateDraftTheme = useCallback((patch: Partial<YaaduTheme>) => {
+    setDraftTheme((current) => {
+      const next = { ...current, ...patch };
+      applyYaaduTheme(next);
+      return next;
+    });
+  }, []);
+
+  const handleSaveTheme = useCallback(() => {
+    saveTheme(draftTheme);
+    switchCard("main");
+  }, [draftTheme, switchCard]);
 
   const statusLabel = error ?? STATUS_MESSAGES[connection] ?? "Device Not Connected";
 
@@ -244,18 +278,87 @@ export function ConnectScreen() {
               </div>
             </>
           )}
+
+          {cardView === "theme" && (
+            <div className="theme-card-content">
+              <div className="theme-graphic-wrap">
+                <div className="theme-pulse theme-pulse-outer"></div>
+                <div className="theme-pulse theme-pulse-inner"></div>
+                <div className="theme-icon-main">{THEME_ICON}</div>
+              </div>
+
+              <div className="theme-name">{selectedThemeName}</div>
+
+              <div className="theme-swatch-row" role="radiogroup" aria-label="Theme color">
+                {THEME_COLORS.map((entry) => (
+                  <button
+                    key={entry.value}
+                    type="button"
+                    className={`theme-swatch${draftTheme.color === entry.value ? " active" : ""}`}
+                    style={{ backgroundColor: entry.value }}
+                    aria-label={entry.name}
+                    aria-checked={draftTheme.color === entry.value}
+                    role="radio"
+                    onClick={() => updateDraftTheme({ color: entry.value })}
+                  />
+                ))}
+              </div>
+
+              <div className="theme-mode-toggle" role="radiogroup" aria-label="Theme mode">
+                {(["light", "dark"] as ThemeMode[]).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    className={`theme-mode-option${draftTheme.mode === mode ? " active" : ""}`}
+                    aria-checked={draftTheme.mode === mode}
+                    role="radio"
+                    onClick={() => updateDraftTheme({ mode })}
+                  >
+                    {mode.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+
+              <md-filled-button className="theme-save-button" onClick={handleSaveTheme}>
+                SAVE
+              </md-filled-button>
+            </div>
+          )}
         </div>
         
         {cardView === "main" && (
           <div className={`connect-bottom-buttons${cardPhase === "exit" ? " btn-exit" : ""}`}>
             <md-filled-tonal-button onClick={() => switchCard("help")}>
+              <span className="bottom-action-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9.1 9a3 3 0 1 1 4.8 2.4c-1.1.8-1.9 1.4-1.9 2.6" />
+                  <path d="M12 17h.01" />
+                </svg>
+              </span>
               HELP
             </md-filled-tonal-button>
             <md-filled-tonal-button onClick={() => switchCard("about")}>
+              <span className="bottom-action-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 16v-4" />
+                  <path d="M12 8h.01" />
+                </svg>
+              </span>
               ABOUT
             </md-filled-tonal-button>
-            <md-filled-tonal-button onClick={() => window.open("https://github.com/hex/YAADU", "_blank")}>
-              GITHUB
+            <md-filled-tonal-button onClick={() => switchCard("theme")}>
+              <span className="bottom-action-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 3a9 9 0 0 0 0 18h.8a1.8 1.8 0 0 0 1.7-2.4l-.5-1.5a1.8 1.8 0 0 1 1.7-2.4H17a4 4 0 0 0 4-4C21 6.4 17 3 12 3Z" />
+                  <circle cx="7.5" cy="10.5" r=".8" fill="currentColor" />
+                  <circle cx="10" cy="7.5" r=".8" fill="currentColor" />
+                  <circle cx="14" cy="7.5" r=".8" fill="currentColor" />
+                  <circle cx="16.5" cy="10.5" r=".8" fill="currentColor" />
+                </svg>
+              </span>
+              THEME
             </md-filled-tonal-button>
           </div>
         )}

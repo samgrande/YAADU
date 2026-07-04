@@ -4,6 +4,7 @@ import { initialState, appReducer } from "./state.js";
 import { ConnectScreen } from "./ui/panels/ConnectScreen.js";
 import { Dashboard } from "./ui/Dashboard.js";
 import { ToastContainer } from "./ui/Toast.js";
+import { applyYaaduTheme, loadStoredTheme } from "./theme.js";
 
 // Import Material Web Components
 import "@material/web/button/filled-button.js";
@@ -27,20 +28,12 @@ if (typescaleStyles.styleSheet) {
   document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
 }
 
-import { themeFromSourceColor, argbFromHex, applyTheme } from "@material/material-color-utilities";
-
-const SOURCE_COLOR = "#376A3E";
-
-function generateAndApplyTheme(): void {
-  const theme = themeFromSourceColor(argbFromHex(SOURCE_COLOR));
-  applyTheme(theme, { target: document.documentElement, dark: false });
-}
 
 export function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
   useEffect(() => {
-    generateAndApplyTheme();
+    applyYaaduTheme(loadStoredTheme());
 
     // Global Ripple Animation
     const handleRipple = (e: MouseEvent) => {

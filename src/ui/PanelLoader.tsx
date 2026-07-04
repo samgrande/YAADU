@@ -1,26 +1,25 @@
 import { useEffect, useRef } from "react";
-import { DotLottie } from "@lottiefiles/dotlottie-web";
-import loadingLottie from "../assets/loading.lottie";
+import lottie from "lottie-web";
+import loadingAnimation from "../assets/loading.json";
 
 export function PanelLoader() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
-    const dotLottie = new DotLottie({
-      canvas: canvasRef.current,
-      src: loadingLottie as unknown as string,
-      autoplay: true,
+    if (!containerRef.current) return;
+    const anim = lottie.loadAnimation({
+      container: containerRef.current,
+      renderer: "svg",
       loop: true,
+      autoplay: true,
+      animationData: loadingAnimation,
     });
-    return () => {
-      dotLottie.destroy();
-    };
+    return () => anim.destroy();
   }, []);
 
   return (
     <div className="panel-loader">
-      <canvas ref={canvasRef} className="panel-loader-canvas" />
+      <div ref={containerRef} className="panel-loader-canvas" />
     </div>
   );
 }

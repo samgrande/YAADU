@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@lottiefiles/dotlottie-web": "^0.76.0",
     "@material/material-color-utilities": "^0.4.0",
     "@material/web": "^2.4.1",
     "@vitejs/plugin-react": "^4.7.0",
@@ -8,6 +7,7 @@
     "@yume-chan/adb-backend-webusb": "^0.0.19",
     "@yume-chan/stream-extra": "^0.0.19",
     "jszip": "^3.10.1",
+    "lottie-web": "^5.13.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

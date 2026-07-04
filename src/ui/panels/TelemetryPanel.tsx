@@ -14,6 +14,7 @@ import {
 import { useAppContext } from "../../context.js";
 import { toast } from "../Toast.js";
 import { ScrollPill } from "../ScrollPill.js";
+import { PanelLoader } from "../PanelLoader.js";
 
 // ── Android version logos ──────────────────────────────────────────────────
 
@@ -276,145 +277,147 @@ export function TelemetryPanel({ adb }: Props) {
   return (
     <div className="telem-panel-wrap">
       <div className="telem-panel">
-        {/* Header */}
-        <div className="page-header">
-          <div className="page-title-row">
-            <div className="page-title-icon" dangerouslySetInnerHTML={{ __html: NAVBAR_INFO_ICON }} />
-            <span className="page-title">Device Info</span>
-          </div>
-          <button
-            className="btn-refresh"
-            id="btn-refresh-telem"
-            onClick={loadAll}
-            disabled={rotating}
-          >
-            <svg className={rotating ? "rotating" : ""} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="23 4 23 10 17 10"/>
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-            </svg>
-            <span>Reload</span>
-          </button>
-        </div>
-
-        {/* Column headings — static */}
-        <div className="telem-headings-row">
-          <div className="column-heading">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-            </svg>
-            System and build
-          </div>
-          <div className="column-heading">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-            </svg>
-            Hardware &amp; Display
-          </div>
-          <div className="column-heading">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="10" x2="23" y2="14"/>
-            </svg>
-            Extra Hardware Info
-          </div>
-        </div>
-
-        {/* Telem body — scrollable */}
-        <div className="telem-scroll-wrap" ref={panelRef}>
-          <div className="telem-body">
-          {/* ── Column 1: System & Build ── */}
-          <div className="telem-column col-grid-2">
-            <MetricTile icon={SVG_BRAND} label="BRAND" value={loading ? "—" : (device?.brand ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_MODEL} label="MODEL" value={loading ? "—" : (device?.marketingName ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-
-            {/* Android version tall card */}
-            <div
-              className="metric-tile-m3 tall-card col-span-2 android-version-card"
-              onClick={() => { if (device?.osVersion) copyInfo("ANDROID VERSION", device.osVersion); }}
-              style={{ cursor: device?.osVersion ? "pointer" : undefined }}
-            >
-              <div className="android-version-bg"><span className="android-version-logo" dangerouslySetInnerHTML={{ __html: logoHtml || "" }} /></div>
-              <div className="metric-icon-badge" dangerouslySetInnerHTML={{ __html: SVG_ANDROID }} />
-              <div className="metric-details">
-                <span className="metric-label">ANDROID VERSION</span>
+        {loading ? (
+          <PanelLoader />
+        ) : (
+          <>
+            {/* Header */}
+            <div className="page-header">
+              <div className="page-title-row">
+                <div className="page-title-icon" dangerouslySetInnerHTML={{ __html: NAVBAR_INFO_ICON }} />
+                <span className="page-title">Device Info</span>
               </div>
-              <div className="android-version-hover-pill">
-                <span>Android {device?.osVersion || "—"}</span>
+              <button
+                className="btn-refresh"
+                id="btn-refresh-telem"
+                onClick={loadAll}
+                disabled={rotating}
+              >
+                <svg className={rotating ? "rotating" : ""} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+                <span>Reload</span>
+              </button>
+            </div>
+
+            {/* Column headings — static */}
+            <div className="telem-headings-row">
+              <div className="column-heading">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                System and build
+              </div>
+              <div className="column-heading">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+                Hardware &amp; Display
+              </div>
+              <div className="column-heading">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="10" x2="23" y2="14"/>
+                </svg>
+                Extra Hardware Info
               </div>
             </div>
 
-            <MetricTile icon={SVG_MODEL_NUMBER} label="MODEL NUMBER" value={loading ? "—" : (sysInfo?.buildId ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_CODENAME} label="CODENAME" value={loading ? "—" : (sysInfo?.deviceName ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-          </div>
+            {/* Telem body — scrollable */}
+            <div className="telem-scroll-wrap" ref={panelRef}>
+              <div className="telem-body">
+              {/* ── Column 1: System & Build ── */}
+              <div className="telem-column col-grid-2">
+                <MetricTile icon={SVG_BRAND} label="BRAND" value={device?.brand ?? "—"} />
+                <MetricTile icon={SVG_MODEL} label="MODEL" value={device?.marketingName ?? "—"} />
 
-          {/* ── Column 2: Hardware & Display ── */}
-          <div className="telem-column col-grid-2">
-            {loading ? (
-              <div className="metric-tile-m3 mem-card col-span-2 telemetry-skeleton" style={{ height: "160px" }} />
-            ) : (
-              <MemoryRing usedPct={usedPct} memLabel={memLabel} />
-            )}
-
-            <MetricTile icon={SVG_RESOLUTION} label="RESOLUTION" value={loading ? "—" : (device?.screenSize ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_SCREEN_DPI} label="SCREEN DPI" value={loading ? "—" : (sysInfo?.densityDpi ? `${sysInfo.densityDpi} dpi` : "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_TOUCH} label="TOUCH SCREEN" value={loading ? "—" : (sensors?.touchScreen ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_SENSOR} label="ACTIVE SENSORS" value={loading ? "—" : (sensors?.activeSensors ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-          </div>
-
-          {/* ── Column 3: Extra Hardware Info ── */}
-          <div className="telem-column col-grid-2">
-            {/* Temperature card */}
-            <div className="metric-tile-m3 security-card" style={{ cursor: "pointer" }} onClick={() => {
-              if (battery) copyInfo("TEMPERATURE", `${battery.tempCelsius.toFixed(1)}°C`);
-            }}>
-              <div className="security-card-header">
-                <div className="metric-icon-badge" dangerouslySetInnerHTML={{ __html: SVG_TEMPERATURE }} />
-                <div className="metric-details">
-                  <span className="metric-label">TEMPERATURE</span>
+                {/* Android version tall card */}
+                <div
+                  className="metric-tile-m3 tall-card col-span-2 android-version-card"
+                  onClick={() => { if (device?.osVersion) copyInfo("ANDROID VERSION", device.osVersion); }}
+                  style={{ cursor: device?.osVersion ? "pointer" : undefined }}
+                >
+                  <div className="android-version-bg"><span className="android-version-logo" dangerouslySetInnerHTML={{ __html: logoHtml || "" }} /></div>
+                  <div className="metric-icon-badge" dangerouslySetInnerHTML={{ __html: SVG_ANDROID }} />
+                  <div className="metric-details">
+                    <span className="metric-label">ANDROID VERSION</span>
+                  </div>
+                  <div className="android-version-hover-pill">
+                    <span>Android {device?.osVersion || "—"}</span>
+                  </div>
                 </div>
-              </div>
-              <div className="temp-display">
-                <span className={`temp-value${loading ? " telemetry-skeleton" : ""}`}>
-                  {battery ? battery.tempCelsius.toFixed(1) : "—"}
-                </span>
-                <span className={`temp-unit${loading ? " telemetry-skeleton" : ""}`}>°C</span>
-              </div>
-            </div>
 
-            {/* Security Patch card */}
-            <div className="metric-tile-m3 security-card" style={{ cursor: sysInfo?.securityPatch ? "pointer" : undefined }} onClick={() => {
-              if (sysInfo?.securityPatch) copyInfo("SECURITY PATCH", sysInfo.securityPatch);
-            }}>
-              <div className="security-card-header">
-                <div className="metric-icon-badge" dangerouslySetInnerHTML={{ __html: SVG_SECURITY_PATCH }} />
-                <div className="metric-details">
-                  <span className="metric-label">SECURITY PATCH</span>
+                <MetricTile icon={SVG_MODEL_NUMBER} label="MODEL NUMBER" value={sysInfo?.buildId ?? "—"} />
+                <MetricTile icon={SVG_CODENAME} label="CODENAME" value={sysInfo?.deviceName ?? "—"} />
+              </div>
+
+              {/* ── Column 2: Hardware & Display ── */}
+              <div className="telem-column col-grid-2">
+                <MemoryRing usedPct={usedPct} memLabel={memLabel} />
+
+                <MetricTile icon={SVG_RESOLUTION} label="RESOLUTION" value={device?.screenSize ?? "—"} />
+                <MetricTile icon={SVG_SCREEN_DPI} label="SCREEN DPI" value={sysInfo?.densityDpi ? `${sysInfo.densityDpi} dpi` : "—"} />
+                <MetricTile icon={SVG_TOUCH} label="TOUCH SCREEN" value={sensors?.touchScreen ?? "—"} />
+                <MetricTile icon={SVG_SENSOR} label="ACTIVE SENSORS" value={sensors?.activeSensors ?? "—"} />
+              </div>
+
+              {/* ── Column 3: Extra Hardware Info ── */}
+              <div className="telem-column col-grid-2">
+                {/* Temperature card */}
+                <div className="metric-tile-m3 security-card" style={{ cursor: "pointer" }} onClick={() => {
+                  if (battery) copyInfo("TEMPERATURE", `${battery.tempCelsius.toFixed(1)}°C`);
+                }}>
+                  <div className="security-card-header">
+                    <div className="metric-icon-badge" dangerouslySetInnerHTML={{ __html: SVG_TEMPERATURE }} />
+                    <div className="metric-details">
+                      <span className="metric-label">TEMPERATURE</span>
+                    </div>
+                  </div>
+                  <div className="temp-display">
+                    <span className="temp-value">
+                      {battery ? battery.tempCelsius.toFixed(1) : "—"}
+                    </span>
+                    <span className="temp-unit">°C</span>
+                  </div>
                 </div>
-              </div>
-              <div className={`security-calendar-display${loading ? " telemetry-skeleton" : ""}`}>
-                {!loading && sysInfo && <SecurityCalendar patch={sysInfo.securityPatch} />}
-                {(loading || !sysInfo) && (
-                  <>
-                    <span className="sec-day">—</span>
-                    <span className="sec-month-weekday">— —</span>
-                    <span className="sec-year">—</span>
-                  </>
-                )}
+
+                {/* Security Patch card */}
+                <div className="metric-tile-m3 security-card" style={{ cursor: sysInfo?.securityPatch ? "pointer" : undefined }} onClick={() => {
+                  if (sysInfo?.securityPatch) copyInfo("SECURITY PATCH", sysInfo.securityPatch);
+                }}>
+                  <div className="security-card-header">
+                    <div className="metric-icon-badge" dangerouslySetInnerHTML={{ __html: SVG_SECURITY_PATCH }} />
+                    <div className="metric-details">
+                      <span className="metric-label">SECURITY PATCH</span>
+                    </div>
+                  </div>
+                  <div className="security-calendar-display">
+                    {sysInfo && <SecurityCalendar patch={sysInfo.securityPatch} />}
+                    {!sysInfo && (
+                      <>
+                        <span className="sec-day">—</span>
+                        <span className="sec-month-weekday">— —</span>
+                        <span className="sec-year">—</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <MetricTile icon={SVG_HEALTH} label="HEALTH" value={battery?.health ?? "—"} />
+                <MetricTile icon={SVG_BATTERY} label="CAPACITY" value={battery?.capacity ? `${battery.capacity} mAh` : "—"} />
+                <MetricTile icon={SVG_BATTERY_TYPE_ICON} label="BATTERY TYPE" value={battery?.technology ?? "—"} />
+                <MetricTile icon={SVG_SDK_LEVEL} label="SDK LEVEL" value={sysInfo?.sdkVersion ?? "—"} />
+                <MetricTile icon={SVG_CPU} label="CPU" value={sysInfo?.cpuAbi ?? "—"} />
+                <MetricTile icon={SVG_WIFI} label="Wi-Fi SSID" value={wifi?.wifiSsid ?? "—"} />
+                <MetricTile icon={SVG_IP} label="IP ADDRESS" value={wifi?.ipAddress ?? "—"} />
+                <MetricTile icon={SVG_SIGNAL} label="SIGNAL (RSSI)" value={wifi?.rssi ?? "—"} />
+                <MetricTile icon={SVG_LINK_SPEED} label="LINK SPEED" value={wifi?.linkSpeed ?? "—"} />
+                <MetricTile icon={SVG_FREQUENCY} label="FREQUENCY" value={wifi?.frequency ?? "—"} />
               </div>
             </div>
-
-            <MetricTile icon={SVG_HEALTH} label="HEALTH" value={loading ? "—" : (battery?.health ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_BATTERY} label="CAPACITY" value={loading ? "—" : (battery?.capacity ? `${battery.capacity} mAh` : "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_BATTERY_TYPE_ICON} label="BATTERY TYPE" value={loading ? "—" : (battery?.technology ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_SDK_LEVEL} label="SDK LEVEL" value={loading ? "—" : (sysInfo?.sdkVersion ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_CPU} label="CPU" value={loading ? "—" : (sysInfo?.cpuAbi ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_WIFI} label="Wi-Fi SSID" value={loading ? "—" : (wifi?.wifiSsid ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_IP} label="IP ADDRESS" value={loading ? "—" : (wifi?.ipAddress ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_SIGNAL} label="SIGNAL (RSSI)" value={loading ? "—" : (wifi?.rssi ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_LINK_SPEED} label="LINK SPEED" value={loading ? "—" : (wifi?.linkSpeed ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-            <MetricTile icon={SVG_FREQUENCY} label="FREQUENCY" value={loading ? "—" : (wifi?.frequency ?? "—")} className={loading ? "telemetry-skeleton" : ""} />
-          </div>
-        </div>
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

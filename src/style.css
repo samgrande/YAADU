@@ -1209,10 +1209,9 @@ md-dialog {
   gap: 1rem;
 }
 
-.panel-loader dotlottie-player {
-  width: 200px !important;
-  height: 200px !important;
-  --theme-color: var(--md-sys-color-primary);
+.panel-loader-canvas {
+  width: 200px;
+  height: 200px;
   filter: drop-shadow(0 0 1rem color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent));
 }
 

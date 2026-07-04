@@ -1,31 +1,26 @@
 import { useEffect, useRef } from "react";
-import "@dotlottie/player-component";
+import { DotLottie } from "@lottiefiles/dotlottie-web";
 import loadingLottie from "../assets/loading.lottie";
 
 export function PanelLoader() {
-  const ref = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const player = el.querySelector("dotlottie-player") as any;
-    if (player) {
-      player.addEventListener("load", () => {
-        player.play();
-      });
-    }
+    if (!canvasRef.current) return;
+    const dotLottie = new DotLottie({
+      canvas: canvasRef.current,
+      src: loadingLottie as unknown as string,
+      autoplay: true,
+      loop: true,
+    });
+    return () => {
+      dotLottie.destroy();
+    };
   }, []);
 
   return (
     <div className="panel-loader">
-      <div ref={ref}>
-        <dotlottie-player
-          src={loadingLottie}
-          autoplay
-          loop
-          style={{ width: "120px", height: "120px" }}
-        />
-      </div>
+      <canvas ref={canvasRef} className="panel-loader-canvas" />
     </div>
   );
 }

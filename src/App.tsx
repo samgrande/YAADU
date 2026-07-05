@@ -77,9 +77,9 @@ export function App() {
       const setTableValue = (id: string, ...values: number[]) => {
         document.getElementById(id)?.setAttribute('tableValues', values.join(' '));
       };
-      setTableValue('android-func-r', 1, color.r, color.r, 1, 1);
-      setTableValue('android-func-g', 1, color.g, color.g, 1, 1);
-      setTableValue('android-func-b', 1, color.b, color.b, 1, 1);
+      setTableValue('android-func-r', 0, color.r, 1);
+      setTableValue('android-func-g', 0, color.g, 1);
+      setTableValue('android-func-b', 0, color.b, 1);
     };
 
     updateFilter();
@@ -166,9 +166,9 @@ export function App() {
             <filter id="android-theme-map" color-interpolation-filters="sRGB">
               <feColorMatrix type="saturate" values="0" in="SourceGraphic" />
               <feComponentTransfer>
-              <feFuncR id="android-func-r" type="table" tableValues="1 0 0 1 1" />
-              <feFuncG id="android-func-g" type="table" tableValues="1 0 0 1 1" />
-              <feFuncB id="android-func-b" type="table" tableValues="1 0 0 1 1" />
+                <feFuncR id="android-func-r" type="table" tableValues="0 0 1" />
+                <feFuncG id="android-func-g" type="table" tableValues="0 0 1" />
+                <feFuncB id="android-func-b" type="table" tableValues="0 0 1" />
               </feComponentTransfer>
             </filter>
           </defs>

@@ -203,6 +203,57 @@ select {
   pointer-events: none;
 }
 
+.connect-marquee-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.marquee-row {
+  overflow: hidden;
+  width: 50rem;
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  animation: marquee-scroll var(--speed, 25s) linear infinite;
+}
+
+.marquee-track.reverse {
+  animation-direction: reverse;
+}
+
+.marquee-icon {
+  flex-shrink: 0;
+  opacity: 0.1;
+  color: var(--md-sys-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marquee-icon svg {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 .connect-content-wrapper {
   display: flex;
   flex-direction: column;
@@ -1802,14 +1853,14 @@ md-dialog {
   height: 100%;
 }
 
-.android-version-logo svg,
 .tweak-card-illus svg {
-  filter: url(#android-theme-map);
-  transition: opacity 0.3s var(--ease), filter 0.3s var(--ease);
+  transition: opacity 0.3s var(--ease);
 }
 
 .android-version-logo svg {
+  filter: url(#android-theme-map);
   opacity: 0.55;
+  transition: opacity 0.3s var(--ease), filter 0.3s var(--ease);
 }
 
 .android-version-card:hover .android-version-logo svg {
@@ -3704,7 +3755,7 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .backup-file-count-badge {
-  background: var(--md-sys-color-surface-variant);
+  background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
   font-family: 'Roboto', sans-serif;
   font-weight: 700;
@@ -3838,9 +3889,10 @@ md-filled-tonal-button .m3-ripple {
 
 .file-icon-circle {
   width: 2.25rem;
-  height: var(--nav-pill-h);
+  height: 2.25rem;
   border-radius: 50%;
   background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4035,7 +4087,7 @@ md-filled-tonal-button .m3-ripple {
 
 .tweak-card-illus {
   background: var(--md-sys-color-primary-container);
-  height: clamp(16.25rem, 20vh, 20rem);
+  height: clamp(22.5rem, 28vh, 27.5rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4046,15 +4098,10 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .tweak-card-illus svg {
-  width: 70%;
-  height: 70%;
+  width: 80%;
+  height: 80%;
   object-fit: cover;
   transition: transform 0.3s var(--ease);
-}
-
-.tweak-card-illus--theme svg {
-  width: 77%;
-  height: 77%;
 }
 
 .tweak-card:hover .tweak-card-illus svg {
@@ -4079,14 +4126,14 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .tweak-card-title {
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.0625rem;
 }
 
 .tweak-card-desc {
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
   line-height: 1.5;
   flex: 1;

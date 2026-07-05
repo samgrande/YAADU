@@ -88,6 +88,7 @@ export function Dashboard({ adb }: { adb: Adb }) {
   const handleDisconnect = () => {
     if (confirm("Disconnect from device?")) {
       disconnectDevice(dispatch, adb);
+      window.location.reload();
     }
   };
 

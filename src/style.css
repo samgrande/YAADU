@@ -1212,7 +1212,10 @@ md-dialog {
 .panel-loader-canvas {
   width: 200px;
   height: 200px;
-  filter: drop-shadow(0 0 1rem color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent));
+  filter: drop-shadow(0 0 1rem color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent))
+    hue-rotate(calc((var(--theme-hue, 0) / 360) * 360deg))
+    saturate(calc((var(--theme-saturation, 1) * 100%) - 100%))
+    brightness(var(--theme-brightness, 1));
 }
 
 .panel-area {
@@ -1800,17 +1803,14 @@ md-dialog {
 }
 
 .android-version-logo svg {
-  opacity: 0.38;
-  filter: saturate(0.6);
+  opacity: 0.55;
+  filter: url(#android-theme-map);
+  transition: opacity 0.3s var(--ease), filter 0.3s var(--ease);
 }
 
-.android-version-logo::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--md-sys-color-primary);
-  mix-blend-mode: color;
-  pointer-events: none;
+.android-version-card:hover .android-version-logo svg {
+  opacity: 0.75;
+  filter: url(#android-theme-map) brightness(1.15);
 }
 
 .android-version-hover-pill {

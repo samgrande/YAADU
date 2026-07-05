@@ -263,6 +263,47 @@ export function TelemetryPanel({ adb }: Props) {
 
   useEffect(() => { loadAll(); }, [loadAll]);
 
+  useEffect(() => {
+    const parseCssColor = (value: string): { r: number; g: number; b: number } | null => {
+      const hex = value.match(/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+      if (hex) {
+        return {
+          r: parseInt(hex[1], 16) / 255,
+          g: parseInt(hex[2], 16) / 255,
+          b: parseInt(hex[3], 16) / 255,
+        };
+      }
+      const rgb = value.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*[\d.]+\s*)?\)$/i);
+      if (rgb) {
+        return {
+          r: parseInt(rgb[1]) / 255,
+          g: parseInt(rgb[2]) / 255,
+          b: parseInt(rgb[3]) / 255,
+        };
+      }
+      return null;
+    };
+
+    const updateFilter = () => {
+      const raw = getComputedStyle(document.documentElement)
+        .getPropertyValue('--md-sys-color-primary');
+      const color = parseCssColor(raw.trim());
+      if (!color) return;
+
+      const setTableValue = (id: string, v0: number, v1: number, v2: number) => {
+        document.getElementById(id)?.setAttribute('tableValues', `${v0} ${v1} ${v2}`);
+      };
+
+      setTableValue('android-func-r', 0, color.r, 1);
+      setTableValue('android-func-g', 0, color.g, 1);
+      setTableValue('android-func-b', 0, color.b, 1);
+    };
+
+    updateFilter();
+    window.addEventListener('themeChange', updateFilter);
+    return () => window.removeEventListener('themeChange', updateFilter);
+  }, []);
+
   const currentDevice = state.device || device;
   const osKey = currentDevice ? osVersionKey(currentDevice.osVersion) : "";
   const logoHtml = SVG_ANDROID_LOGO[osKey];
@@ -273,33 +314,49 @@ export function TelemetryPanel({ adb }: Props) {
   const usedGb = (totalNum - availNum).toFixed(1);
   const usedPct = totalNum > 0 ? Math.round((1 - availNum / totalNum) * 100) : 0;
   const memLabel = sysInfo ? `${usedGb} GB / ${sysInfo.totalMemory}` : "—";
-
   return (
-    <div className="telem-panel-wrap">
-      <div className="telem-panel">
-        {loading ? (
-          <PanelLoader />
-        ) : (
-          <>
-            {/* Header */}
-            <div className="page-header">
-              <div className="page-title-row">
-                <div className="page-title-icon" dangerouslySetInnerHTML={{ __html: NAVBAR_INFO_ICON }} />
-                <span className="page-title">Device Info</span>
+    <>
+      {/* Hidden SVG filter for gradient map on Android version logos */}
+      <div style={{ display: 'none' }}>
+        <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0 }}>
+          <defs>
+            <filter id="android-theme-map" color-interpolation-filters="sRGB">
+              <feColorMatrix type="saturate" values="0" in="SourceGraphic" />
+              <feComponentTransfer>
+                <feFuncR id="android-func-r" type="table" tableValues="0 0 1" />
+                <feFuncG id="android-func-g" type="table" tableValues="0 0 1" />
+                <feFuncB id="android-func-b" type="table" tableValues="0 0 1" />
+              </feComponentTransfer>
+            </filter>
+          </defs>
+        </svg>
+      </div>
+      <div className="telem-panel-wrap">
+        <div className="telem-panel">
+          {loading ? (
+            <PanelLoader />
+          ) : (
+            <>
+
+              {/* Header */}
+              <div className="page-header">
+                <div className="page-title-row">
+                  <div className="page-title-icon" dangerouslySetInnerHTML={{ __html: NAVBAR_INFO_ICON }} />
+                  <span className="page-title">Device Info</span>
+                </div>
+                <button
+                  className="btn-refresh"
+                  id="btn-refresh-telem"
+                  onClick={loadAll}
+                  disabled={rotating}
+                >
+                  <svg className={rotating ? "rotating" : ""} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="23 4 23 10 17 10"/>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  <span>Reload</span>
+                </button>
               </div>
-              <button
-                className="btn-refresh"
-                id="btn-refresh-telem"
-                onClick={loadAll}
-                disabled={rotating}
-              >
-                <svg className={rotating ? "rotating" : ""} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="23 4 23 10 17 10"/>
-                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-                </svg>
-                <span>Reload</span>
-              </button>
-            </div>
 
             {/* Column headings — static */}
             <div className="telem-headings-row">
@@ -420,5 +477,6 @@ export function TelemetryPanel({ adb }: Props) {
         )}
       </div>
     </div>
+    </>
   );
 }

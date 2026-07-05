@@ -50,4 +50,35 @@ export function applyYaaduTheme(theme: YaaduTheme): void {
     dark: theme.mode === "dark",
   });
   document.documentElement.dataset.themeMode = theme.mode;
+
+  const primaryColor = theme.color.length === 7 && theme.color.startsWith('#') ? theme.color : '#376A3E';
+  const rgb = primaryColor.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+  if (rgb) {
+    const [_, r, g, b] = rgb.map(val => parseInt(val, 16));
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let hue = 0;
+    
+    if (max !== min) {
+      const d = max - min;
+      if (max === r) {
+        hue = (g - b) / d;
+      } else if (max === g) {
+        hue = (b - r) / d + 2;
+      } else {
+        hue = (r - g) / d + 4;
+      }
+      hue *= 60;
+      if (hue < 0) hue += 360;
+    }
+    
+    const saturation = max === 0 ? 0 : (max - min) / max;
+    const brightness = max / 255;
+    
+    document.documentElement.style.setProperty('--theme-hue', `${hue}`);
+    document.documentElement.style.setProperty('--theme-saturation', `${Math.min(saturation, 0.5)}`);
+    document.documentElement.style.setProperty('--theme-brightness', `${brightness + 0.15}`);
+  }
+
+  window.dispatchEvent(new CustomEvent('themeChange', { detail: theme }));
 }

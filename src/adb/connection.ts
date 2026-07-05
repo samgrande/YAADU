@@ -51,8 +51,8 @@ export async function connectDevice(dispatch: React.Dispatch<AppAction>): Promis
     // Step 4: Watch for disconnects
     adb.disconnected
       .then(() => handleDisconnect(dispatch, "Device disconnected unexpectedly."))
-      .catch((err: unknown) =>
-        handleDisconnect(dispatch, `Connection lost: ${err instanceof Error ? err.message : String(err)}`)
+      .catch(() =>
+        handleDisconnect(dispatch, "Oops, it seems you have unplugged your device")
       );
 
   } catch (err: unknown) {

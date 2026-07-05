@@ -236,7 +236,7 @@ export function TweaksPanel({ adb }: Props) {
         {/* System Theme Card */}
         <div className="tweak-card">
           <div
-            className="tweak-card-illus"
+            className="tweak-card-illus tweak-card-illus--theme"
             dangerouslySetInnerHTML={{ __html: themeSvg }}
           />
           <div className="tweak-card-body">

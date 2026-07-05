@@ -48,6 +48,43 @@ export function App() {
   useEffect(() => {
     applyYaaduTheme(loadStoredTheme());
 
+    // Gradient map filter for SVG illustrations
+    const parseCssColor = (value: string): { r: number; g: number; b: number } | null => {
+      const hex = value.match(/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+      if (hex) {
+        return {
+          r: parseInt(hex[1], 16) / 255,
+          g: parseInt(hex[2], 16) / 255,
+          b: parseInt(hex[3], 16) / 255,
+        };
+      }
+      const rgb = value.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*[\d.]+\s*)?\)$/i);
+      if (rgb) {
+        return {
+          r: parseInt(rgb[1]) / 255,
+          g: parseInt(rgb[2]) / 255,
+          b: parseInt(rgb[3]) / 255,
+        };
+      }
+      return null;
+    };
+
+    const updateFilter = () => {
+      const raw = getComputedStyle(document.documentElement)
+        .getPropertyValue('--md-sys-color-primary');
+      const color = parseCssColor(raw.trim());
+      if (!color) return;
+      const setTableValue = (id: string, ...values: number[]) => {
+        document.getElementById(id)?.setAttribute('tableValues', values.join(' '));
+      };
+      setTableValue('android-func-r', 1, color.r, color.r, 1, 1);
+      setTableValue('android-func-g', 1, color.g, color.g, 1, 1);
+      setTableValue('android-func-b', 1, color.b, color.b, 1, 1);
+    };
+
+    updateFilter();
+    window.addEventListener('themeChange', updateFilter);
+
     // Global Ripple Animation
     const handleRipple = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -80,6 +117,7 @@ export function App() {
     document.addEventListener("mousedown", handleRipple);
     return () => {
       document.removeEventListener("mousedown", handleRipple);
+      window.removeEventListener('themeChange', updateFilter);
     };
   }, []);
 
@@ -120,13 +158,30 @@ export function App() {
   }
 
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
-      {state.connection === "connected" && state.adb ? (
-        <Dashboard adb={state.adb} />
-      ) : (
-        <ConnectScreen />
-      )}
-      <ToastContainer />
-    </AppContext.Provider>
+    <>
+      {/* Hidden SVG filter for gradient map on SVGs throughout the app */}
+      <div style={{ display: 'none' }}>
+        <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0 }}>
+          <defs>
+            <filter id="android-theme-map" color-interpolation-filters="sRGB">
+              <feColorMatrix type="saturate" values="0" in="SourceGraphic" />
+              <feComponentTransfer>
+              <feFuncR id="android-func-r" type="table" tableValues="1 0 0 1 1" />
+              <feFuncG id="android-func-g" type="table" tableValues="1 0 0 1 1" />
+              <feFuncB id="android-func-b" type="table" tableValues="1 0 0 1 1" />
+              </feComponentTransfer>
+            </filter>
+          </defs>
+        </svg>
+      </div>
+      <AppContext.Provider value={{ state, dispatch }}>
+        {state.connection === "connected" && state.adb ? (
+          <Dashboard adb={state.adb} />
+        ) : (
+          <ConnectScreen />
+        )}
+        <ToastContainer />
+      </AppContext.Provider>
+    </>
   );
 }

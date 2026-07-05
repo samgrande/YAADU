@@ -9,6 +9,7 @@ import {
 } from "../../adb/apps.js";
 import { toast } from "../Toast.js";
 import { ScrollPill } from "../ScrollPill.js";
+import { PanelLoader } from "../PanelLoader.js";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -307,12 +308,7 @@ export function AppsPanel({ adb }: Props) {
       <div className="apps-scroll-wrap">
         <div className="card-body no-pad" style={{ flex: 1, overflowY: "auto" }} ref={panelRef}>
           {loading ? (
-            <div className="apps-loading">
-              <svg className="spinner-stroke" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <circle cx="12" cy="12" r="9" strokeDasharray="40 10"/>
-              </svg>
-              <span>Loading apps…</span>
-            </div>
+            <PanelLoader />
           ) : (
             <div className="apps-grid" id="apps-grid">
               {filtered.length === 0 ? (

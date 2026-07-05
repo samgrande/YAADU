@@ -1802,10 +1802,14 @@ md-dialog {
   height: 100%;
 }
 
-.android-version-logo svg {
-  opacity: 0.55;
+.android-version-logo svg,
+.tweak-card-illus svg {
   filter: url(#android-theme-map);
   transition: opacity 0.3s var(--ease), filter 0.3s var(--ease);
+}
+
+.android-version-logo svg {
+  opacity: 0.55;
 }
 
 .android-version-card:hover .android-version-logo svg {
@@ -4048,24 +4052,9 @@ md-filled-tonal-button .m3-ripple {
   transition: transform 0.3s var(--ease);
 }
 
-.tweak-card-illus svg path,
-.tweak-card-illus svg circle,
-.tweak-card-illus svg rect,
-.tweak-card-illus svg ellipse,
-.tweak-card-illus svg polygon {
-  fill: var(--md-sys-color-primary) !important;
-}
-
-.tweak-card-illus svg path:nth-of-type(2n),
-.tweak-card-illus svg circle:nth-of-type(2n),
-.tweak-card-illus svg rect:nth-of-type(2n) {
-  fill: var(--md-sys-color-primary-container) !important;
-}
-
-.tweak-card-illus svg path:nth-of-type(3n),
-.tweak-card-illus svg circle:nth-of-type(3n),
-.tweak-card-illus svg rect:nth-of-type(3n) {
-  fill: var(--md-sys-color-on-primary-container) !important;
+.tweak-card-illus--theme svg {
+  width: 77%;
+  height: 77%;
 }
 
 .tweak-card:hover .tweak-card-illus svg {

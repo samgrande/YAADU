@@ -1,5 +1,6 @@
 import type { Adb } from "@yume-chan/adb";
-import { LinuxFileType, type AdbSyncEntry } from "@yume-chan/adb";
+import { LinuxFileType } from "@yume-chan/adb";
+import type { AdbSyncEntry } from "@yume-chan/adb";
 import { formatBytes } from "./helpers.js";
 import JSZip from "jszip";
 
@@ -76,6 +77,107 @@ function sanitizeDeviceName(name: string): string {
   return name.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_\-.]/g, "");
 }
 
+export async function checkWhatsAppDir(adb: Adb): Promise<boolean> {
+  const sync = await adb.sync();
+  try {
+    return await sync.isDirectory("/sdcard/Android/media/com.whatsapp/WhatsApp/Media");
+  } catch {
+    return false;
+  } finally {
+    await sync.dispose();
+  }
+}
+
+async function walkDir(sync: Awaited<ReturnType<Adb["sync"]>>, dir: string): Promise<string[]> {
+  const results: string[] = [];
+  const entries = await sync.readdir(dir);
+  for (const entry of entries) {
+    if (entry.type === LinuxFileType.File) {
+      results.push(`${dir}/${entry.name}`);
+    } else if (entry.type === LinuxFileType.Directory && entry.name !== "." && entry.name !== "..") {
+      const sub = await walkDir(sync, `${dir}/${entry.name}`);
+      results.push(...sub);
+    }
+  }
+  return results;
+}
+
+export async function backupWhatsApp(
+  adb: Adb,
+  onProgress: (p: BackupProgress) => void,
+  signal?: AbortSignal,
+  deviceName?: string
+): Promise<SavedFile[]> {
+  const saved: SavedFile[] = [];
+  const downloaded: ArrayBuffer[] = [];
+  let sync;
+  let totalFiles = 0;
+  const basePath = "/sdcard/Android/media/com.whatsapp";
+  try {
+    sync = await adb.sync();
+    onProgress({ phase: "scanning", current: 0, total: 0, fileName: "", message: "Scanning WhatsApp files…", savedFiles: [] });
+    const allFiles = await walkDir(sync, basePath);
+    totalFiles = allFiles.length;
+    if (signal?.aborted) return saved;
+
+    for (let i = 0; i < totalFiles; i++) {
+      if (signal?.aborted) break;
+      const fullPath = allFiles[i];
+      const relativePath = fullPath.slice(basePath.length + 1);
+
+      onProgress({
+        phase: "downloading", current: i + 1, total: totalFiles,
+        fileName: relativePath,
+        message: `Downloading WhatsApp/${relativePath}`,
+        savedFiles: [...saved],
+      });
+
+      try {
+        const stream = sync.read(fullPath) as unknown as ReadableStream<Uint8Array>;
+        const bytes = await readStreamToBuffer(stream);
+        const plain = new ArrayBuffer(bytes.length);
+        new Uint8Array(plain).set(bytes);
+        downloaded.push(plain);
+        saved.push({ name: relativePath, size: BigInt(bytes.length), status: "ok", message: "Downloaded" });
+      } catch (err) {
+        downloaded.push(new ArrayBuffer(0));
+        saved.push({ name: relativePath, size: BigInt(0), status: "error", message: String(err) });
+      }
+
+      await new Promise((r) => setTimeout(r, 150));
+    }
+  } finally {
+    try { await sync?.dispose(); } catch { /* ignore */ }
+  }
+
+  if (signal?.aborted) return saved;
+
+  onProgress({
+    phase: "zipping", current: 0, total: saved.length,
+    fileName: "", message: "Creating WhatsApp zip archive…",
+    savedFiles: [...saved],
+  });
+
+  const zip = new JSZip();
+  for (let i = 0; i < saved.length; i++) {
+    if (saved[i].status === "ok") {
+      zip.file(`com.whatsapp/${saved[i].name}`, downloaded[i]);
+    }
+  }
+
+  const zipBlob = await zip.generateAsync({ type: "blob" });
+  const safeName = deviceName ? sanitizeDeviceName(deviceName) : "device";
+  triggerBrowserDownload(zipBlob, `${safeName}_whatsapp_media_backup.zip`);
+
+  onProgress({
+    phase: "done", current: totalFiles, total: totalFiles,
+    fileName: "", message: `WhatsApp backup complete. ${saved.filter(s => s.status === "ok").length}/${totalFiles} files saved.`,
+    savedFiles: [...saved],
+  });
+
+  return saved;
+}
+
 export async function downloadSingleFile(adb: Adb, entry: BackupEntry): Promise<void> {
   const sync = await adb.sync();
   try {
@@ -131,6 +233,8 @@ export async function backupMediaFiles(
     try { await sync?.dispose(); } catch { /* ignore */ }
   }
 
+  if (signal?.aborted) return saved;
+
   onProgress({
     phase: "zipping", current: 0, total: saved.length,
     fileName: "", message: "Creating zip archive…",
@@ -139,7 +243,6 @@ export async function backupMediaFiles(
 
   const zip = new JSZip();
   for (let i = 0; i < saved.length; i++) {
-    if (signal?.aborted) break;
     if (saved[i].status === "ok") {
       zip.file(saved[i].name, downloaded[i]);
     }

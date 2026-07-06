@@ -195,7 +195,7 @@ declare global {
 
 export function AppsPanel({ adb }: Props) {
   const [apps, setApps]                   = useState<AppEntry[]>([]);
-  const [loading, setLoading]             = useState(false);
+  const [loading, setLoading]             = useState(true);
   const [pendingLabels, setPendingLabels] = useState(0);
   const [filter, setFilter]               = useState("");
   const [showInstaller, setShowInstaller] = useState(false);

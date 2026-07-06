@@ -313,28 +313,29 @@ export function AppsPanel({ adb }: Props) {
       </div>
 
       <div className="apps-scroll-wrap">
-        <div className="card-body no-pad" style={{ flex: 1, overflowY: "auto" }} ref={panelRef}>
-          {loading || pendingLabels > 0 ? (
-            <PanelLoader />
-          ) : (
-            <div className="apps-grid" id="apps-grid">
-              {filtered.length === 0 ? (
-                <div className="apps-empty">
-                  {apps.length === 0 ? "No user apps found" : "No apps match your filter"}
-                </div>
-              ) : (
-                filtered.map((entry) => (
-                  <AppCard
-                    key={entry.packageName}
-                    entry={entry}
-                    adb={adb}
-                    onRemove={handleRemove}
-                    onLabelLoaded={handleLabelLoaded}
-                  />
-                ))
-              )}
+        <div className="card-body no-pad" style={{ flex: 1, overflowY: "auto", position: "relative" }} ref={panelRef}>
+          {(loading || pendingLabels > 0) && (
+            <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "var(--md-sys-color-surface)" }}>
+              <PanelLoader />
             </div>
           )}
+          <div className="apps-grid" id="apps-grid">
+            {filtered.length === 0 ? (
+              <div className="apps-empty">
+                {apps.length === 0 ? "No user apps found" : "No apps match your filter"}
+              </div>
+            ) : (
+              filtered.map((entry) => (
+                <AppCard
+                  key={entry.packageName}
+                  entry={entry}
+                  adb={adb}
+                  onRemove={handleRemove}
+                  onLabelLoaded={handleLabelLoaded}
+                />
+              ))
+            )}
+          </div>
         </div>
         <ScrollPill panelRef={panelRef} />
       </div>

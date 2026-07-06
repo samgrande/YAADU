@@ -20,14 +20,17 @@ yaadu/
     ├── style.css                Full design system — M3 token mapping, layout, clamp() sizing
     │
     ├── adb/                     ── ADB Protocol Layer ──────────────────────
-    │   ├── credential.ts        YaaduCredentialStore — RSA-2048 via Web Crypto, localStorage
+    │   ├── credential.ts        YaaduCredentialStore — RSA-2048 via Web Crypto, AES-256-GCM
+    │   │                        encrypted at rest, wrapping key in IndexedDB (non-extractable)
     │   ├── connection.ts        WebUSB lifecycle, Adb.authenticate(), disconnect handling
     │   ├── helpers.ts           shell() / shellFull() / getProp() / formatBytes()
+    │   ├── errors.ts            WebUSB DOMException → user-friendly message normalizer
     │   ├── telemetry.ts         Device info, battery, system, connectivity, sensors
     │   ├── device-names.ts      Marketing name resolution from model/build props
     │   ├── apps.ts              pm/am commands + APK push via sync.write()
     │   ├── app-names.ts         Live app label lookup via pm dump
-    │   ├── backup.ts            AdbSync readdir/read → JSZip archive → browser download
+    │   ├── backup.ts            Streaming zip backup via @zip.js/zip.js (no full-buffer),
+    │   │                        File System Access API for direct-to-disk streaming
     │   └── tweaks.ts            settings put global/secure, wm density
     │
     ├── data/
@@ -37,6 +40,7 @@ yaadu/
     │
     └── ui/                      ── Presentation Layer (React) ─────────────
         ├── Dashboard.tsx        Sidebar nav + panel router + device card
+        ├── ErrorBoundary.tsx    Class-component error boundary for panel crash isolation
         ├── Toast.tsx            Global toast notification system
         ├── ScrollPill.tsx       Scroll-position indicator for long panels
         └── panels/
@@ -66,7 +70,7 @@ ADB modules receive `dispatch` from the connection layer; panels read state thro
 
 - `AdbWebUsbBackendManager.BROWSER.requestDevice()` — triggers the browser's native USB picker (requires user gesture)
 - `Adb.authenticate(connection, credentialStore)` — RSA challenge/response handshake via `@yume-chan/adb`'s built-in authenticator
-- `YaaduCredentialStore` — stores the PKCS#8 RSA-2048 private key in `localStorage`; generates a new one automatically on first run
+- `YaaduCredentialStore` — RSA-2048 private key is **encrypted at rest** with AES-256-GCM; the ciphertext is stored in `localStorage`, while the non-extractable AES wrapping key lives in IndexedDB (`yaadu-credential` DB). A new key is generated automatically on first run and cached in memory for the session.
 - Manages state transitions: `disconnected → connecting → authorizing → connected → error`
 - Pre-fetches device info asynchronously after connect
 - Watches `adb.disconnected` promise for unexpected cable pulls
@@ -98,9 +102,9 @@ The telemetry panel displays Android version logos (9–16), a memory usage SVG 
 
 - Opens `adb.sync()` per-file to avoid stream interleaving
 - `sync.readdir()` scans `/sdcard/DCIM/Camera`, filters by `LinuxFileType.File`
-- **Single file**: `sync.read()` → buffer → Blob → anchor download
-- **Bulk backup**: downloads all selected files, assembles a `.zip` via **JSZip**, saves as `<device>_media_backup.zip`
-- Supports `AbortController` cancellation mid-backup
+- **Single file**: tries `showSaveFilePicker` + `stream.pipeTo(writable)` for direct-to-disk streaming; falls back to buffer → Blob → anchor download
+- **Bulk backup**: streams each file directly into a zip via **@zip.js/zip.js** — no full-file buffer, no RAM accumulation. Each ADB `sync.read()` stream is piped through a `TransformStream` byte counter (for per-file progress) into `ZipWriter.add(name, stream)`. The zip output is written to a `WritableStream` (File System Access API) or an in-memory `BlobWriter` fallback.
+- Supports `AbortController` cancellation mid-backup; partial zip is aborted cleanly
 
 ### Module 5 — System Tweaks
 
@@ -114,14 +118,15 @@ The telemetry panel displays Android version logos (9–16), a memory usage SVG 
 
 Material 3 theme generated via `@material/material-color-utilities` from source color `#376A3E`. React rendering with Material Web Components for interactive controls. APK sideloader uses a custom fixed-position overlay instead of `<md-dialog>`. Long panels use a `ResizeObserver`-driven `ScrollPill` indicator.
 
----## Known Limitations
+---
+
+## Known Limitations
 
 | Limitation | Reason |
 |---|---|
 | Chrome/Edge desktop only | WebUSB is not available in Firefox, Safari, or on Android Chrome |
 | No serial number display | `Adb` instance in 0.0.19 doesn't expose the USB serial; `adb.model` is used instead |
 | APK split APKs | Only supports monolithic `.apk` files (not `.apks` bundles) |
-| Large backup files | Individual files are fully buffered in RAM before download; >500 MB files may strain low-memory devices |
 | System apps | `pm list packages -3` only shows user-installed apps; system apps require `pm list packages -s` (not shown by default) |
 
 ---
@@ -137,7 +142,7 @@ Material 3 theme generated via `@material/material-color-utilities` from source 
 | `@yume-chan/stream-extra` | 0.0.19 | `Consumable<T>` wrapper + stream utilities |
 | `@material/web` | 2.4.1 | Material 3 web components (buttons, selects, switches, progress) |
 | `@material/material-color-utilities` | 0.4.0 | Programmatic M3 theme generation from source color |
-| `jszip` | 3.x | Bulk media backup archive creation |
+| `@zip.js/zip.js` | latest | Streaming zip archive creation (no full-buffer) |
 | `vite` | 5.4.0 | Build tool |
 | `typescript` | 5.4.5 | Type safety |
 

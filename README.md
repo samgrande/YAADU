@@ -29,7 +29,7 @@ A fully client-side Android dashboard that communicates with a physical device o
 
 1. **"No devices found" in picker** — Ensure USB debugging is enabled and cable is data-capable (not charge-only)
 2. **"Allow USB Debugging?" never appears** — Kill any ADB server: `adb kill-server`, then retry
-3. **Repeated authorization prompts** — Clear stored key: open DevTools console → `localStorage.removeItem("yaadu:adb-private-key")`, then reconnect
+3. **Repeated authorization prompts** — Use the *Forget ADB Key* button in the About section of the connect screen, or clear manually via DevTools: `localStorage.removeItem("yaadu:adb-private-key")`
 4. **Permission denied errors** — YAADU runs as the `shell` user; some operations (e.g. uninstalling system apps) require `root`
 
 ---

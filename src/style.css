@@ -16,7 +16,7 @@
 }
 
 .small-screen-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: clamp(2rem, 8vw, 3rem);
   font-weight: 800;
   color: var(--md-sys-color-primary);

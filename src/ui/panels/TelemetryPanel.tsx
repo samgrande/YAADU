@@ -13,7 +13,6 @@ import {
 } from "../../adb/telemetry.js";
 import { useAppContext } from "../../context.js";
 import { toast } from "../Toast.js";
-import { ScrollPill } from "../ScrollPill.js";
 import { PanelLoader } from "../PanelLoader.js";
 
 // ── Android version logos ──────────────────────────────────────────────────

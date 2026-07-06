@@ -5,6 +5,11 @@ declare module "*.svg?raw" {
   export default content;
 }
 
+declare module "*.png" {
+  const src: string;
+  export default src;
+}
+
 declare namespace React {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {

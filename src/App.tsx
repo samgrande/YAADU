@@ -5,6 +5,7 @@ import { ConnectScreen } from "./ui/panels/ConnectScreen.js";
 import { Dashboard } from "./ui/Dashboard.js";
 import { ToastContainer } from "./ui/Toast.js";
 import { applyYaaduTheme, loadStoredTheme } from "./theme.js";
+import errorPng from "./assets/error.png";
 
 // Import Material Web Components
 import "@material/web/button/filled-button.js";
@@ -126,9 +127,7 @@ export function App() {
     return (
       <div className="small-screen-lock">
         <div className="small-screen-logo">
-          <svg width="100%" height="100%" viewBox="0 0 512 170" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M86 120C88.0375 95.776 95.4517 73.4768 108.243 53.1018C121.034 32.7268 138.069 16.54 159.35 4.54144L134.221 -38.9253C132.863 -40.9628 132.523 -43.1134 133.202 -45.3773C133.881 -47.6412 135.353 -49.3391 137.617 -50.4711C139.428 -51.603 141.465 -51.8294 143.729 -51.1503C145.993 -50.4711 147.804 -49.1127 149.163 -47.0753L174.292 -3.60854C193.761 -11.7586 214.136 -15.8335 235.417 -15.8335C256.697 -15.8335 277.072 -11.7586 296.542 -3.60854L321.671 -47.0753C323.029 -49.1127 324.84 -50.4711 327.104 -51.1503C329.368 -51.8294 331.406 -51.603 333.217 -50.4711C335.481 -49.3391 336.952 -47.6412 337.631 -45.3773C338.31 -43.1134 337.971 -40.9628 336.613 -38.9253L311.483 4.54144C332.764 16.54 349.8 32.7268 362.591 53.1018C375.382 73.4768 382.796 95.776 384.833 120H86Z" fill="var(--md-sys-color-primary)"/>
-          </svg>
+          <img src={errorPng} alt="YAADU" style={{ maxWidth: "300px", width: "100%" }} />
         </div>
         <div className="small-screen-title">Oops</div>
         <div className="small-screen-text">This app cannot be accessed from a phone or tablet. Please use a desktop browser.</div>

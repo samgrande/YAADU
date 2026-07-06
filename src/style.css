@@ -285,7 +285,19 @@ select {
 }
 
 .connect-title-yaadu svg {
-  filter: saturate(1.3) brightness(1.1);
+  filter: saturate(1.5) brightness(1.1) contrast(1.1);
+}
+
+[data-theme-mode="dark"] .connect-title-yaadu svg {
+  filter: none;
+}
+
+[data-theme-mode="dark"] .connect-title-yaadu svg path[fill*="primary"] {
+  filter: saturate(1.5) brightness(0.85) contrast(1.1);
+}
+
+[data-theme-mode="dark"] .connect-title-yaadu svg rect[fill*="on-surface"] {
+  fill: #ffffff;
 }
 
 .connect-wave-separator {

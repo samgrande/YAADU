@@ -7,6 +7,7 @@ import {
   type AnimScale,
 } from "../../adb/tweaks.js";
 import { toast } from "../Toast.js";
+import { normalizeError } from "../../adb/errors.js";
 import animSvg from "../../assets/illus-anim.svg?raw";
 import themeSvg from "../../assets/illus-theme.svg?raw";
 import densitySvg from "../../assets/illus-density.svg?raw";
@@ -65,7 +66,7 @@ export function TweaksPanel({ adb }: Props) {
       }
       toast("Loaded current device settings", "info", { duration: 2000 });
     } catch (err) {
-      toast(`Failed to load settings: ${String(err)}`, "error");
+      toast(`Failed to load settings: ${normalizeError(err)}`, "error");
     } finally {
       setIsLoadingSettings(false);
     }
@@ -93,7 +94,7 @@ export function TweaksPanel({ adb }: Props) {
         setAnimationScaleState(scale);
       }
     } catch (err) {
-      toast(`Failed to set animations: ${String(err)}`, "error");
+      toast(`Failed to set animations: ${normalizeError(err)}`, "error");
     } finally {
       setPendingScaleChange(null);
     }
@@ -107,7 +108,7 @@ export function TweaksPanel({ adb }: Props) {
         setNightModeState(mode);
       }
     } catch (err) {
-      toast(`Failed to set night mode: ${String(err)}`, "error");
+      toast(`Failed to set night mode: ${normalizeError(err)}`, "error");
     }
   };
 
@@ -125,7 +126,7 @@ export function TweaksPanel({ adb }: Props) {
         setCurrentDpi(String(val));
       }
     } catch (err) {
-      toast(`Failed to set DPI: ${String(err)}`, "error");
+      toast(`Failed to set DPI: ${normalizeError(err)}`, "error");
     } finally {
       setIsApplyingDpi(false);
     }
@@ -144,7 +145,7 @@ export function TweaksPanel({ adb }: Props) {
         setDropdownLabel("Presets");
       }
     } catch (err) {
-      toast(`Failed to reset DPI: ${String(err)}`, "error");
+      toast(`Failed to reset DPI: ${normalizeError(err)}`, "error");
     } finally {
       setIsResettingDpi(false);
     }

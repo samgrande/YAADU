@@ -3,6 +3,7 @@ import { AppContext } from "./context.js";
 import { initialState, appReducer } from "./state.js";
 import { ConnectScreen } from "./ui/panels/ConnectScreen.js";
 import { Dashboard } from "./ui/Dashboard.js";
+import { ErrorBoundary } from "./ui/ErrorBoundary.js";
 import { ToastContainer } from "./ui/Toast.js";
 import { applyYaaduTheme, loadStoredTheme } from "./theme.js";
 import errorPng from "./assets/error.png";
@@ -84,12 +85,16 @@ export function App() {
     updateAndroidFilter();
     window.addEventListener('themeChange', updateAndroidFilter);
 
-    // Global Ripple Animation
+    const rippleTimers = new Set<ReturnType<typeof setTimeout>>();
+    const MAX_RIPPLES = 15;
+
     const handleRipple = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const webButton = target.closest("md-filled-button, md-filled-tonal-button, md-outlined-button, md-text-button") as HTMLElement | null;
       const button = webButton || target.closest("button, .anim-btn, .nav-item-m3, .telemetry-skeleton") as HTMLElement | null;
       if (!button || button.hasAttribute("disabled") || button.classList.contains("disabled")) return;
+
+      if (button.querySelectorAll(".m3-ripple").length >= MAX_RIPPLES) return;
 
       const ripple = document.createElement("span");
       ripple.className = "m3-ripple";
@@ -108,15 +113,21 @@ export function App() {
       button.style.overflow = "hidden";
       button.appendChild(ripple);
 
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         ripple.remove();
+        rippleTimers.delete(timer);
       }, 1200);
+      rippleTimers.add(timer);
     };
 
     document.addEventListener("mousedown", handleRipple);
     return () => {
       document.removeEventListener("mousedown", handleRipple);
       window.removeEventListener('themeChange', updateAndroidFilter);
+      for (const timer of rippleTimers) {
+        clearTimeout(timer);
+      }
+      rippleTimers.clear();
     };
   }, []);
 
@@ -184,7 +195,9 @@ export function App() {
       </div>
       <AppContext.Provider value={{ state, dispatch }}>
         {state.connection === "connected" && state.adb ? (
-          <Dashboard adb={state.adb} />
+          <ErrorBoundary>
+            <Dashboard adb={state.adb} />
+          </ErrorBoundary>
         ) : (
           <ConnectScreen />
         )}

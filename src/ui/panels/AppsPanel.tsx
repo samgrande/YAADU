@@ -8,6 +8,7 @@ import {
   type AppEntry, type InstallProgress,
 } from "../../adb/apps.js";
 import { toast } from "../Toast.js";
+import { normalizeError } from "../../adb/errors.js";
 import { ScrollPill } from "../ScrollPill.js";
 import { PanelLoader } from "../PanelLoader.js";
 import { sortCategories } from "../../adb/app-categories.js";
@@ -224,7 +225,7 @@ export function AppsPanel({ adb }: Props) {
       }));
       setApps(list);
     } catch (err) {
-      toast(`Failed to list apps: ${String(err)}`, "error");
+      toast(`Failed to list apps: ${normalizeError(err)}`, "error");
     } finally {
       setLoading(false);
     }

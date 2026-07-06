@@ -11,6 +11,9 @@ import { AdbWebUsbBackendManager } from "@yume-chan/adb-backend-webusb";
 import type { AppAction } from "../state.js";
 import { credentialStore } from "./credential.js";
 import { fetchDeviceInfo } from "./telemetry.js";
+import { normalizeError } from "./errors.js";
+
+let _usbDevice: USBDevice | null = null;
 
 export async function connectDevice(dispatch: React.Dispatch<AppAction>): Promise<void> {
   dispatch({ type: "SET_ERROR", error: null });
@@ -28,6 +31,9 @@ export async function connectDevice(dispatch: React.Dispatch<AppAction>): Promis
       dispatch({ type: "SET_CONNECTION", status: "disconnected" });
       return;
     }
+
+    // Store raw USB device reference for forcible close on disconnect
+    _usbDevice = (backend as unknown as { device: USBDevice }).device;
 
     // Step 2: Open USB stream pair
     const connection = await backend.connect();
@@ -61,7 +67,7 @@ export async function connectDevice(dispatch: React.Dispatch<AppAction>): Promis
       dispatch({ type: "SET_CONNECTION", status: "disconnected" });
       return;
     }
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = normalizeError(err);
     console.error("[YAADU] Connection failed:", err);
     dispatch({ type: "SET_ERROR", error: msg });
     dispatch({ type: "SET_CONNECTION", status: "error" });
@@ -73,11 +79,14 @@ export async function disconnectDevice(
   adb: Adb | null
 ): Promise<void> {
   if (!adb) { dispatch({ type: "RESET" }); return; }
-  try { await adb.close(); } catch { /* ignore */ }
-  finally {
-    dispatch({ type: "RESET" });
-    console.info("[YAADU] Disconnected.");
+  // Close the raw USB device directly, bypassing the ADB protocol close
+  // handshake which can fail with "data buffer exceeded maximum size".
+  if (_usbDevice) {
+    try { await _usbDevice.close(); } catch { /* ignore */ }
+    _usbDevice = null;
   }
+  dispatch({ type: "RESET" });
+  console.info("[YAADU] Disconnected.");
 }
 
 function handleDisconnect(dispatch: React.Dispatch<AppAction>, reason: string): void {

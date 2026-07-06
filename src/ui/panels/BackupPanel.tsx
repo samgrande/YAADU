@@ -11,6 +11,7 @@ import {
 } from "../../adb/backup.js";
 import { formatBytes } from "../../adb/helpers.js";
 import { toast } from "../Toast.js";
+import { normalizeError } from "../../adb/errors.js";
 import { useAppContext } from "../../context.js";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -117,7 +118,7 @@ export function BackupPanel({ adb }: Props) {
         toast("WhatsApp media folder detected", "info");
       }
     } catch (err) {
-      toast(`Scan failed: ${String(err)}`, "error");
+      toast(`Scan failed: ${normalizeError(err)}`, "error");
     } finally {
       setScanning(false);
     }
@@ -153,7 +154,7 @@ export function BackupPanel({ adb }: Props) {
       const ok = saved.filter(s => s.status === "ok").length;
       toast(`Exported ${ok} file${ok !== 1 ? "s" : ""}`, "success");
     } catch (err) {
-      toast(`Backup error: ${String(err)}`, "error");
+      toast(`Backup error: ${normalizeError(err)}`, "error");
     } finally {
       setIsRunning(false);
       abortRef.current = null;
@@ -181,7 +182,7 @@ export function BackupPanel({ adb }: Props) {
       const ok = saved.filter(s => s.status === "ok").length;
       toast(`WhatsApp backup complete: ${ok} file${ok !== 1 ? "s" : ""} exported`, "success");
     } catch (err) {
-      toast(`WhatsApp backup error: ${String(err)}`, "error");
+      toast(`WhatsApp backup error: ${normalizeError(err)}`, "error");
     } finally {
       setIsWhatsAppBackingUp(false);
       abortRef.current = null;
@@ -198,7 +199,7 @@ export function BackupPanel({ adb }: Props) {
       await downloadSingleFile(adb, entry);
       toast(`Downloaded ${entry.name}`, "success");
     } catch (err) {
-      toast(`Download failed: ${String(err)}`, "error");
+      toast(`Download failed: ${normalizeError(err)}`, "error");
     }
   }, [adb]);
 

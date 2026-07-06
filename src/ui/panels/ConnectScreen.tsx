@@ -273,6 +273,14 @@ export function ConnectScreen() {
                       It allows you to view telemetry, manage installed apps, backup photos/videos, and configure advanced tweaks without installing anything on your PC.
                     </div>
                   </div>
+
+                  <button
+                    onClick={() => { localStorage.removeItem("yaadu:adb-private-key"); alert("ADB key cleared. You will need to re-authorize on next connection."); }}
+                    style={{ marginTop: "12px", padding: "6px 16px", borderRadius: "24px", border: "1px solid var(--border)", background: "transparent", color: "var(--text-muted)", cursor: "pointer", fontFamily: "'Roboto',sans-serif", fontSize: "11px", alignSelf: "center" }}
+                    title="Clear stored RSA-2048 ADB key"
+                  >
+                    Forget ADB Key
+                  </button>
                 </div>
                 <md-filled-button onClick={() => switchCard("main")}>
                   Awesome

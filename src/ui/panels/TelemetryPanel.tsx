@@ -12,6 +12,7 @@ import {
   type SensorsData,
 } from "../../adb/telemetry.js";
 import { useAppContext } from "../../context.js";
+import { normalizeError } from "../../adb/errors.js";
 import { toast } from "../Toast.js";
 import { PanelLoader } from "../PanelLoader.js";
 
@@ -253,7 +254,7 @@ export function TelemetryPanel({ adb }: Props) {
       setWifi(conn);
       setSensors(sen);
     } catch (err) {
-      toast(`Telemetry fetch failed: ${String(err)}`, "error");
+      toast(`Telemetry fetch failed: ${normalizeError(err)}`, "error");
     } finally {
       setLoading(false);
       setRotating(false);

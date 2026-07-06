@@ -4,17 +4,33 @@
  * In 0.0.19 the interface is:
  *   generateKey(): ValueOrPromise<Uint8Array>   ← raw PKCS#8 bytes
  *   iterateKeys(): Iterable<Uint8Array> | AsyncIterable<Uint8Array>
+ *
+ * The RSA private key is encrypted at rest with AES-256-GCM.
+ * The AES key is stored in IndexedDB as non-extractable (never leaves
+ * the browser's secure key store).  On first use a new AES key is
+ * generated; on subsequent loads it is retrieved from IndexedDB.
  */
 
 import type { AdbCredentialStore } from "@yume-chan/adb";
 
 const STORAGE_KEY = "yaadu:adb-private-key";
+
+const AES_ALGORITHM: AesKeyGenParams = { name: "AES-GCM", length: 256 };
+const AES_USAGES: KeyUsage[] = ["encrypt", "decrypt"];
+
 const KEY_ALGORITHM: RsaHashedKeyGenParams = {
   name: "RSASSA-PKCS1-v1_5",
   modulusLength: 2048,
   publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
   hash: "SHA-1",
 };
+
+const DB_NAME = "yaadu-credential";
+const DB_VERSION = 1;
+const STORE_NAME = "keys";
+const AES_KEY_ID = "aes-gcm";
+
+// ── Base64 helpers ──────────────────────────────────────────────────────
 
 function bufToBase64(buf: Uint8Array): string {
   let binary = "";
@@ -29,7 +45,98 @@ function base64ToBuf(b64: string): Uint8Array {
   return buf;
 }
 
+// ── IndexedDB helpers ───────────────────────────────────────────────────
+
+function openDB(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = () => {
+      req.result.createObjectStore(STORE_NAME);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function loadAesKey(): Promise<CryptoKey | null> {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, "readonly");
+    const store = tx.objectStore(STORE_NAME);
+    const key: CryptoKey | undefined = await new Promise((resolve, reject) => {
+      const req = store.get(AES_KEY_ID);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    tx.commit();
+    db.close();
+    return key ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function saveAesKey(key: CryptoKey): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction(STORE_NAME, "readwrite");
+  const store = tx.objectStore(STORE_NAME);
+  await new Promise<void>((resolve, reject) => {
+    const req = store.put(key, AES_KEY_ID);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+  tx.commit();
+  db.close();
+}
+
+async function loadOrCreateAesKey(): Promise<CryptoKey> {
+  const existing = await loadAesKey();
+  if (existing) return existing;
+
+  const key = await crypto.subtle.generateKey(AES_ALGORITHM, false, AES_USAGES);
+  await saveAesKey(key);
+  return key;
+}
+
+// ── Encrypt / decrypt helpers ───────────────────────────────────────────
+
+async function encryptRsaKey(
+  aesKey: CryptoKey,
+  plaintext: Uint8Array,
+): Promise<string> {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    aesKey,
+    plaintext,
+  );
+  const combined = new Uint8Array(iv.length + ciphertext.byteLength);
+  combined.set(iv);
+  combined.set(new Uint8Array(ciphertext), iv.length);
+  return bufToBase64(combined);
+}
+
+async function decryptRsaKey(
+  aesKey: CryptoKey,
+  stored: string,
+): Promise<Uint8Array> {
+  const combined = base64ToBuf(stored);
+  const iv = combined.slice(0, 12);
+  const ciphertext = combined.slice(12);
+  const plaintext = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv },
+    aesKey,
+    ciphertext,
+  );
+  return new Uint8Array(plaintext);
+}
+
+// ── Credential store ────────────────────────────────────────────────────
+
 export class YaaduCredentialStore implements AdbCredentialStore {
+  private _keyCache: Uint8Array | null = null;
+  private _aesKey: CryptoKey | null = null;
+
   async generateKey(): Promise<Uint8Array> {
     const keyPair = await crypto.subtle.generateKey(KEY_ALGORITHM, true, [
       "sign",
@@ -37,24 +144,42 @@ export class YaaduCredentialStore implements AdbCredentialStore {
     ]);
     const pkcs8 = await crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
     const buffer = new Uint8Array(pkcs8);
-    localStorage.setItem(STORAGE_KEY, bufToBase64(buffer));
-    console.info("[YAADU] Generated new RSA-2048 credential.");
+
+    this._aesKey ??= await loadOrCreateAesKey();
+    const encrypted = await encryptRsaKey(this._aesKey, buffer);
+    localStorage.setItem(STORAGE_KEY, encrypted);
+
+    this._keyCache = buffer;
+    console.info("[YAADU] Generated new RSA-2048 credential (encrypted at rest).");
     return buffer;
   }
 
-  *iterateKeys(): Iterable<Uint8Array> {
+  async *iterateKeys(): AsyncIterable<Uint8Array> {
+    if (this._keyCache) {
+      yield this._keyCache;
+      return;
+    }
+
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        yield base64ToBuf(stored);
-      } catch {
-        console.warn("[YAADU] Stored credential corrupt; skipping.");
-      }
+    if (!stored) return;
+
+    try {
+      this._aesKey ??= await loadOrCreateAesKey();
+      this._keyCache = await decryptRsaKey(this._aesKey, stored);
+      yield this._keyCache;
+    } catch {
+      console.warn("[YAADU] Stored credential corrupt or encryption key unavailable; skipping.");
     }
   }
 
-  clearKey(): void { localStorage.removeItem(STORAGE_KEY); }
-  hasKey(): boolean { return !!localStorage.getItem(STORAGE_KEY); }
+  clearKey(): void {
+    localStorage.removeItem(STORAGE_KEY);
+    this._keyCache = null;
+  }
+
+  hasKey(): boolean {
+    return !!localStorage.getItem(STORAGE_KEY);
+  }
 }
 
 export const credentialStore = new YaaduCredentialStore();

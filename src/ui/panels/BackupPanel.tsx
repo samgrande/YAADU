@@ -147,10 +147,22 @@ export function BackupPanel({ adb }: Props) {
   const handleExport = useCallback(async () => {
     const toExport = files.filter((f) => selected.has(f.name));
     if (toExport.length === 0) { toast("No files selected", "error"); return; }
+
+    let writable: WritableStream<Uint8Array> | undefined;
+    try {
+      const fileHandle = await window.showSaveFilePicker({
+        suggestedName: `media_backup.zip`,
+        types: [{ description: "ZIP Archive", accept: { "application/zip": [".zip"] } }],
+      });
+      writable = await fileHandle.createWritable();
+    } catch {
+      /* API unavailable or user cancelled — fall back to in-memory blob */
+    }
+
     abortRef.current = new AbortController();
     setIsRunning(true);
     try {
-      const saved = await backupMediaFiles(adb, toExport, setProgress, abortRef.current.signal, deviceName);
+      const saved = await backupMediaFiles(adb, toExport, setProgress, abortRef.current.signal, deviceName, writable);
       const ok = saved.filter(s => s.status === "ok").length;
       toast(`Exported ${ok} file${ok !== 1 ? "s" : ""}`, "success");
     } catch (err) {
@@ -159,7 +171,7 @@ export function BackupPanel({ adb }: Props) {
       setIsRunning(false);
       abortRef.current = null;
     }
-  }, [adb, files, selected]);
+  }, [adb, files, selected, deviceName]);
 
   const handleReset = useCallback(() => {
     if (abortRef.current) {
@@ -175,10 +187,21 @@ export function BackupPanel({ adb }: Props) {
   }, []);
 
   const handleWhatsAppBackup = useCallback(async () => {
+    let writable: WritableStream<Uint8Array> | undefined;
+    try {
+      const fileHandle = await window.showSaveFilePicker({
+        suggestedName: `whatsapp_media_backup.zip`,
+        types: [{ description: "ZIP Archive", accept: { "application/zip": [".zip"] } }],
+      });
+      writable = await fileHandle.createWritable();
+    } catch {
+      /* API unavailable or user cancelled — fall back to in-memory blob */
+    }
+
     abortRef.current = new AbortController();
     setIsWhatsAppBackingUp(true);
     try {
-      const saved = await backupWhatsApp(adb, setProgress, abortRef.current.signal, deviceName);
+      const saved = await backupWhatsApp(adb, setProgress, abortRef.current.signal, deviceName, writable);
       const ok = saved.filter(s => s.status === "ok").length;
       toast(`WhatsApp backup complete: ${ok} file${ok !== 1 ? "s" : ""} exported`, "success");
     } catch (err) {

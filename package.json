@@ -6,7 +6,7 @@
     "@yume-chan/adb": "^0.0.19",
     "@yume-chan/adb-backend-webusb": "^0.0.19",
     "@yume-chan/stream-extra": "^0.0.19",
-    "jszip": "^3.10.1",
+    "@zip.js/zip.js": "^2.8.26",
     "lottie-web": "^5.13.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"

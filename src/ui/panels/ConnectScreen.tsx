@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useAppContext } from "../../context.js";
 import { connectDevice } from "../../adb/connection.js";
+import { credentialStore } from "../../adb/credential.js";
 import type { ConnectionStatus } from "../../state.js";
 import {
   applyYaaduTheme,
@@ -275,7 +276,7 @@ export function ConnectScreen() {
                   </div>
 
                   <button
-                    onClick={() => { localStorage.removeItem("yaadu:adb-private-key"); alert("ADB key cleared. You will need to re-authorize on next connection."); }}
+                    onClick={() => { credentialStore.clearKey(); alert("ADB key cleared. You will need to re-authorize on next connection."); }}
                     style={{ marginTop: "12px", padding: "6px 16px", borderRadius: "24px", border: "1px solid var(--border)", background: "transparent", color: "var(--text-muted)", cursor: "pointer", fontFamily: "'Roboto',sans-serif", fontSize: "11px", alignSelf: "center" }}
                     title="Clear stored RSA-2048 ADB key"
                   >

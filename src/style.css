@@ -842,35 +842,34 @@ md-dialog {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 200ms var(--ease);
+  animation: overlay-fade-in 200ms ease;
 }
 
-#apk-sideloader-overlay.open {
-  opacity: 1;
-  pointer-events: auto;
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .apk-dialog {
   background: var(--surface);
   border-radius: 1.75rem;
+  border: 1px solid var(--border);
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15);
   width: 32.5rem;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transform: scale(0.92) translateY(0.75rem);
-  transition: transform 250ms var(--ease);
+  animation: dialog-enter 250ms ease;
 }
 
-#apk-sideloader-overlay.open .apk-dialog {
-  transform: scale(1) translateY(0);
+@keyframes dialog-enter {
+  from { transform: scale(0.92) translateY(0.75rem); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 .apk-dialog-header {
@@ -2240,6 +2239,12 @@ md-linear-progress {
   color: var(--blue);
 }
 
+.badge-outline {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
 /* Divider */
 .divider {
   height: 0.0625rem;
@@ -2479,6 +2484,105 @@ md-linear-progress {
   flex-shrink: 0;
 }
 
+.pill-toggle {
+  height: 3rem;
+  background: var(--md-sys-color-primary);
+  border-radius: 6.25rem;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--md-sys-color-on-primary);
+}
+
+.pill-toggle-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.pill-toggle-switch {
+  width: 2rem;
+  height: 1.125rem;
+  background: color-mix(in srgb, var(--md-sys-color-on-primary) 25%, transparent);
+  border-radius: 0.75rem;
+  position: relative;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.pill-toggle-switch.on {
+  background: var(--md-sys-color-on-primary);
+}
+
+.pill-toggle-knob {
+  width: 0.875rem;
+  height: 0.875rem;
+  background: var(--md-sys-color-on-primary);
+  border-radius: 50%;
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.pill-toggle-switch.on .pill-toggle-knob {
+  transform: translateX(0.875rem);
+  background: var(--md-sys-color-primary);
+}
+
+.pill-toggle-divider {
+  width: 1px;
+  height: 1.25rem;
+  background: color-mix(in srgb, var(--md-sys-color-on-primary) 30%, transparent);
+}
+
+.category-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0 1.25rem 0.75rem;
+}
+
+.category-pill {
+  flex: 1 1 0;
+  min-width: fit-content;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border-radius: 6.25rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.category-pill:hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 6%, transparent);
+  color: var(--text);
+}
+
+.category-pill.active {
+  background: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
 .nine-dots-icon {
   color: var(--text-muted);
 }
@@ -2612,6 +2716,24 @@ md-linear-progress {
   display: flex;
   gap: 0.375rem;
   flex-wrap: wrap;
+}
+
+.app-confirm-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.app-confirm-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.app-confirm-actions {
+  display: flex;
+  gap: 0.375rem;
 }
 
 /* App action buttons */
@@ -3606,7 +3728,7 @@ md-filled-tonal-button .m3-ripple {
 .hero-icon {
   position: relative;
   z-index: 1;
-  color: color-mix(in srgb, var(--md-sys-color-primary) 60%, black);
+  color: color-mix(in srgb, var(--md-sys-color-primary) 45%, black);
   animation: hero-shape-float 6s ease-in-out infinite alternate;
 }
 

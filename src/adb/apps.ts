@@ -10,11 +10,14 @@ import type { Adb } from "@yume-chan/adb";
 import { Consumable } from "@yume-chan/stream-extra";
 import { shell, shellFull } from "./helpers.js";
 import { fetchAppName } from "./app-names.js";
+import { categorizeApp } from "./app-categories.js";
 
 export interface AppEntry {
   packageName: string;
   disabled:    boolean;
+  systemApp?:  boolean;
   label?:      string;
+  category?:   string;
 }
 
 export interface AppOpResult {
@@ -26,13 +29,36 @@ export async function fetchAppLabel(adb: Adb, packageName: string): Promise<stri
   return fetchAppName(adb, packageName);
 }
 
-export async function listUserApps(adb: Adb): Promise<AppEntry[]> {
-  const raw = await shell(adb, "pm list packages -3");
-  if (!raw) return [];
-  return raw.split("\n")
+function parsePmList(raw: string): string[] {
+  return (raw ?? "").split("\n")
     .map((l) => l.trim())
     .filter((l) => l.startsWith("package:"))
-    .map((l) => ({ packageName: l.replace("package:", "").trim(), disabled: false }));
+    .map((l) => l.replace("package:", "").trim());
+}
+
+export async function listUserApps(adb: Adb): Promise<AppEntry[]> {
+  const raw = await shell(adb, "pm list packages -3");
+  return parsePmList(raw).map((packageName) => ({
+    packageName, disabled: false, category: categorizeApp(packageName, false) ?? undefined,
+  }));
+}
+
+export async function listAllApps(adb: Adb): Promise<AppEntry[]> {
+  const [allRaw, userRaw] = await Promise.all([
+    shell(adb, "pm list packages"),
+    shell(adb, "pm list packages -3"),
+  ]);
+  const allPkgs   = parsePmList(allRaw);
+  const userPkgs  = new Set(parsePmList(userRaw));
+  return allPkgs.map((packageName) => {
+    const systemApp = !userPkgs.has(packageName);
+    return {
+      packageName,
+      disabled: false,
+      systemApp,
+      category: categorizeApp(packageName, systemApp) ?? undefined,
+    };
+  });
 }
 
 export async function mergeDisabledState(adb: Adb, entries: AppEntry[]): Promise<AppEntry[]> {
@@ -70,6 +96,9 @@ export async function uninstallApp(adb: Adb, pkg: string): Promise<AppOpResult> 
     const result = await shellFull(adb, `pm uninstall ${pkg}`);
     const combined = (result.stdout + result.stderr).toLowerCase();
     const success = combined.includes("success");
+    if (!success && combined.includes("delete_failed_internal_error")) {
+      return { success: false, message: "This is a system app and cannot be deleted" };
+    }
     return {
       success,
       message: success ? `Uninstalled ${pkg}` : `pm uninstall: ${result.stdout || result.stderr}`,

@@ -17,6 +17,7 @@ declare namespace React {
       "md-filled-button": any;
       "md-filled-tonal-button": any;
       "md-linear-progress": any;
+      "md-switch": any;
     }
   }
 }

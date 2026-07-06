@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import type { Adb } from "@yume-chan/adb";
 import {
-  listUserApps, mergeDisabledState,
-  forceStop, clearAppData, uninstallApp,
+  listUserApps, listAllApps, mergeDisabledState,
+  forceStop, uninstallApp,
   disableApp, enableApp, installApk,
   fetchAppLabel,
   type AppEntry, type InstallProgress,
@@ -10,6 +10,7 @@ import {
 import { toast } from "../Toast.js";
 import { ScrollPill } from "../ScrollPill.js";
 import { PanelLoader } from "../PanelLoader.js";
+import { sortCategories } from "../../adb/app-categories.js";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -111,17 +112,22 @@ interface AppCardProps {
 function AppCard({ entry, adb, onRemove }: AppCardProps) {
   const displayName = entry.label ?? shortPkg(entry.packageName);
   const initial = (displayName.trim()[0] ?? "?").toUpperCase();
+  const isSystem = entry.systemApp;
+  const [confirming, setConfirming] = useState(false);
 
   const handleAction = useCallback(async (action: string) => {
     const pkg = entry.packageName;
     let result;
     switch (action) {
       case "stop":           result = await forceStop(adb, pkg); break;
-      case "clear":          result = await clearAppData(adb, pkg); break;
-      case "uninstall":      result = await uninstallApp(adb, pkg); if (result.success) { onRemove(pkg); } break;
+      case "uninstall":
+        setConfirming(false);
+        result = await uninstallApp(adb, pkg);
+        if (result.success) { onRemove(pkg); }
+        break;
       case "toggle-disable":
         result = entry.disabled ? await enableApp(adb, pkg) : await disableApp(adb, pkg);
-        if (result.success) { onRemove(pkg); /* force re-render by removing and re-fetching */ }
+        if (result.success) { onRemove(pkg); }
         break;
       default: return;
     }
@@ -149,6 +155,11 @@ function AppCard({ entry, adb, onRemove }: AppCardProps) {
           <div className="app-pkg">{displayName}</div>
           <div className="app-pkg-short">
             {entry.packageName}
+            {isSystem && (
+              <span className="badge badge-outline" style={{ fontSize: "9px", padding: "1px 6px", marginLeft: "6px" }}>
+                SYSTEM
+              </span>
+            )}
             {entry.disabled && (
               <span className="badge badge-amber" style={{ fontSize: "9px", padding: "1px 6px", marginLeft: "6px" }}>
                 DISABLED
@@ -156,14 +167,23 @@ function AppCard({ entry, adb, onRemove }: AppCardProps) {
             )}
           </div>
         </div>
-        <div className="app-actions">
-          <button className="btn-app-action" onClick={() => handleAction("stop")} title="Force Stop">Stop</button>
-          <button className="btn-app-action" onClick={() => handleAction("clear")} title="Clear Data">Clear</button>
-          <button className="btn-app-action" onClick={() => handleAction("toggle-disable")}>
-            {entry.disabled ? "Enable" : "Disable"}
-          </button>
-          <button className="btn-app-action btn-action-danger" onClick={() => handleAction("uninstall")} title="Uninstall">Uninstall</button>
-        </div>
+        {confirming ? (
+          <div className="app-confirm-bar">
+            <span className="app-confirm-text">Uninstall {displayName}?</span>
+            <div className="app-confirm-actions">
+              <button className="btn-app-action" onClick={() => setConfirming(false)}>Cancel</button>
+              <button className="btn-app-action btn-action-danger" onClick={() => handleAction("uninstall")}>Confirm</button>
+            </div>
+          </div>
+        ) : (
+          <div className="app-actions">
+            <button className="btn-app-action" onClick={() => handleAction("stop")} title="Force Stop">Stop</button>
+            <button className="btn-app-action" onClick={() => handleAction("toggle-disable")}>
+              {entry.disabled ? "Enable" : "Disable"}
+            </button>
+            <button className="btn-app-action btn-action-danger" onClick={() => setConfirming(true)} title="Uninstall">Uninstall</button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -186,13 +206,16 @@ export function AppsPanel({ adb }: Props) {
   const [apps, setApps]                   = useState<AppEntry[]>([]);
   const [loading, setLoading]             = useState(true);
   const [filter, setFilter]               = useState("");
+  const [showSystem, setShowSystem]       = useState(false);
   const [showInstaller, setShowInstaller] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("all");
   const panelRef                          = useRef<HTMLDivElement>(null);
 
   const loadApps = useCallback(async () => {
+    setActiveCategory("all");
     setLoading(true);
     try {
-      let list = await listUserApps(adb);
+      let list = showSystem ? await listAllApps(adb) : await listUserApps(adb);
       list = await mergeDisabledState(adb, list);
       list = await Promise.all(list.map(async (a) => {
         if (a.label) return a;
@@ -205,7 +228,7 @@ export function AppsPanel({ adb }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [adb]);
+  }, [adb, showSystem]);
 
   useEffect(() => { loadApps(); }, [loadApps]);
 
@@ -213,10 +236,18 @@ export function AppsPanel({ adb }: Props) {
     setApps((prev) => prev.filter((a) => a.packageName !== pkg));
   }, []);
 
-  const filtered = apps.filter((a) =>
-    !filter || a.packageName.toLowerCase().includes(filter.toLowerCase()) ||
-    (a.label ?? "").toLowerCase().includes(filter.toLowerCase())
-  );
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    apps.forEach((a) => { if (a.category) set.add(a.category); });
+    return sortCategories([...set]);
+  }, [apps]);
+
+  const filtered = apps.filter((a) => {
+    if (activeCategory !== "all" && a.category !== activeCategory) return false;
+    if (filter && !a.packageName.toLowerCase().includes(filter.toLowerCase()) &&
+        !(a.label ?? "").toLowerCase().includes(filter.toLowerCase())) return false;
+    return true;
+  });
 
   const navbarAppsIcon = (
     <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -254,35 +285,37 @@ export function AppsPanel({ adb }: Props) {
       </div>
 
       {/* APK Sideloader Modal Overlay */}
-      <div
-        id="apk-sideloader-overlay"
-        className={showInstaller ? "open" : ""}
-        onClick={(e) => { if (e.target === e.currentTarget) setShowInstaller(false); }}
-      >
-        <div className="apk-dialog">
-          <div className="apk-dialog-header">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Install APK
-            <button
-              onClick={() => setShowInstaller(false)}
-              style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", display: "flex", alignItems: "center", padding: "4px" }}
-              title="Close"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
+      {showInstaller && (
+        <div
+          id="apk-sideloader-overlay"
+          className="open"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowInstaller(false); }}
+        >
+          <div className="apk-dialog">
+            <div className="apk-dialog-header">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
-            </button>
-          </div>
-          <div className="apk-dialog-body">
-            <ApkInstaller adb={adb} onInstalled={() => { setShowInstaller(false); loadApps(); }} />
+              Install APK
+              <button
+                onClick={() => setShowInstaller(false)}
+                style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", display: "flex", alignItems: "center", padding: "4px" }}
+                title="Close"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            <div className="apk-dialog-body">
+              <ApkInstaller adb={adb} onInstalled={() => { setShowInstaller(false); loadApps(); }} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="apps-toolbar">
         <div className="search-wrapper">
@@ -294,7 +327,37 @@ export function AppsPanel({ adb }: Props) {
             id="apps-search"
           />
         </div>
-        <div className="count-pill">{filtered.length} apps</div>
+        <div className="pill-toggle">
+          <label className="pill-toggle-inner">
+            <span>System</span>
+            <div
+              className={`pill-toggle-switch${showSystem ? " on" : ""}`}
+              onClick={() => setShowSystem((v) => !v)}
+              role="switch"
+              aria-checked={showSystem}
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setShowSystem((v) => !v); } }}
+            >
+              <div className="pill-toggle-knob" />
+            </div>
+          </label>
+          <span className="pill-toggle-divider" />
+          <span>{filtered.length} apps</span>
+        </div>
+      </div>
+
+      <div className="category-pill-row">
+        <button
+          className={`category-pill${activeCategory === "all" ? " active" : ""}`}
+          onClick={() => setActiveCategory("all")}
+        >All</button>
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className={`category-pill${activeCategory === cat ? " active" : ""}`}
+            onClick={() => setActiveCategory(cat)}
+          >{cat}</button>
+        ))}
       </div>
 
       <div className="apps-scroll-wrap">
@@ -305,7 +368,9 @@ export function AppsPanel({ adb }: Props) {
             <div className="apps-grid" id="apps-grid">
               {filtered.length === 0 ? (
                 <div className="apps-empty">
-                  {apps.length === 0 ? "No user apps found" : "No apps match your filter"}
+                  {apps.length === 0
+                    ? (showSystem ? "No apps found" : "No user apps found")
+                    : "No apps match your filter"}
                 </div>
               ) : (
                 filtered.map((entry) => (

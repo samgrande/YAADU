@@ -192,18 +192,22 @@ declare global {
 }
 
 export function AppsPanel({ adb }: Props) {
-  const [apps, setApps]           = useState<AppEntry[]>([]);
-  const [loading, setLoading]     = useState(false);
-  const [filter, setFilter]       = useState("");
+  const [apps, setApps]                   = useState<AppEntry[]>([]);
+  const [loading, setLoading]             = useState(false);
+  const [pendingLabels, setPendingLabels] = useState(0);
+  const [filter, setFilter]               = useState("");
   const [showInstaller, setShowInstaller] = useState(false);
-  const panelRef                  = useRef<HTMLDivElement>(null);
+  const panelRef                          = useRef<HTMLDivElement>(null);
 
   const loadApps = useCallback(async () => {
     setLoading(true);
+    setPendingLabels(0);
     try {
       let list = await listUserApps(adb);
       list = await mergeDisabledState(adb, list);
       setApps(list);
+      const needsLabel = list.filter((a) => !a.label).length;
+      if (needsLabel > 0) setPendingLabels(needsLabel);
     } catch (err) {
       toast(`Failed to list apps: ${String(err)}`, "error");
     } finally {
@@ -215,6 +219,7 @@ export function AppsPanel({ adb }: Props) {
 
   const handleLabelLoaded = useCallback((pkg: string, label: string) => {
     setApps((prev) => prev.map((a) => a.packageName === pkg ? { ...a, label } : a));
+    setPendingLabels((prev) => Math.max(0, prev - 1));
   }, []);
 
   const handleRemove = useCallback((pkg: string) => {
@@ -307,7 +312,7 @@ export function AppsPanel({ adb }: Props) {
 
       <div className="apps-scroll-wrap">
         <div className="card-body no-pad" style={{ flex: 1, overflowY: "auto" }} ref={panelRef}>
-          {loading ? (
+          {loading || pendingLabels > 0 ? (
             <PanelLoader />
           ) : (
             <div className="apps-grid" id="apps-grid">

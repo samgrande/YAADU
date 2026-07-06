@@ -2,11 +2,13 @@
   <img src="src/assets/hero.png" alt="YAADU" width="600" />
 </p>
 
+<p align="center">
+  <strong>Website</strong>: <a href="https://samgrande.github.io/YAADU/">https://samgrande.github.io/YAADU/</a>
+</p>
+
 # YAADU — Yet Another Android Debug Utility
 
 A fully client-side Android dashboard that communicates with a physical device over USB via the **WebUSB API** and **@yume-chan/adb (Tango) 0.0.19**.
-
-> **Website**: [https://samgrande.github.io/YAADU/](https://samgrande.github.io/YAADU/)
 
 Built with **React 19** and **Material 3** web components. No backend. No companion app. No native binaries. Just a browser tab.
 

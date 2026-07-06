@@ -51,6 +51,24 @@ export function applyYaaduTheme(theme: YaaduTheme): void {
   });
   document.documentElement.dataset.themeMode = theme.mode;
 
+  if (theme.mode === "dark") {
+    const darkSurfaces = [
+      '--md-sys-color-surface',
+      '--md-sys-color-surface-container-low',
+      '--md-sys-color-surface-container',
+      '--md-sys-color-surface-container-high',
+      '--md-sys-color-surface-container-highest',
+      '--md-sys-color-surface-variant',
+      '--md-sys-color-outline-variant',
+    ];
+    for (const prop of darkSurfaces) {
+      const val = getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
+      if (val) {
+        document.documentElement.style.setProperty(prop, `color-mix(in srgb, ${val} 60%, black)`);
+      }
+    }
+  }
+
   const primaryColor = theme.color.length === 7 && theme.color.startsWith('#') ? theme.color : '#376A3E';
   const rgb = primaryColor.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
   if (rgb) {

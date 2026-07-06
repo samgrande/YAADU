@@ -42,6 +42,9 @@
   /* ── Color Zones ── */
   --shell-bg: color-mix(in srgb, var(--md-sys-color-primary-container) 20%, var(--md-sys-color-surface));
   --container-bg: var(--md-sys-color-surface);
+}
+
+:root {
 
   /* ── Legacy Variables Mapped to M3 Tokens ── */
   --bg: var(--container-bg);
@@ -1531,6 +1534,32 @@ md-dialog {
   scrollbar-width: none;
 }
 
+.telem-scroll-wrap::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  height: 2.25rem;
+  background: linear-gradient(to bottom, var(--md-sys-color-surface), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.telem-scroll-wrap::after {
+  content: "";
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  height: 2.25rem;
+  background: linear-gradient(to bottom, transparent, var(--md-sys-color-surface));
+  pointer-events: none;
+  z-index: 1;
+}
+
 .telem-scroll-wrap::-webkit-scrollbar {
   display: none;
 }
@@ -2288,6 +2317,19 @@ md-linear-progress {
   transition:
     mask-image 0.25s cubic-bezier(0.4, 0, 0.2, 1),
     -webkit-mask-image 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.panel-area[data-panel-id="apps"] .card-body.no-pad::after {
+  content: "";
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  height: 2.25rem;
+  background: linear-gradient(to bottom, transparent, var(--md-sys-color-surface));
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* Scrolled to top — fade bottom only */
@@ -3564,6 +3606,7 @@ md-filled-tonal-button .m3-ripple {
 .hero-icon {
   position: relative;
   z-index: 1;
+  color: color-mix(in srgb, var(--md-sys-color-primary) 60%, black);
   animation: hero-shape-float 6s ease-in-out infinite alternate;
 }
 

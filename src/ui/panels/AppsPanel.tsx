@@ -132,8 +132,10 @@ function AppCard({ entry, adb, onRemove, onLabelLoaded }: AppCardProps) {
   useEffect(() => {
     if (!entry.label) {
       fetchAppLabel(adb, entry.packageName).then((label) => {
-        if (label) onLabelLoaded(entry.packageName, label);
-      }).catch(() => {});
+        onLabelLoaded(entry.packageName, label ?? "");
+      }).catch(() => {
+        onLabelLoaded(entry.packageName, "");
+      });
     }
   }, [adb, entry.packageName, entry.label, onLabelLoaded]);
 

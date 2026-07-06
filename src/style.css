@@ -303,6 +303,14 @@ select {
   fill: #ffffff;
 }
 
+[data-theme-mode="dark"] .tweak-card-illus {
+  background: var(--shell-bg);
+}
+
+[data-theme-mode="dark"] .tweak-card-illus svg {
+  opacity: 0.8;
+}
+
 .connect-wave-separator {
   margin: 0.375rem 0;
   width: clamp(7rem, 20vw, 11.25rem);

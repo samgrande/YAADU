@@ -346,19 +346,21 @@ export function AppsPanel({ adb }: Props) {
         </div>
       </div>
 
-      <div className="category-pill-row">
-        <button
-          className={`category-pill${activeCategory === "all" ? " active" : ""}`}
-          onClick={() => setActiveCategory("all")}
-        >All</button>
-        {categories.map((cat) => (
+      {!loading && (
+        <div className="category-pill-row">
           <button
-            key={cat}
-            className={`category-pill${activeCategory === cat ? " active" : ""}`}
-            onClick={() => setActiveCategory(cat)}
-          >{cat}</button>
-        ))}
-      </div>
+            className={`category-pill${activeCategory === "all" ? " active" : ""}`}
+            onClick={() => setActiveCategory("all")}
+          >All</button>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              className={`category-pill${activeCategory === cat ? " active" : ""}`}
+              onClick={() => setActiveCategory(cat)}
+            >{cat}</button>
+          ))}
+        </div>
+      )}
 
       <div className="apps-scroll-wrap">
         <div className="card-body no-pad" style={{ flex: 1, overflowY: "auto" }} ref={panelRef}>

@@ -106,10 +106,9 @@ interface AppCardProps {
   entry: AppEntry;
   adb: Adb;
   onRemove: (pkg: string) => void;
-  onLabelLoaded: (pkg: string, label: string) => void;
 }
 
-function AppCard({ entry, adb, onRemove, onLabelLoaded }: AppCardProps) {
+function AppCard({ entry, adb, onRemove }: AppCardProps) {
   const displayName = entry.label ?? shortPkg(entry.packageName);
   const initial = (displayName.trim()[0] ?? "?").toUpperCase();
 
@@ -128,16 +127,6 @@ function AppCard({ entry, adb, onRemove, onLabelLoaded }: AppCardProps) {
     }
     if (result) toast(result.message, result.success ? "success" : "error");
   }, [adb, entry, onRemove]);
-
-  useEffect(() => {
-    if (!entry.label) {
-      fetchAppLabel(adb, entry.packageName).then((label) => {
-        onLabelLoaded(entry.packageName, label ?? "");
-      }).catch(() => {
-        onLabelLoaded(entry.packageName, "");
-      });
-    }
-  }, [adb, entry.packageName, entry.label, onLabelLoaded]);
 
   return (
     <div className={`app-card${entry.disabled ? " disabled-app" : ""}`} data-pkg={entry.packageName}>
@@ -196,20 +185,21 @@ declare global {
 export function AppsPanel({ adb }: Props) {
   const [apps, setApps]                   = useState<AppEntry[]>([]);
   const [loading, setLoading]             = useState(true);
-  const [pendingLabels, setPendingLabels] = useState(0);
   const [filter, setFilter]               = useState("");
   const [showInstaller, setShowInstaller] = useState(false);
   const panelRef                          = useRef<HTMLDivElement>(null);
 
   const loadApps = useCallback(async () => {
     setLoading(true);
-    setPendingLabels(0);
     try {
       let list = await listUserApps(adb);
       list = await mergeDisabledState(adb, list);
+      list = await Promise.all(list.map(async (a) => {
+        if (a.label) return a;
+        const label = await fetchAppLabel(adb, a.packageName);
+        return { ...a, label: label ?? undefined };
+      }));
       setApps(list);
-      const needsLabel = list.filter((a) => !a.label).length;
-      if (needsLabel > 0) setPendingLabels(needsLabel);
     } catch (err) {
       toast(`Failed to list apps: ${String(err)}`, "error");
     } finally {
@@ -218,11 +208,6 @@ export function AppsPanel({ adb }: Props) {
   }, [adb]);
 
   useEffect(() => { loadApps(); }, [loadApps]);
-
-  const handleLabelLoaded = useCallback((pkg: string, label: string) => {
-    setApps((prev) => prev.map((a) => a.packageName === pkg ? { ...a, label } : a));
-    setPendingLabels((prev) => Math.max(0, prev - 1));
-  }, []);
 
   const handleRemove = useCallback((pkg: string) => {
     setApps((prev) => prev.filter((a) => a.packageName !== pkg));
@@ -313,29 +298,27 @@ export function AppsPanel({ adb }: Props) {
       </div>
 
       <div className="apps-scroll-wrap">
-        <div className="card-body no-pad" style={{ flex: 1, overflowY: "auto", position: "relative" }} ref={panelRef}>
-          {(loading || pendingLabels > 0) && (
-            <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "var(--md-sys-color-surface)" }}>
-              <PanelLoader />
+        <div className="card-body no-pad" style={{ flex: 1, overflowY: "auto" }} ref={panelRef}>
+          {loading ? (
+            <PanelLoader />
+          ) : (
+            <div className="apps-grid" id="apps-grid">
+              {filtered.length === 0 ? (
+                <div className="apps-empty">
+                  {apps.length === 0 ? "No user apps found" : "No apps match your filter"}
+                </div>
+              ) : (
+                filtered.map((entry) => (
+                  <AppCard
+                    key={entry.packageName}
+                    entry={entry}
+                    adb={adb}
+                    onRemove={handleRemove}
+                  />
+                ))
+              )}
             </div>
           )}
-          <div className="apps-grid" id="apps-grid">
-            {filtered.length === 0 ? (
-              <div className="apps-empty">
-                {apps.length === 0 ? "No user apps found" : "No apps match your filter"}
-              </div>
-            ) : (
-              filtered.map((entry) => (
-                <AppCard
-                  key={entry.packageName}
-                  entry={entry}
-                  adb={adb}
-                  onRemove={handleRemove}
-                  onLabelLoaded={handleLabelLoaded}
-                />
-              ))
-            )}
-          </div>
         </div>
         <ScrollPill panelRef={panelRef} />
       </div>

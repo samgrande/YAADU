@@ -55,6 +55,51 @@ function parseDumpsysLabel(output: string): string | null {
 
 const staticMap = commonNames as Record<string, string>;
 
+const ICON_CACHE_KEY = "yaadu-app-icons";
+
+function loadIconCache(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem(ICON_CACHE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function saveIconCache(cache: Record<string, string>): void {
+  try {
+    localStorage.setItem(ICON_CACHE_KEY, JSON.stringify(cache));
+  } catch {
+    // quota exceeded, silently ignore
+  }
+}
+
+export async function fetchAppIconUrl(packageName: string): Promise<string | null> {
+  const iconCache = loadIconCache();
+  const cached = iconCache[packageName];
+  if (cached) return cached;
+
+  try {
+    const res = await fetch(`${API_BASE}?id=${encodeURIComponent(packageName)}`);
+    if (res.ok) {
+      const data = (await res.json()) as { name?: string; logo?: string } | undefined;
+      if (data?.logo) {
+        iconCache[packageName] = data.logo;
+        saveIconCache(iconCache);
+      }
+      if (data?.name) {
+        const cache = loadCache();
+        cache[packageName] = data.name;
+        saveCache(cache);
+      }
+      return data?.logo ?? null;
+    }
+  } catch {
+    // network error, fall through
+  }
+
+  return null;
+}
+
 export async function fetchAppName(adb: Adb, packageName: string): Promise<string | null> {
   // 1. Check localStorage cache
   const cache = loadCache();
@@ -73,13 +118,18 @@ export async function fetchAppName(adb: Adb, packageName: string): Promise<strin
   try {
     const res = await fetch(`${API_BASE}?id=${encodeURIComponent(packageName)}`);
     if (res.ok) {
-      const data = (await res.json()) as { name?: string } | undefined;
+      const data = (await res.json()) as { name?: string; logo?: string } | undefined;
       const name = data?.name;
       if (name) {
         cache[packageName] = name;
         saveCache(cache);
-        return name;
       }
+      if (data?.logo) {
+        const iconCache = loadIconCache();
+        iconCache[packageName] = data.logo;
+        saveIconCache(iconCache);
+      }
+      if (name) return name;
     }
   } catch {
     // network error, fall through

@@ -9,7 +9,7 @@
 import type { Adb } from "@yume-chan/adb";
 import { Consumable } from "@yume-chan/stream-extra";
 import { shell, shellFull } from "./helpers.js";
-import { fetchAppName } from "./app-names.js";
+import { fetchAppName, fetchAppIconUrl } from "./app-names.js";
 import { categorizeApp } from "./app-categories.js";
 
 export interface AppEntry {
@@ -27,6 +27,10 @@ export interface AppOpResult {
 
 export async function fetchAppLabel(adb: Adb, packageName: string): Promise<string | null> {
   return fetchAppName(adb, packageName);
+}
+
+export async function fetchAppIcon(packageName: string): Promise<string | null> {
+  return fetchAppIconUrl(packageName);
 }
 
 function parsePmList(raw: string): string[] {
@@ -125,6 +129,51 @@ export async function enableApp(adb: Adb, pkg: string): Promise<AppOpResult> {
     return { success, message: success ? `Enabled ${pkg}` : `pm enable: ${out}` };
   } catch (err) {
     return { success: false, message: `Enable failed: ${String(err)}` };
+  }
+}
+
+export async function pullApk(adb: Adb, pkg: string): Promise<AppOpResult> {
+  try {
+    const out = await shell(adb, `pm path ${pkg}`);
+    const match = out.match(/package:(.+)/);
+    if (!match) return { success: false, message: `Could not find APK path for ${pkg}` };
+    const apkPath = match[1].trim();
+
+    const sync = await adb.sync();
+    try {
+      const stream = sync.read(apkPath) as unknown as ReadableStream<Uint8Array>;
+      const chunks: Uint8Array[] = [];
+      const reader = stream.getReader();
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          if (value) chunks.push(value);
+        }
+      } finally {
+        reader.releaseLock();
+      }
+      const total = chunks.reduce((s, c) => s + c.length, 0);
+      const buf = new Uint8Array(total);
+      let offset = 0;
+      for (const c of chunks) { buf.set(c, offset); offset += c.length; }
+
+      const blob = new Blob([buf], { type: "application/vnd.android.package-archive" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${pkg.split(".").pop() ?? pkg}.apk`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+      return { success: true, message: `Exported ${pkg}` };
+    } finally {
+      await sync.dispose();
+    }
+  } catch (err) {
+    return { success: false, message: `Export failed: ${String(err)}` };
   }
 }
 

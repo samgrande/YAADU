@@ -4,10 +4,14 @@ import type { AdbSyncEntry } from "@yume-chan/adb";
 import { formatBytes } from "./helpers.js";
 import type { ZipWriter, BlobWriter } from "@zip.js/zip.js";
 
+export type MediaCategory = "photo" | "video" | "audio" | "other";
+
 export interface BackupEntry {
   name:     string;
   fullPath: string;
   size:     bigint;
+  group:    string;
+  category: MediaCategory;
 }
 
 export interface BackupProgress {
@@ -28,6 +32,28 @@ export interface SavedFile {
   message: string;
 }
 
+export const MEDIA_FOLDERS = [
+  { path: "/sdcard/DCIM/Camera",             label: "Camera" },
+  { path: "/sdcard/DCIM",                    label: "DCIM" },
+  { path: "/sdcard/Pictures/Screenshots",    label: "Screenshots" },
+  { path: "/sdcard/Pictures",                label: "Pictures" },
+  { path: "/sdcard/Movies",                  label: "Movies" },
+  { path: "/sdcard/Music",                   label: "Music" },
+  { path: "/sdcard/Download",                label: "Download" },
+];
+
+const PHOTO_EXTS = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "heic", "heif"];
+const VIDEO_EXTS = ["mp4", "mov", "mkv", "avi", "3gp", "webm", "m4v"];
+const AUDIO_EXTS = ["mp3", "aac", "wav", "flac", "ogg", "m4a", "wma"];
+
+function detectCategory(name: string): MediaCategory {
+  const ext = name.split(".").pop()?.toLowerCase() ?? "";
+  if (VIDEO_EXTS.includes(ext)) return "video";
+  if (AUDIO_EXTS.includes(ext)) return "audio";
+  if (PHOTO_EXTS.includes(ext)) return "photo";
+  return "other";
+}
+
 export async function listMediaFiles(
   adb: Adb,
   remotePath = "/sdcard/DCIM/Camera"
@@ -41,10 +67,41 @@ export async function listMediaFiles(
         name:     e.name,
         fullPath: `${remotePath}/${e.name}`,
         size:     e.size,
+        group:    remotePath.split("/").pop() ?? "Unknown",
+        category: detectCategory(e.name),
       }));
   } finally {
     await sync.dispose();
   }
+}
+
+export async function scanMediaFolders(adb: Adb): Promise<BackupEntry[]> {
+  const results: BackupEntry[] = [];
+  const sync = await adb.sync();
+  try {
+    for (const folder of MEDIA_FOLDERS) {
+      try {
+        const dirExists = await sync.isDirectory(folder.path);
+        if (!dirExists) continue;
+        const entries = await sync.readdir(folder.path);
+        for (const e of entries) {
+          if (e.type !== LinuxFileType.File) continue;
+          results.push({
+            name: e.name,
+            fullPath: `${folder.path}/${e.name}`,
+            size: e.size,
+            group: folder.label,
+            category: detectCategory(e.name),
+          });
+        }
+      } catch {
+        // skip folders that can't be read
+      }
+    }
+  } finally {
+    await sync.dispose();
+  }
+  return results;
 }
 
 function triggerBrowserDownload(blob: Blob, filename: string): void {

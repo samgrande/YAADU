@@ -3,8 +3,8 @@ import type { Adb } from "@yume-chan/adb";
 import {
   listUserApps, listAllApps, mergeDisabledState,
   forceStop, uninstallApp,
-  disableApp, enableApp, installApk,
-  fetchAppLabel,
+  disableApp, enableApp, installApk, pullApk,
+  fetchAppLabel, fetchAppIcon,
   type AppEntry, type InstallProgress,
 } from "../../adb/apps.js";
 import { toast } from "../Toast.js";
@@ -101,16 +101,17 @@ function ApkInstaller({ adb, onInstalled }: ApkInstallerProps) {
 const SHAPES = [
   "M334.285 259.457C331.711 284.036 330.424 296.325 325.697 306.022C318.858 320.055 306.923 330.89 292.372 336.277C282.317 340 270.067 340 245.568 340L121.863 340C92.2359 340 77.4221 340 66.1134 335.146C49.7395 328.118 37.2802 314.151 32.0729 296.985C28.4765 285.129 30.0331 270.267 33.1463 240.543L45.7147 120.543C48.289 95.9642 49.5762 83.6748 54.3026 73.9777C61.142 59.9453 73.0768 49.1101 87.6278 43.7229C97.6833 40 109.933 40 134.432 40L258.137 40C287.764 40 302.578 40 313.887 44.8539C330.261 51.8819 342.72 65.8495 347.927 83.0153C351.524 94.871 349.967 109.733 346.854 139.457L334.285 259.457Z",
   "M40 182.857C40 103.959 107.157 40 190 40C272.843 40 340 103.959 340 182.857L340 282.857C340 314.416 313.137 340 280 340C270.178 340 260.907 337.752 252.724 333.768C248.554 331.737 244.394 329.512 240.216 327.277C225.513 319.411 210.592 311.429 194.27 311.429H185.73C169.408 311.429 154.487 319.411 139.784 327.277C135.606 329.512 131.446 331.737 127.276 333.768C119.093 337.752 109.822 340 100 340C66.8629 340 40 314.416 40 282.857L40 182.857Z",
-  "M166.725 43.1869C177.261 25.6044 202.739 25.6044 213.275 43.1868L225.124 62.9597C231.268 73.2136 243.399 78.2385 254.995 75.3327L277.355 69.7294C297.237 64.7468 315.253 82.7627 310.271 102.645L304.667 125.005C301.762 136.601 306.786 148.732 317.04 154.876L336.813 166.725C354.396 177.261 354.396 202.739 336.813 213.275L317.04 225.124C306.786 231.268 301.762 243.399 304.667 254.995L310.271 277.355C315.253 297.237 297.237 315.253 277.355 310.271L254.995 304.667C243.399 301.762 231.268 306.786 225.124 317.04L213.275 336.813C202.739 354.396 177.261 354.396 166.725 336.813L154.876 317.04C148.732 306.786 136.601 301.762 125.005 304.667L102.646 310.271C82.7627 315.253 64.7468 297.237 69.7294 277.355L75.3327 254.995C78.2385 243.399 73.2136 231.268 62.9597 225.124L43.1869 213.275C25.6044 202.739 25.6044 177.261 43.1868 166.725L62.9597 154.876C73.2136 148.732 78.2385 136.601 75.3327 125.005L69.7294 102.646C64.7468 82.7627 82.7627 64.7468 102.645 69.7294L125.005 75.3327C136.601 78.2385 148.732 73.2136 154.876 62.9597L166.725 43.1869Z",
+  "M166.725 43.1869C177.261 25.6044 202.739 25.6044 213.275 43.1868L225.124 62.9597C231.268 73.2136 243.399 78.2385 254.995 75.3327L277.355 69.7294C297.237 64.7468 315.253 82.7627 310.271 102.645L304.667 125.005C301.762 136.601 306.786 148.732 317.04 154.876L336.813 166.725C354.396 177.261 354.396 202.739 336.813 213.275L317.04 225.124C306.786 231.268 301.762 243.399 304.667 254.995L310.271 277.355C315.253 297.237 297.237 315.253 277.355 310.271L254.995 304.667C243.399 301.762 231.268 306.786 225.124 317.04L213.275 336.813C202.739 354.396 177.261 354.396 166.725 336.813L154.876 317.04C148.732 306.786 136.601 301.762 125.005 304.667L102.646 310.271C82.7627 315.253 64.7468 297.237 69.7294 277.355L75.3327 254.995C78.2385 243.399 73.2136 231.268 62.9597 225.124L43.1869 213.275C25.6044 202.739 25.6044 177.261 43.1868 166.725L62.9597 154.876C73.2136 148.732 78.2385 136.601 75.3327 125.005L69.7294 102.646C64.7468 82.7627 82.7627 64.7468 102.645 69.7294L125.005 75.3327C136.601 78.2385 148.732 73.2136 154.876 62.9597L166.725 43.1869Z"
 ];
 
 interface AppCardProps {
   entry: AppEntry;
   adb: Adb;
   onRemove: (pkg: string) => void;
+  iconUrl?: string | null;
 }
 
-function AppCard({ entry, adb, onRemove }: AppCardProps) {
+function AppCard({ entry, adb, onRemove, iconUrl }: AppCardProps) {
   const displayName = entry.label ?? shortPkg(entry.packageName);
   const initial = (displayName.trim()[0] ?? "?").toUpperCase();
   const isSystem = entry.systemApp;
@@ -130,6 +131,9 @@ function AppCard({ entry, adb, onRemove }: AppCardProps) {
         result = entry.disabled ? await enableApp(adb, pkg) : await disableApp(adb, pkg);
         if (result.success) { onRemove(pkg); }
         break;
+      case "export":
+        result = await pullApk(adb, pkg);
+        break;
       default: return;
     }
     if (result) toast(result.message, result.success ? "success" : "error");
@@ -138,7 +142,7 @@ function AppCard({ entry, adb, onRemove }: AppCardProps) {
   return (
     <div className={`app-card${entry.disabled ? " disabled-app" : ""}`} data-pkg={entry.packageName}>
       <div className="app-icon-wrap">
-        <div className="app-icon-placeholder">
+        <div className="app-icon-shapes-bg">
           <svg className="avatar-shape avatar-shape-top" viewBox="0 0 380 380">
             <path d={SHAPES[0]} fill="var(--md-sys-color-primary)" fillOpacity="0.16"/>
           </svg>
@@ -148,8 +152,14 @@ function AppCard({ entry, adb, onRemove }: AppCardProps) {
           <svg className="avatar-shape avatar-shape-right" viewBox="0 0 380 380">
             <path d={SHAPES[2]} fill="var(--md-sys-color-primary)" fillOpacity="0.16"/>
           </svg>
-          <span className="avatar-letter">{initial}</span>
         </div>
+        {iconUrl ? (
+          <img src={iconUrl} className="app-icon-img" alt="" />
+        ) : (
+          <div className="app-icon-square-placeholder">
+            <span className="avatar-letter">{initial}</span>
+          </div>
+        )}
       </div>
       <div className="app-details-wrap">
         <div className="app-info">
@@ -182,6 +192,7 @@ function AppCard({ entry, adb, onRemove }: AppCardProps) {
             <button className="btn-app-action" onClick={() => handleAction("toggle-disable")}>
               {entry.disabled ? "Enable" : "Disable"}
             </button>
+            <button className="btn-app-action" onClick={() => handleAction("export")} title="Export APK">Export</button>
             <button className="btn-app-action btn-action-danger" onClick={() => setConfirming(true)} title="Uninstall">Uninstall</button>
           </div>
         )}
@@ -210,7 +221,11 @@ export function AppsPanel({ adb }: Props) {
   const [showSystem, setShowSystem]       = useState(false);
   const [showInstaller, setShowInstaller] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [iconMap, setIconMap]             = useState<Map<string, string | null>>(new Map());
   const panelRef                          = useRef<HTMLDivElement>(null);
+  const iconQueueRef                      = useRef<string[]>([]);
+  const fetchingRef                       = useRef(false);
+  const iconMapRef                        = useRef<Map<string, string | null>>(new Map());
 
   const loadApps = useCallback(async () => {
     setActiveCategory("all");
@@ -236,6 +251,33 @@ export function AppsPanel({ adb }: Props) {
   const handleRemove = useCallback((pkg: string) => {
     setApps((prev) => prev.filter((a) => a.packageName !== pkg));
   }, []);
+
+  const loadIcons = useCallback(async (pkg: string) => {
+    const url = await fetchAppIcon(pkg);
+    setIconMap((prev) => {
+      const next = new Map(prev);
+      next.set(pkg, url);
+      iconMapRef.current = next;
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    iconQueueRef.current = apps
+      .filter((a) => !iconMapRef.current.has(a.packageName))
+      .map((a) => a.packageName);
+    if (!fetchingRef.current) {
+      fetchingRef.current = true;
+      const processQueue = async () => {
+        while (iconQueueRef.current.length > 0) {
+          const batch = iconQueueRef.current.splice(0, 3);
+          await Promise.allSettled(batch.map((pkg) => loadIcons(pkg)));
+        }
+        fetchingRef.current = false;
+      };
+      processQueue();
+    }
+  }, [apps, loadIcons]);
 
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -274,6 +316,7 @@ export function AppsPanel({ adb }: Props) {
               <polyline points="7 10 12 15 17 10"/>
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
+            <span>Install APK</span>
           </button>
           <button className="btn-refresh" title="Reload apps" onClick={loadApps}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
@@ -382,6 +425,7 @@ export function AppsPanel({ adb }: Props) {
                     entry={entry}
                     adb={adb}
                     onRemove={handleRemove}
+                    iconUrl={iconMap.get(entry.packageName)}
                   />
                 ))
               )}

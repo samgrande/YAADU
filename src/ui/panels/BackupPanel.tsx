@@ -1,13 +1,14 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import type { Adb } from "@yume-chan/adb";
 import {
-  listMediaFiles,
+  scanMediaFolders,
   backupMediaFiles,
   backupWhatsApp,
   checkWhatsAppDir,
   downloadSingleFile,
   type BackupEntry,
   type BackupProgress,
+  type MediaCategory,
 } from "../../adb/backup.js";
 import { formatBytes } from "../../adb/helpers.js";
 import { toast } from "../Toast.js";
@@ -18,11 +19,21 @@ import { useAppContext } from "../../context.js";
 
 function fileIcon(name: string): React.ReactNode {
   const ext = name.split(".").pop()?.toLowerCase() ?? "";
-  const isVideo = ["mp4", "mov", "mkv", "avi", "3gp"].includes(ext);
+  const isVideo = ["mp4", "mov", "mkv", "avi", "3gp", "webm", "m4v"].includes(ext);
+  const isAudio = ["mp3", "aac", "wav", "flac", "ogg", "m4a", "wma"].includes(ext);
   if (isVideo) {
     return (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+      </svg>
+    );
+  }
+  if (isAudio) {
+    return (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 18V5l12-2v13"/>
+        <circle cx="6" cy="18" r="3"/>
+        <circle cx="18" cy="16" r="3"/>
       </svg>
     );
   }
@@ -100,14 +111,24 @@ export function BackupPanel({ adb }: Props) {
   const [isRunning, setIsRunning]       = useState(false);
   const [whatsappFound, setWhatsappFound] = useState(false);
   const [isWhatsAppBackingUp, setIsWhatsAppBackingUp] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<MediaCategory | "all">("all");
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const abortRef                        = useRef<AbortController | null>(null);
+
+  // Auto-expand all groups whenever files change
+  useEffect(() => {
+    const groups = new Set(files.map((f) => f.group));
+    setExpandedGroups(groups);
+  }, [files]);
 
   const handleScan = useCallback(async () => {
     setScanning(true);
     setWhatsappFound(false);
+    setActiveCategory("all");
+    setExpandedGroups(new Set());
     try {
       const [list, waFound] = await Promise.all([
-        listMediaFiles(adb),
+        scanMediaFolders(adb),
         checkWhatsAppDir(adb),
       ]);
       setFiles(list);
@@ -139,10 +160,6 @@ export function BackupPanel({ adb }: Props) {
       return next;
     });
   }, []);
-
-  const toggleAll = useCallback((checked: boolean) => {
-    setSelected(checked ? new Set(files.map((f) => f.name)) : new Set());
-  }, [files]);
 
   const handleExport = useCallback(async () => {
     const toExport = files.filter((f) => selected.has(f.name));
@@ -184,6 +201,8 @@ export function BackupPanel({ adb }: Props) {
     setProgress(null);
     setWhatsappFound(false);
     setIsWhatsAppBackingUp(false);
+    setActiveCategory("all");
+    setExpandedGroups(new Set());
   }, []);
 
   const handleWhatsAppBackup = useCallback(async () => {
@@ -225,8 +244,6 @@ export function BackupPanel({ adb }: Props) {
       toast(`Download failed: ${normalizeError(err)}`, "error");
     }
   }, [adb]);
-
-  const allSelected = files.length > 0 && selected.size === files.length;
 
   const mediaIcon = (
     <svg viewBox="0 0 26 27" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -297,10 +314,10 @@ export function BackupPanel({ adb }: Props) {
         </div>
 
         {/* Content after scan — always rendered, animated in via .scanned CSS class */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%", height: "100%", position: "absolute", inset: 0, zIndex: 5, pointerEvents: scanned ? "auto" : "none" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%", height: "100%", position: "absolute", inset: 0, zIndex: 5, pointerEvents: scanned ? "auto" : "none" }} onClick={handleReset}>
           {/* WhatsApp backup card */}
           {scanned && whatsappFound && !isWhatsAppBackingUp && (
-            <div className="wa-backup-card">
+            <div className="wa-backup-card" onClick={(e) => e.stopPropagation()}>
               <div className="wa-backup-card-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M3.50002 12C3.50002 7.30558 7.3056 3.5 12 3.5C16.6944 3.5 20.5 7.30558 20.5 12C20.5 16.6944 16.6944 20.5 12 20.5C10.3278 20.5 8.77127 20.0182 7.45798 19.1861C7.21357 19.0313 6.91408 18.9899 6.63684 19.0726L3.75769 19.9319L4.84173 17.3953C4.96986 17.0955 4.94379 16.7521 4.77187 16.4751C3.9657 15.176 3.50002 13.6439 3.50002 12ZM12 1.5C6.20103 1.5 1.50002 6.20101 1.50002 12C1.50002 13.8381 1.97316 15.5683 2.80465 17.0727L1.08047 21.107C0.928048 21.4637 0.99561 21.8763 1.25382 22.1657C1.51203 22.4552 1.91432 22.5692 2.28599 22.4582L6.78541 21.1155C8.32245 21.9965 10.1037 22.5 12 22.5C17.799 22.5 22.5 17.799 22.5 12C22.5 6.20101 17.799 1.5 12 1.5ZM14.2925 14.1824L12.9783 15.1081C12.3628 14.7575 11.6823 14.2681 10.9997 13.5855C10.2901 12.8759 9.76402 12.1433 9.37612 11.4713L10.2113 10.7624C10.5697 10.4582 10.6678 9.94533 10.447 9.53028L9.38284 7.53028C9.23954 7.26097 8.98116 7.0718 8.68115 7.01654C8.38113 6.96129 8.07231 7.046 7.84247 7.24659L7.52696 7.52195C6.76823 8.18414 6.3195 9.2723 6.69141 10.3741C7.07698 11.5163 7.89983 13.314 9.58552 14.9997C11.3991 16.8133 13.2413 17.5275 14.3186 17.8049C15.1866 18.0283 16.008 17.7288 16.5868 17.2572L17.1783 16.7752C17.4313 16.5691 17.5678 16.2524 17.544 15.9269C17.5201 15.6014 17.3389 15.308 17.0585 15.1409L15.3802 14.1409C15.0412 13.939 14.6152 13.9552 14.2925 14.1824Z" fill="var(--md-sys-color-primary)"/>
@@ -323,7 +340,7 @@ export function BackupPanel({ adb }: Props) {
 
           {/* WhatsApp backup progress */}
           {isWhatsAppBackingUp && (
-            <div className="wa-backup-card">
+            <div className="wa-backup-card" onClick={(e) => e.stopPropagation()}>
               <div className="wa-backup-card-icon">
                 <svg className="spinner-stroke" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
                   <circle cx="12" cy="12" r="9" strokeDasharray="40 10"/>
@@ -336,37 +353,22 @@ export function BackupPanel({ adb }: Props) {
             </div>
           )}
 
-          <div className="backup-dialog-box" id="backup-dialog-box">
-            {/* Dialog header */}
-            <div className="backup-dialog-header">
-              <div className="backup-header-left">
-                <label className="custom-checkbox-wrapper select-all-wrapper">
-                  <input
-                    type="checkbox"
-                    className="real-checkbox"
-                    checked={allSelected}
-                    onChange={(e) => toggleAll(e.target.checked)}
-                    id="chk-select-all"
-                  />
-                  <span className="state-layer">
-                    <span className="checkbox-container">
-                      <svg className="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M2 6 L4.5 8.5 L9.5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </span>
-                  </span>
-                </label>
-                <span className="backup-file-count-badge">{selected.size}</span>
-                <span className="backup-header-title">Files</span>
-              </div>
-              <div className="backup-header-right">
-                <button className="backup-dialog-close-btn" onClick={handleReset} title="Close">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                  </svg>
-                </button>
-              </div>
+          <div className="backup-dialog-box" id="backup-dialog-box" onClick={(e) => e.stopPropagation()}>
+            {/* Category filter tabs */}
+            <div className="media-category-tabs">
+              {(["all", "photo", "video", "audio", "other"] as const).map((cat) => {
+                const count = cat === "all" ? files.length : files.filter((f) => f.category === cat).length;
+                return (
+                  <button
+                    key={cat}
+                    className={`media-category-tab${activeCategory === cat ? " active" : ""}`}
+                    onClick={() => setActiveCategory(cat)}
+                  >
+                    <span className="media-category-label">{cat === "all" ? "All" : `${cat.charAt(0).toUpperCase() + cat.slice(1)}`}</span>
+                    <span className="media-category-count">{count}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Progress bar */}
@@ -387,50 +389,115 @@ export function BackupPanel({ adb }: Props) {
             <div className="backup-file-list" id="backup-file-list">
               {files.length === 0 ? (
                 <div style={{ padding: "24px", textAlign: "center", color: "var(--text-muted)" }}>
-                  No media files found in /sdcard/DCIM/Camera
+                  No media files found
                 </div>
               ) : (
-                files.map((f) => (
-                  <div key={f.name} className="backup-file-item">
-                    <div className="backup-file-item-left">
-                      <label className="custom-checkbox-wrapper">
-                        <input
-                          type="checkbox"
-                          className="real-checkbox"
-                          checked={selected.has(f.name)}
-                          onChange={() => toggleSelect(f.name)}
-                        />
-                        <span className="state-layer">
-                          <span className="checkbox-container">
-                            <svg className="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
-                              <path d="M2 6 L4.5 8.5 L9.5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </span>
-                        </span>
-                      </label>
-                      <div className="file-icon-circle">
-                        {fileIcon(f.name)}
-                      </div>
-                      <div className="backup-file-name-container">
-                        <span className="backup-file-name">{f.name}</span>
-                        <div className="backup-file-meta">
-                          <span className="backup-file-size">{formatBytes(f.size)}</span>
-                        </div>
-                      </div>
+                (() => {
+                  const filtered = activeCategory === "all" ? files : files.filter((f) => f.category === activeCategory);
+                  const grouped = filtered.reduce((acc, f) => {
+                    (acc[f.group] ??= []).push(f);
+                    return acc;
+                  }, {} as Record<string, BackupEntry[]>);
+                  const groupKeys = Object.keys(grouped);
+
+                  return groupKeys.length === 0 ? (
+                    <div style={{ padding: "24px", textAlign: "center", color: "var(--text-muted)" }}>
+                      No files in this category
                     </div>
-                    <button
-                      className="backup-file-save-btn"
-                      onClick={(e) => { e.stopPropagation(); handleDownloadSingle(f); }}
-                      title={`Download ${f.name}`}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                      </svg>
-                    </button>
-                  </div>
-                ))
+                  ) : (
+                    groupKeys.map((group) => {
+                      const groupFiles = grouped[group];
+                      const groupSelected = groupFiles.every((f) => selected.has(f.name));
+                      const isExpanded = expandedGroups.has(group);
+                      return (
+                        <div key={group} className="media-group">
+                          <div className="media-group-header" onClick={() => {
+                            setExpandedGroups((prev) => {
+                              const next = new Set(prev);
+                              if (next.has(group)) next.delete(group);
+                              else next.add(group);
+                              return next;
+                            });
+                          }}>
+                            <label className="custom-checkbox-wrapper" onClick={(e) => e.stopPropagation()}>
+                              <input
+                                type="checkbox"
+                                className="real-checkbox"
+                                checked={groupSelected}
+                                onChange={() => {
+                                  setSelected((prev) => {
+                                    const next = new Set(prev);
+                                    for (const f of groupFiles) {
+                                      if (groupSelected) next.delete(f.name);
+                                      else next.add(f.name);
+                                    }
+                                    return next;
+                                  });
+                                }}
+                              />
+                              <span className="state-layer">
+                                <span className="checkbox-container">
+                                  <svg className="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                    <path d="M2 6 L4.5 8.5 L9.5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                </span>
+                              </span>
+                            </label>
+                            <span className="media-group-name">{group}</span>
+                            <span className="media-group-count">{groupFiles.length}</span>
+                            <svg className={`collapse-arrow${isExpanded ? " expanded" : ""}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                          </div>
+                          <div className={`media-group-items${isExpanded ? " expanded" : ""}`}>
+                            {groupFiles.map((f) => (
+                            <div key={f.name} className="backup-file-item">
+                              <div className="backup-file-item-left">
+                                <label className="custom-checkbox-wrapper">
+                                  <input
+                                    type="checkbox"
+                                    className="real-checkbox"
+                                    checked={selected.has(f.name)}
+                                    onChange={() => toggleSelect(f.name)}
+                                  />
+                                  <span className="state-layer">
+                                    <span className="checkbox-container">
+                                      <svg className="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                        <path d="M2 6 L4.5 8.5 L9.5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                      </svg>
+                                    </span>
+                                  </span>
+                                </label>
+                                <div className="file-icon-circle">
+                                  {fileIcon(f.name)}
+                                </div>
+                                <div className="backup-file-name-container">
+                                  <span className="backup-file-name">{f.name}</span>
+                                  <div className="backup-file-meta">
+                                    <span className={`media-category-badge category-${f.category}`}>{f.category}</span>
+                                    <span className="backup-file-size">{formatBytes(f.size)}</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <button
+                                className="backup-file-save-btn"
+                                onClick={(e) => { e.stopPropagation(); handleDownloadSingle(f); }}
+                                title={`Download ${f.name}`}
+                              >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                  <polyline points="7 10 12 15 17 10"/>
+                                  <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                              </button>
+                            </div>
+                          ))}
+                          </div>
+                        </div>
+                      );
+                    })
+                  );
+                })()
               )}
             </div>
 

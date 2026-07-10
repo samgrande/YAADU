@@ -19,13 +19,6 @@ const SPARKLE_ICON = (
   </svg>
 );
 
-const RELOAD_ICON = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="23 4 23 10 17 10" />
-    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
-  </svg>
-);
-
 const RESET_ICON = (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="23 4 23 10 17 10" />
@@ -46,12 +39,12 @@ export function TweaksPanel({ adb }: Props) {
   const [dropdownLabel, setDropdownLabel] = useState<string>("Presets");
   const [isApplyingDpi, setIsApplyingDpi] = useState<boolean>(false);
   const [isResettingDpi, setIsResettingDpi] = useState<boolean>(false);
-  const [isLoadingSettings, setIsLoadingSettings] = useState<boolean>(false);
+  const isLoadingSettingsRef = useRef(false);
   const [pendingScaleChange, setPendingScaleChange] = useState<AnimScale | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const loadCurrentValues = useCallback(async () => {
-    setIsLoadingSettings(true);
+    isLoadingSettingsRef.current = true;
     try {
       const [animScale, mode, dpi] = await Promise.all([
         getAnimationScale(adb),
@@ -64,11 +57,10 @@ export function TweaksPanel({ adb }: Props) {
         setCurrentDpi(String(dpi));
         setCustomDpi(String(dpi));
       }
-      toast("Loaded current device settings", "info", { duration: 2000 });
     } catch (err) {
       toast(`Failed to load settings: ${normalizeError(err)}`, "error");
     } finally {
-      setIsLoadingSettings(false);
+      isLoadingSettingsRef.current = false;
     }
   }, [adb]);
 
@@ -167,15 +159,6 @@ export function TweaksPanel({ adb }: Props) {
           <div className="page-title-icon">{SPARKLE_ICON}</div>
           <span className="page-title">System Tweaks</span>
         </div>
-        <button
-          className="btn-refresh"
-          id="btn-load-tweaks"
-          onClick={loadCurrentValues}
-          disabled={isLoadingSettings}
-        >
-          {RELOAD_ICON}
-          <span>Reload</span>
-        </button>
       </div>
 
       <div className="tweaks-grid">

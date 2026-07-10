@@ -7,11 +7,13 @@
  */
 
 import { Adb } from "@yume-chan/adb";
-import { AdbWebUsbBackendManager } from "@yume-chan/adb-backend-webusb";
+import { AdbWebUsbBackendManager, type AdbWebUsbBackend } from "@yume-chan/adb-backend-webusb";
 import type { AppAction } from "../state.js";
 import { credentialStore } from "./credential.js";
 import { fetchDeviceInfo } from "./telemetry.js";
 import { normalizeError } from "./errors.js";
+import { shellManager } from "../features/device-shell/ShellManager.js";
+import { shellConsoleStore } from "../features/device-shell/ShellConsoleStore.js";
 
 let _usbDevice: USBDevice | null = null;
 
@@ -56,10 +58,8 @@ export async function connectDevice(dispatch: React.Dispatch<AppAction>): Promis
 
     // Step 4: Watch for disconnects
     adb.disconnected
-      .then(() => handleDisconnect(dispatch, "Device disconnected unexpectedly."))
-      .catch(() =>
-        handleDisconnect(dispatch, "Oops, it seems you have unplugged your device")
-      );
+      .then(() => handleDisconnect(dispatch))
+      .catch(() => handleDisconnect(dispatch));
 
   } catch (err: unknown) {
     const isDomException = err instanceof DOMException;
@@ -79,6 +79,9 @@ export async function disconnectDevice(
   adb: Adb | null
 ): Promise<void> {
   if (!adb) { dispatch({ type: "RESET" }); return; }
+  await shellManager.disposeAll();
+  shellConsoleStore.reset();
+
   // Close the raw USB device directly, bypassing the ADB protocol close
   // handshake which can fail with "data buffer exceeded maximum size".
   if (_usbDevice) {
@@ -89,9 +92,61 @@ export async function disconnectDevice(
   console.info("[YAADU] Disconnected.");
 }
 
-function handleDisconnect(dispatch: React.Dispatch<AppAction>, reason: string): void {
-  dispatch({ type: "SET_ERROR", error: reason });
+function handleDisconnect(dispatch: React.Dispatch<AppAction>): void {
+  shellConsoleStore.markDisconnected();
+  shellManager.setAdb(null);
   dispatch({ type: "SET_ADB", adb: null });
   dispatch({ type: "SET_DEVICE", device: null });
-  dispatch({ type: "SET_CONNECTION", status: "error" });
+  dispatch({ type: "SET_ERROR", error: null });
+  dispatch({ type: "SET_CONNECTION", status: "reconnecting" });
+}
+
+/**
+ * Silently reconnect to the previously-paired device without showing the USB
+ * picker. Uses getDevices() which returns already-granted devices — no user
+ * gesture required. Returns true on success.
+ */
+export async function silentReconnect(
+  dispatch: React.Dispatch<AppAction>
+): Promise<boolean> {
+  try {
+    const manager = AdbWebUsbBackendManager.BROWSER;
+    if (!manager) return false;
+
+    // getDevices() returns devices the user has already granted access to
+    const devices: AdbWebUsbBackend[] = await (manager as unknown as {
+      getDevices(): Promise<AdbWebUsbBackend[]>;
+    }).getDevices();
+
+    if (devices.length === 0) return false;
+
+    const backend = devices[0];
+    _usbDevice = (backend as unknown as { device: USBDevice }).device;
+
+    dispatch({ type: "SET_CONNECTION", status: "connecting" });
+    const connection = await backend.connect();
+
+    dispatch({ type: "SET_CONNECTION", status: "authorizing" });
+    const adb = await Adb.authenticate(connection, credentialStore);
+
+    dispatch({ type: "SET_ADB", adb });
+    dispatch({ type: "SET_CONNECTION", status: "connected" });
+    console.info("[YAADU] Silently reconnected. Model:", adb.model);
+
+    fetchDeviceInfo(adb)
+      .then((info) => { dispatch({ type: "SET_DEVICE", device: info }); })
+      .catch((err) => { console.warn("[YAADU] Failed to pre-fetch device info:", err); });
+
+    // Watch for the next disconnect
+    adb.disconnected
+      .then(() => handleDisconnect(dispatch))
+      .catch(() => handleDisconnect(dispatch));
+
+    return true;
+  } catch (err) {
+    console.warn("[YAADU] Silent reconnect failed:", err);
+    // Keep in reconnecting state so the countdown continues
+    dispatch({ type: "SET_CONNECTION", status: "reconnecting" });
+    return false;
+  }
 }

@@ -145,14 +145,6 @@ export function BackupPanel({ adb }: Props) {
     }
   }, [adb]);
 
-  const handleReload = useCallback(async () => {
-    setScanned(false);
-    setFiles([]);
-    setSelected(new Set());
-    setProgress(null);
-    await handleScan();
-  }, [handleScan]);
-
   const toggleSelect = useCallback((name: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
@@ -259,15 +251,6 @@ export function BackupPanel({ adb }: Props) {
         <div className="page-title-row">
           <div className="page-title-icon">{mediaIcon}</div>
           <span className="page-title">Media Backup</span>
-        </div>
-        <div className="backup-header-actions">
-          <button className="btn-refresh" onClick={handleReload} title="Reload / Scan">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="23 4 23 10 17 10"/>
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-            </svg>
-            <span>Reload</span>
-          </button>
         </div>
       </div>
 

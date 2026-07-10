@@ -5,6 +5,7 @@ export type ConnectionStatus =
   | "connecting"
   | "authorizing"
   | "connected"
+  | "reconnecting"
   | "error";
 
 export type ActivePanel = "telemetry" | "apps" | "backup" | "tweaks";

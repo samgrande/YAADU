@@ -25,6 +25,46 @@ export interface AppOpResult {
   message: string;
 }
 
+export async function getRunningApps(adb: Adb): Promise<string[]> {
+  try {
+    const [psOut, pkgsOut] = await Promise.all([
+      shellFull(adb, "ps -A | grep com"),
+      shell(adb, "pm list packages -3"),
+    ]);
+
+    const installed = new Set<string>();
+    for (const line of pkgsOut.trim().split("\n")) {
+      const pkg = line.trim().replace("package:", "");
+      if (pkg) installed.add(pkg);
+    }
+
+    const packages = new Set<string>();
+    const lines = psOut.stdout.trim().split("\n");
+    for (const line of lines) {
+      const name = line.trim().split(/\s+/).pop() ?? "";
+      if (!name) continue;
+
+      // Strip colon suffix first (e.g. com.android.chrome:privileged_process0)
+      let pkg = name.split(":")[0];
+
+      // Progressively strip trailing dot-segments to find a match
+      // e.g. com.google.android.gms.persistent → com.google.android.gms
+      while (pkg) {
+        if (installed.has(pkg)) {
+          packages.add(pkg);
+          break;
+        }
+        const idx = pkg.lastIndexOf(".");
+        if (idx === -1) break; // No more dots to strip
+        pkg = pkg.slice(0, idx);
+      }
+    }
+    return [...packages];
+  } catch {
+    return [];
+  }
+}
+
 export async function fetchAppLabel(adb: Adb, packageName: string): Promise<string | null> {
   return fetchAppName(adb, packageName);
 }

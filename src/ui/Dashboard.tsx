@@ -2,6 +2,9 @@ import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import type { Adb } from "@yume-chan/adb";
 import { useAppContext } from "../context.js";
 import { disconnectDevice } from "../adb/connection.js";
+import { DeviceShellProvider } from "../features/device-shell/DeviceShellProvider.js";
+import { BottomBar } from "../features/device-shell/components/BottomBar.js";
+import { ShellConsolePanel } from "../features/device-shell/components/ShellConsolePanel.js";
 import { PanelLoader } from "./PanelLoader.js";
 import type { ActivePanel } from "../state.js";
 
@@ -48,12 +51,16 @@ export function Dashboard({ adb }: { adb: Adb }) {
   const { state, dispatch } = useAppContext();
   const [activePanel, setActivePanel] = useState<ActivePanel>(state.panel);
   const [exitingPanel, setExitingPanel] = useState<ActivePanel | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   const transitionRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const device = state.device;
 
   const handlePanelChange = (panelId: ActivePanel) => {
-    if (panelId === activePanel) return;
+    if (panelId === activePanel) {
+      setRefreshKey((k) => k + 1);
+      return;
+    }
     if (transitionRef.current !== null) {
       clearTimeout(transitionRef.current);
       transitionRef.current = null;
@@ -85,7 +92,9 @@ export function Dashboard({ adb }: { adb: Adb }) {
   const unfilledHeight = batteryLevel >= 100 ? "0%" : `calc(${100 - batteryLevel}% - 6px)`;
 
   return (
+    <DeviceShellProvider adb={adb}>
     <div className="dashboard">
+      <div className="dashboard-body">
       <aside className="sidebar">
         <div className="sidebar-inner">
           <div className="sidebar-header">
@@ -151,39 +160,47 @@ export function Dashboard({ adb }: { adb: Adb }) {
             </div>
           )}
 
-          <div className="sidebar-disconnect-wrap">
-            <button id="btn-disconnect" className="btn-disconnect" onClick={handleDisconnect}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-error)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/>
-                <line x1="12" y1="17" x2="12.01" y2="17"/>
-              </svg>
-              Disconnect
-            </button>
-          </div>
         </div>
       </aside>
 
       <main className="main-content">
-        <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column", minHeight: 0 }}>
-          <div
-            className={`panel-area ${exitingPanel !== null ? "panel-exit" : ""}`}
-            data-panel-id={activePanel}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              flex: 1,
-            }}
-          >
-            <Suspense fallback={<PanelLoader />}>
-              {activePanel === "telemetry" && <TelemetryPanel adb={adb} />}
-              {activePanel === "apps" && <AppsPanel adb={adb} />}
-              {activePanel === "backup" && <BackupPanel adb={adb} />}
-              {activePanel === "tweaks" && <TweaksPanel adb={adb} />}
-            </Suspense>
+        <div className="main-content-stack">
+          <div className="dashboard-panel-layer">
+            <div
+              className={`panel-area ${exitingPanel !== null ? "panel-exit" : ""}`}
+              data-panel-id={activePanel}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                flex: 1,
+              }}
+            >
+              <Suspense fallback={<PanelLoader />}>
+                {activePanel === "telemetry" && <TelemetryPanel key={refreshKey} adb={adb} />}
+                {activePanel === "apps" && <AppsPanel key={refreshKey} adb={adb} />}
+                {activePanel === "backup" && <BackupPanel key={refreshKey} adb={adb} />}
+                {activePanel === "tweaks" && <TweaksPanel key={refreshKey} adb={adb} />}
+              </Suspense>
+            </div>
           </div>
+          <ShellConsolePanel />
         </div>
       </main>
+      </div>
+      <div className="dashboard-footer">
+        <div className="sidebar-disconnect-wrap">
+          <button id="btn-disconnect" className="btn-disconnect" onClick={handleDisconnect}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-error)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Disconnect
+          </button>
+        </div>
+        <BottomBar adb={adb} />
+      </div>
     </div>
+    </DeviceShellProvider>
   );
 }

@@ -234,11 +234,9 @@ export function TelemetryPanel({ adb }: Props) {
   const [wifi, setWifi]         = useState<ConnectivityData | null>(null);
   const [sensors, setSensors]   = useState<SensorsData | null>(null);
   const [loading, setLoading]   = useState(true);
-  const [rotating, setRotating] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
   const loadAll = useCallback(async () => {
-    setRotating(true);
     setLoading(true);
     try {
       const info = deviceRef.current || await fetchDeviceInfo(adb);
@@ -257,7 +255,6 @@ export function TelemetryPanel({ adb }: Props) {
       toast(`Telemetry fetch failed: ${normalizeError(err)}`, "error");
     } finally {
       setLoading(false);
-      setRotating(false);
     }
   }, [adb, dispatch]);
 
@@ -276,32 +273,13 @@ export function TelemetryPanel({ adb }: Props) {
   return (
     <div className="telem-panel-wrap">
         <div className="telem-panel">
-          {loading ? (
-            <PanelLoader />
-          ) : (
-            <>
-
-              {/* Header */}
-              <div className="page-header">
+          <div className="page-header">
                 <div className="page-title-row">
                   <div className="page-title-icon" dangerouslySetInnerHTML={{ __html: NAVBAR_INFO_ICON }} />
                   <span className="page-title">Device Info</span>
                 </div>
-                <button
-                  className="btn-refresh"
-                  id="btn-refresh-telem"
-                  onClick={loadAll}
-                  disabled={rotating}
-                >
-                  <svg className={rotating ? "rotating" : ""} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="23 4 23 10 17 10"/>
-                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-                  </svg>
-                  <span>Reload</span>
-                </button>
               </div>
 
-            {/* Column headings — static */}
             <div className="telem-headings-row">
               <div className="column-heading">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -323,7 +301,9 @@ export function TelemetryPanel({ adb }: Props) {
               </div>
             </div>
 
-            {/* Telem body — scrollable */}
+          {loading ? (
+            <PanelLoader />
+          ) : (
             <div className="telem-scroll-wrap" ref={panelRef}>
               <div className="telem-body">
               {/* ── Column 1: System & Build ── */}
@@ -416,7 +396,6 @@ export function TelemetryPanel({ adb }: Props) {
               </div>
             </div>
             </div>
-          </>
         )}
       </div>
     </div>

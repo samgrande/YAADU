@@ -77,7 +77,7 @@ export const shellConsoleStore = {
     }));
     let next = 1;
     while (usedNumbers.has(next)) next++;
-    const title = `Shell Window ${next}`;
+    const title = ` // > Shell ${next}`;
     const meta: ShellWindowMeta = {
       id,
       title,

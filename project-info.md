@@ -106,7 +106,7 @@ The telemetry panel displays Android version logos (9–16), a memory usage SVG 
 - **Bulk backup**: streams each file directly into a zip via **@zip.js/zip.js** — no full-file buffer, no RAM accumulation. Each ADB `sync.read()` stream is piped through a `TransformStream` byte counter (for per-file progress) into `ZipWriter.add(name, stream)`. The zip output is written to a `WritableStream` (File System Access API) or an in-memory `BlobWriter` fallback.
 - Supports `AbortController` cancellation mid-backup; partial zip is aborted cleanly
 
-### Module 5 — System Tweaks
+### Module 5 — Labs
 
 - **Animation Scale**: sets `window_animation_scale`, `transition_animation_scale`, and `animator_duration_scale` simultaneously via `settings put global`
 - **Night Mode**: `settings put secure ui_night_mode 2/1` + `cmd uimode night yes/no`

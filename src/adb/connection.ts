@@ -14,6 +14,7 @@ import { fetchDeviceInfo } from "./telemetry.js";
 import { normalizeError } from "./errors.js";
 import { shellManager } from "../features/device-shell/ShellManager.js";
 import { shellConsoleStore } from "../features/device-shell/ShellConsoleStore.js";
+import { logcatSession } from "./logcat-session.js";
 
 let _usbDevice: USBDevice | null = null;
 
@@ -79,6 +80,7 @@ export async function disconnectDevice(
   adb: Adb | null
 ): Promise<void> {
   if (!adb) { dispatch({ type: "RESET" }); return; }
+  logcatSession.markDisconnected();
   await shellManager.disposeAll();
   shellConsoleStore.reset();
 
@@ -93,6 +95,7 @@ export async function disconnectDevice(
 }
 
 function handleDisconnect(dispatch: React.Dispatch<AppAction>): void {
+  logcatSession.markDisconnected();
   shellConsoleStore.markDisconnected();
   shellManager.setAdb(null);
   dispatch({ type: "SET_ADB", adb: null });

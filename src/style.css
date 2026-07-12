@@ -16,7 +16,7 @@
 }
 
 .small-screen-title {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: clamp(2rem, 8vw, 3rem);
   font-weight: 800;
   color: var(--md-sys-color-primary);
@@ -24,7 +24,7 @@
 }
 
 .small-screen-text {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.875rem, 3vw, 1.125rem);
   color: var(--text-muted);
   line-height: 1.6;
@@ -40,19 +40,26 @@
   /* --md-sys-color-primary, --md-sys-color-on-primary, etc. are set at runtime */
 
   /* ── Color Zones ── */
-  --shell-bg: color-mix(in srgb, var(--md-sys-color-primary-container) 20%, var(--md-sys-color-surface));
+  --shell-bg: color-mix(
+    in srgb,
+    var(--md-sys-color-primary-container) 20%,
+    var(--md-sys-color-surface)
+  );
   --container-bg: var(--md-sys-color-surface);
 }
 
 :root {
-
   /* ── Legacy Variables Mapped to M3 Tokens ── */
   --bg: var(--container-bg);
   --surface: var(--container-bg);
   --surface-mid: var(--container-bg);
   --surface-high: var(--md-sys-color-surface-variant);
   --surface-higher: var(--md-sys-color-surface-variant);
-  --surface-hover: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface));
+  --surface-hover: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) 8%,
+    var(--md-sys-color-surface)
+  );
 
   --border: var(--md-sys-color-outline-variant);
   --border-mid: var(--md-sys-color-outline-variant);
@@ -61,16 +68,32 @@
   --cyan: var(--md-sys-color-primary);
   --cyan-dim: color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
   --cyan-glow: color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
-  --green: color-mix(in srgb, var(--md-sys-color-primary-container) 70%, var(--md-sys-color-primary));
+  --green: color-mix(
+    in srgb,
+    var(--md-sys-color-primary-container) 70%,
+    var(--md-sys-color-primary)
+  );
   --green-dim: color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
   --amber: var(--md-sys-color-tertiary);
-  --amber-dim: color-mix(in srgb, var(--md-sys-color-tertiary) 10%, transparent);
+  --amber-dim: color-mix(
+    in srgb,
+    var(--md-sys-color-tertiary) 10%,
+    transparent
+  );
   --red: var(--md-sys-color-error);
   --red-dim: color-mix(in srgb, var(--md-sys-color-error) 10%, transparent);
   --purple: var(--md-sys-color-secondary);
-  --purple-dim: color-mix(in srgb, var(--md-sys-color-secondary) 10%, transparent);
+  --purple-dim: color-mix(
+    in srgb,
+    var(--md-sys-color-secondary) 10%,
+    transparent
+  );
   --blue: var(--md-sys-color-secondary);
-  --blue-dim: color-mix(in srgb, var(--md-sys-color-secondary) 10%, transparent);
+  --blue-dim: color-mix(
+    in srgb,
+    var(--md-sys-color-secondary) 10%,
+    transparent
+  );
 
   --text: var(--md-sys-color-on-surface);
   --text-muted: var(--md-sys-color-on-surface-variant);
@@ -103,10 +126,15 @@
   --dur: 200ms;
 
   /* ── M3 Expressive Motion Tokens ── */
-  --spring: cubic-bezier(0.16, 1, 0.3, 1);       /* spring overshoot — panel/card entry */
-  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);   /* bouncy spring — icon/pill */
-  --decelerate: cubic-bezier(0, 0, 0, 1);         /* decelerate — element enter */
-  --accelerate: cubic-bezier(0.3, 0, 1, 1);       /* accelerate — element exit */
+  --spring: cubic-bezier(
+    0.16,
+    1,
+    0.3,
+    1
+  ); /* spring overshoot — panel/card entry */
+  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* bouncy spring — icon/pill */
+  --decelerate: cubic-bezier(0, 0, 0, 1); /* decelerate — element enter */
+  --accelerate: cubic-bezier(0.3, 0, 1, 1); /* accelerate — element exit */
   --dur-short: 100ms;
   --dur-medium: 300ms;
   --dur-long: 500ms;
@@ -144,7 +172,7 @@ html::-webkit-scrollbar {
 body {
   height: 100%;
   overflow: hidden;
-  font-family: 'Roboto', system-ui, sans-serif;
+  font-family: "Roboto", system-ui, sans-serif;
   background: var(--shell-bg);
   color: var(--text);
   font-size: 0.875rem;
@@ -201,9 +229,16 @@ select {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, var(--surface) 0%, color-mix(in srgb, var(--md-sys-color-primary-container) 8%, var(--surface)) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--surface) 0%,
+    color-mix(in srgb, var(--md-sys-color-primary-container) 8%, var(--surface))
+      100%
+  );
   z-index: 100;
-  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+  transition:
+    opacity 0.4s var(--ease),
+    transform 0.4s var(--ease);
   overflow: hidden;
   overflow-y: auto;
   padding: 1rem;
@@ -231,8 +266,20 @@ select {
 .marquee-row {
   overflow: hidden;
   width: 50rem;
-  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
 }
 
 .marquee-track {
@@ -262,8 +309,12 @@ select {
 }
 
 @keyframes marquee-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .connect-content-wrapper {
@@ -326,8 +377,20 @@ select {
   height: 1rem;
   overflow: hidden;
   position: relative;
-  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
 }
 
 .connect-wave-path {
@@ -349,7 +412,7 @@ select {
 }
 
 .connect-tagline-text {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 0.8125rem;
@@ -366,12 +429,15 @@ select {
   background: var(--surface);
   border: 0.0625rem solid var(--border-light);
   border-radius: 1.75rem;
-  padding: clamp(1.5rem, 4vw, 4.375rem) clamp(1rem, 3vw, 2rem) clamp(1.25rem, 3vw, 2.25rem);
+  padding: clamp(1.5rem, 4vw, 4.375rem) clamp(1rem, 3vw, 2rem)
+    clamp(1.25rem, 3vw, 2.25rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  box-shadow: 0 0.5rem 2.5rem rgba(0, 0, 0, 0.08), 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 0.5rem 2.5rem rgba(0, 0, 0, 0.08),
+    0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.04);
   margin-bottom: 1.25rem;
 }
 
@@ -447,13 +513,15 @@ select {
   justify-content: center;
   gap: 0.625rem;
   color: var(--md-sys-color-on-primary-container);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: clamp(0.8125rem, 2.5vw, 0.9375rem);
   box-sizing: border-box;
   margin-top: 0.5rem;
   margin-bottom: 1.25rem;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 .status-badge-m3.connecting {
@@ -494,7 +562,9 @@ select {
 
 #btn-connect[disabled] {
   --md-filled-button-container-color: var(--md-sys-color-primary-container);
-  --md-filled-button-disabled-container-color: var(--md-sys-color-primary-container);
+  --md-filled-button-disabled-container-color: var(
+    --md-sys-color-primary-container
+  );
   --md-filled-button-disabled-label-text-color: var(--md-sys-color-on-primary);
 }
 
@@ -513,24 +583,41 @@ select {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--md-sys-color-error-container) 50%, transparent);
-  border: 2px solid color-mix(in srgb, var(--md-sys-color-error) 30%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-error-container) 50%,
+    transparent
+  );
+  border: 2px solid
+    color-mix(in srgb, var(--md-sys-color-error) 30%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--md-sys-color-error);
   animation: reconnect-ring-pulse 2s ease-in-out infinite;
-  box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
+  box-shadow: 0 0 0 0
+    color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
 }
 
 @keyframes reconnect-ring-pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-sys-color-error) 20%, transparent);
-    border-color: color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
+  0%,
+  100% {
+    box-shadow: 0 0 0 0
+      color-mix(in srgb, var(--md-sys-color-error) 20%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--md-sys-color-error) 25%,
+      transparent
+    );
   }
   50% {
-    box-shadow: 0 0 0 12px color-mix(in srgb, var(--md-sys-color-error) 0%, transparent);
-    border-color: color-mix(in srgb, var(--md-sys-color-error) 60%, transparent);
+    box-shadow: 0 0 0 12px
+      color-mix(in srgb, var(--md-sys-color-error) 0%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--md-sys-color-error) 60%,
+      transparent
+    );
   }
 }
 
@@ -539,9 +626,16 @@ select {
 }
 
 @keyframes reconnect-usb-bounce {
-  0%, 100% { transform: translateY(0px)  rotate(0deg); }
-  30%       { transform: translateY(-5px) rotate(-8deg); }
-  60%       { transform: translateY(3px)  rotate(4deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-5px) rotate(-8deg);
+  }
+  60% {
+    transform: translateY(3px) rotate(4deg);
+  }
 }
 
 .reconnect-banner {
@@ -550,8 +644,13 @@ select {
   align-items: center;
   gap: 6px;
   padding: 16px 20px 14px;
-  background: color-mix(in srgb, var(--md-sys-color-error-container) 35%, transparent);
-  border: 1.5px solid color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-error-container) 35%,
+    transparent
+  );
+  border: 1.5px solid
+    color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
   border-radius: 18px;
   width: 100%;
   max-width: 20rem;
@@ -560,12 +659,25 @@ select {
 }
 
 @keyframes reconnect-border-pulse {
-  0%, 100% { border-color: color-mix(in srgb, var(--md-sys-color-error) 18%, transparent); }
-  50%       { border-color: color-mix(in srgb, var(--md-sys-color-error) 55%, transparent); }
+  0%,
+  100% {
+    border-color: color-mix(
+      in srgb,
+      var(--md-sys-color-error) 18%,
+      transparent
+    );
+  }
+  50% {
+    border-color: color-mix(
+      in srgb,
+      var(--md-sys-color-error) 55%,
+      transparent
+    );
+  }
 }
 
 .reconnect-banner-title {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 15px;
   font-weight: 700;
   color: var(--md-sys-color-error);
@@ -574,7 +686,7 @@ select {
 }
 
 .reconnect-banner-sub {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 12.5px;
   color: var(--md-sys-color-on-surface-variant);
   text-align: center;
@@ -587,7 +699,11 @@ select {
   color: var(--md-sys-color-primary);
   font-variant-numeric: tabular-nums;
   font-size: 14px;
-  background: color-mix(in srgb, var(--md-sys-color-primary-container) 60%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary-container) 60%,
+    transparent
+  );
   padding: 1px 7px;
   border-radius: 8px;
 }
@@ -631,8 +747,12 @@ select {
   flex: 1;
   min-width: 0;
   max-width: 10rem;
-  --md-filled-tonal-button-container-color: var(--md-sys-color-primary-container);
-  --md-filled-tonal-button-label-text-color: var(--md-sys-color-on-primary-container);
+  --md-filled-tonal-button-container-color: var(
+    --md-sys-color-primary-container
+  );
+  --md-filled-tonal-button-label-text-color: var(
+    --md-sys-color-on-primary-container
+  );
   --md-filled-tonal-button-container-elevation: 0;
 }
 
@@ -649,8 +769,6 @@ select {
   height: 100%;
   display: block;
 }
-
-
 
 /* Theme card on connect screen */
 .theme-card-content {
@@ -711,7 +829,7 @@ select {
 .theme-name {
   min-height: 1.25rem;
   color: var(--text-muted);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.2;
@@ -729,7 +847,11 @@ select {
   overflow: hidden;
   border: 0.0625rem solid var(--border);
   border-radius: 0.75rem;
-  background: color-mix(in srgb, var(--md-sys-color-surface) 88%, var(--md-sys-color-primary-container));
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-surface) 88%,
+    var(--md-sys-color-primary-container)
+  );
 }
 
 .theme-swatch {
@@ -739,7 +861,10 @@ select {
   border-radius: 50%;
   border: 0.125rem solid transparent;
   box-shadow: inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.08);
-  transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease), border-color 0.16s var(--ease);
+  transition:
+    transform 0.16s var(--ease),
+    box-shadow 0.16s var(--ease),
+    border-color 0.16s var(--ease);
   flex-shrink: 0;
 }
 
@@ -747,12 +872,17 @@ select {
 .theme-swatch:focus-visible {
   transform: translateY(-0.0625rem) scale(1.03);
   outline: none;
-  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent), inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 0 0 0.1875rem
+      color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent),
+    inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.08);
 }
 
 .theme-swatch.active {
   border-color: var(--md-sys-color-on-surface);
-  box-shadow: 0 0 0 0.1875rem var(--md-sys-color-primary-container), inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 0 0 0.1875rem var(--md-sys-color-primary-container),
+    inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.08);
 }
 
 .theme-mode-toggle {
@@ -771,11 +901,14 @@ select {
   height: 100%;
   border-radius: 62.4375rem;
   color: var(--md-sys-color-on-primary-container);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1;
-  transition: background 0.18s var(--ease), color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+  transition:
+    background 0.18s var(--ease),
+    color 0.18s var(--ease),
+    box-shadow 0.18s var(--ease);
 }
 
 .theme-mode-option.active {
@@ -804,7 +937,7 @@ select {
   display: flex;
   flex-direction: column;
   color: var(--md-sys-color-on-primary-container);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   text-align: left;
 }
 
@@ -833,7 +966,7 @@ select {
 }
 
 .about-header-main {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   font-weight: 700;
   font-size: 1.375rem;
   text-transform: uppercase;
@@ -851,7 +984,7 @@ select {
 }
 
 .about-japanese-title {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   font-size: 2.25rem;
   font-weight: 900;
   color: var(--md-sys-color-on-primary-container);
@@ -861,7 +994,7 @@ select {
 }
 
 .about-japanese-sub {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.8125rem;
   color: var(--text-muted);
   margin-bottom: 1.5rem;
@@ -876,7 +1009,7 @@ select {
 }
 
 .about-para-card {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.8125rem;
   line-height: 1.6;
   color: var(--text);
@@ -897,7 +1030,7 @@ select {
 }
 
 .dev-card-header-main {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   font-weight: 700;
   font-size: 1rem;
   text-transform: uppercase;
@@ -918,10 +1051,14 @@ select {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: var(--md-sys-color-surface-container-high, rgba(255,255,255,0.05));
+  background: var(
+    --md-sys-color-surface-container-high,
+    rgba(255, 255, 255, 0.05)
+  );
   border-radius: 0.75rem;
   padding: 0.75rem;
-  border: 0.0625rem solid var(--md-sys-color-outline-variant, rgba(255,255,255,0.1));
+  border: 0.0625rem solid
+    var(--md-sys-color-outline-variant, rgba(255, 255, 255, 0.1));
 }
 
 .dev-avatar {
@@ -945,7 +1082,7 @@ select {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.75rem;
   color: var(--text-muted);
   line-height: 1.4;
@@ -987,7 +1124,11 @@ select {
 }
 
 .help-retro-card {
-  background: color-mix(in srgb, var(--md-sys-color-primary-container) 25%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary-container) 25%,
+    transparent
+  );
   /* Ultra soft green tone matching card design system */
   border-radius: 0.75rem;
   padding: 0.75rem 1rem;
@@ -995,12 +1136,18 @@ select {
   flex-direction: column;
   gap: 0.375rem;
   box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.02);
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .help-retro-card:hover {
   transform: translateY(-0.125rem);
-  background: color-mix(in srgb, var(--md-sys-color-primary-container) 35%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary-container) 35%,
+    transparent
+  );
 }
 
 .help-retro-top {
@@ -1014,7 +1161,7 @@ select {
   /* Light active green accent background */
   color: var(--md-sys-color-on-primary-container);
   /* High contrast, bold green text */
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   font-weight: 700;
   font-size: 0.8125rem;
   padding: 0.1875rem 0.5rem;
@@ -1024,7 +1171,7 @@ select {
 }
 
 .help-retro-title {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   font-weight: 700;
   font-size: 0.875rem;
   color: var(--md-sys-color-on-primary-container);
@@ -1033,7 +1180,7 @@ select {
 }
 
 .help-retro-body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.8125rem;
   line-height: 1.5;
   color: var(--text);
@@ -1048,10 +1195,10 @@ select {
 md-dialog {
   --md-dialog-container-shape: 1.75rem;
   --md-dialog-container-color: var(--surface);
-  --md-dialog-headline-font: 'Roboto', sans-serif;
+  --md-dialog-headline-font: "Roboto", sans-serif;
   --md-dialog-headline-color: var(--text);
   --md-dialog-supporting-text-color: var(--text-muted);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 /* ── APK Sideloader Overlay Dialog ── */
@@ -1067,8 +1214,12 @@ md-dialog {
 }
 
 @keyframes overlay-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .apk-dialog {
@@ -1085,8 +1236,14 @@ md-dialog {
 }
 
 @keyframes dialog-enter {
-  from { transform: scale(0.92) translateY(0.75rem); opacity: 0; }
-  to   { transform: scale(1) translateY(0); opacity: 1; }
+  from {
+    transform: scale(0.92) translateY(0.75rem);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
 
 .apk-dialog-header {
@@ -1228,7 +1385,7 @@ md-dialog {
   border-radius: 0;
   background: transparent;
   color: var(--text-muted);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: var(--nav-label-s);
   font-weight: 500;
   line-height: 1;
@@ -1257,11 +1414,15 @@ md-dialog {
 
 /* Ripple on click */
 .nav-icon-pill::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(circle, color-mix(in srgb, var(--md-sys-color-primary) 18%, transparent) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--md-sys-color-primary) 18%, transparent) 0%,
+    transparent 70%
+  );
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -1271,7 +1432,11 @@ md-dialog {
 }
 
 .nav-item-m3:hover .nav-icon-pill {
-  background: color-mix(in srgb, var(--md-sys-color-primary-container) 55%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary-container) 55%,
+    transparent
+  );
 }
 
 .nav-item-m3.active .nav-icon-pill {
@@ -1304,14 +1469,28 @@ md-dialog {
   opacity: 0;
   animation: navItemEnter 0.4s var(--spring) both;
 }
-.sidebar-nav .nav-item-m3:nth-child(1) { animation-delay: 0.05s; }
-.sidebar-nav .nav-item-m3:nth-child(2) { animation-delay: 0.10s; }
-.sidebar-nav .nav-item-m3:nth-child(3) { animation-delay: 0.15s; }
-.sidebar-nav .nav-item-m3:nth-child(4) { animation-delay: 0.20s; }
+.sidebar-nav .nav-item-m3:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.sidebar-nav .nav-item-m3:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.sidebar-nav .nav-item-m3:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.sidebar-nav .nav-item-m3:nth-child(4) {
+  animation-delay: 0.2s;
+}
 
 @keyframes navItemEnter {
-  from { opacity: 0; transform: translateX(-0.75rem); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .nav-icon svg {
@@ -1323,7 +1502,9 @@ md-dialog {
 .nav-label {
   line-height: 1;
   color: var(--text-muted);
-  transition: color 0.15s, font-weight 0.15s;
+  transition:
+    color 0.15s,
+    font-weight 0.15s;
 }
 
 .nav-item-m3.active .nav-label {
@@ -1334,7 +1515,8 @@ md-dialog {
 /* ── Device Card ─────────────────────────────────── */
 .sidebar-device-card {
   margin: 0 clamp(0.5rem, 0.8vw, 1rem) clamp(1.5rem, 2vh, 2.5rem);
-  padding: clamp(0.875rem, 1.8vh, 1.5rem) clamp(0.5rem, 0.8vw, 0.875rem) clamp(0.75rem, 1.5vh, 1.25rem);
+  padding: clamp(0.875rem, 1.8vh, 1.5rem) clamp(0.5rem, 0.8vw, 0.875rem)
+    clamp(0.75rem, 1.5vh, 1.25rem);
   background: var(--md-sys-color-primary-container);
   border: none;
   border-radius: clamp(0.875rem, 1.5vw, 1.375rem);
@@ -1346,8 +1528,14 @@ md-dialog {
 }
 
 @keyframes deviceCardEnter {
-  from { opacity: 0; transform: scale(0.90) translateY(0.75rem); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .device-card-inner {
@@ -1367,7 +1555,7 @@ md-dialog {
 }
 
 .battery-pct-main {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 500;
   line-height: 1;
@@ -1449,7 +1637,7 @@ md-dialog {
 }
 
 .device-brand {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.5rem, 0.8vw, 0.6875rem);
   font-weight: 500;
   line-height: 1;
@@ -1461,7 +1649,7 @@ md-dialog {
 }
 
 .device-model {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.6875rem, 1.1vw, 1rem);
   font-weight: 700;
   line-height: 1;
@@ -1499,18 +1687,26 @@ md-dialog {
   border-radius: calc(var(--ds-bottom-bar-h) / 2);
   background: var(--md-sys-color-error-container);
   color: var(--md-sys-color-error);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.6875rem, 1vw, 0.875rem);
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0.0625rem;
   cursor: pointer;
-  transition: background 0.2s var(--ease), transform 0.2s var(--spring), box-shadow 0.2s var(--ease);
+  transition:
+    background 0.2s var(--ease),
+    transform 0.2s var(--spring),
+    box-shadow 0.2s var(--ease);
 }
 
 .btn-disconnect:hover {
-  background: color-mix(in srgb, var(--md-sys-color-error-container) 75%, var(--md-sys-color-error));
-  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--md-sys-color-error) 20%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-error-container) 75%,
+    var(--md-sys-color-error)
+  );
+  box-shadow: 0 0.25rem 0.75rem
+    color-mix(in srgb, var(--md-sys-color-error) 20%, transparent);
 }
 
 .btn-disconnect:active {
@@ -1530,10 +1726,12 @@ md-dialog {
   flex-direction: column;
   overflow: hidden;
   min-width: 0;
-  margin: var(--mc-margin-t) var(--mc-margin-r) var(--mc-margin-b) var(--mc-margin-l);
+  margin: var(--mc-margin-t) var(--mc-margin-r) var(--mc-margin-b)
+    var(--mc-margin-l);
   border-radius: var(--radius-lg);
   background: var(--container-bg);
-  border: 0.0625rem solid color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+  border: 0.0625rem solid
+    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
   scrollbar-width: none;
 }
 
@@ -1555,7 +1753,9 @@ md-dialog {
 .panel-loader-canvas {
   width: 200px;
   height: 200px;
-  filter: drop-shadow(0 0 1rem color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent))
+  filter: drop-shadow(
+      0 0 1rem color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent)
+    )
     hue-rotate(calc((var(--theme-hue, 0) / 360) * 360deg))
     saturate(calc((var(--theme-saturation, 1) * 100%) - 100%))
     brightness(var(--theme-brightness, 1));
@@ -1605,7 +1805,7 @@ md-dialog {
   padding: 1.5rem;
 }
 
-.card-header>div[style*="display:flex"] {
+.card-header > div[style*="display:flex"] {
   flex-shrink: 0;
   flex-wrap: wrap;
   gap: 0.375rem;
@@ -1641,13 +1841,14 @@ md-dialog {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--md-sys-color-on-primary-container);
   letter-spacing: 0.0625rem;
   padding: 0 0.25rem 0.5rem 0.25rem;
-  border-bottom: 0.0625rem solid color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
+  border-bottom: 0.0625rem solid
+    color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
   margin-bottom: 0.125rem;
 }
 
@@ -1672,13 +1873,15 @@ md-dialog {
   min-height: 6rem;
   justify-content: flex-start;
   flex: 1;
-  box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.04), 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.03);
+  box-shadow:
+    0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.04),
+    0 0.0625rem 0.125rem rgba(0, 0, 0, 0.03);
   transition: box-shadow 0.15s ease;
   isolation: isolate;
 }
 
 .metric-label {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.625rem, 0.9vw, 0.8125rem);
   font-weight: 600;
   color: color-mix(in srgb, var(--md-sys-color-primary) 55%, transparent);
@@ -1688,7 +1891,7 @@ md-dialog {
 }
 
 .metric-value {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   font-size: 1.625rem;
   font-weight: 600;
   color: var(--md-sys-color-on-primary-container);
@@ -1754,7 +1957,7 @@ md-dialog {
 }
 
 .mem-pct {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   font-size: clamp(1.375rem, 3vw, 2.25rem);
   font-weight: 700;
   color: var(--md-sys-color-on-primary-container);
@@ -1763,7 +1966,7 @@ md-dialog {
 }
 
 .mem-avail {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   font-size: 0.75rem;
   font-weight: 500;
   color: color-mix(in srgb, var(--md-sys-color-primary) 55%, transparent);
@@ -1817,7 +2020,11 @@ md-dialog {
   right: 0;
   display: block;
   height: 0.75rem;
-  background: linear-gradient(to bottom, var(--md-sys-color-surface), transparent);
+  background: linear-gradient(
+    to bottom,
+    var(--md-sys-color-surface),
+    transparent
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -1830,7 +2037,11 @@ md-dialog {
   right: 0;
   display: block;
   height: 2.25rem;
-  background: linear-gradient(to bottom, transparent, var(--md-sys-color-surface));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--md-sys-color-surface)
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -1867,7 +2078,9 @@ md-dialog {
   min-height: 1rem;
   background: color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent);
   border-radius: 62.4375rem;
-  transition: top 0.08s linear, height 0.08s linear;
+  transition:
+    top 0.08s linear,
+    height 0.08s linear;
 }
 
 /* ── Card click-to-copy flash ────────────────────────── */
@@ -1877,15 +2090,18 @@ md-dialog {
 
 @keyframes tileCopiedFlash {
   0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-sys-color-primary) 35%, transparent);
+    box-shadow: 0 0 0 0
+      color-mix(in srgb, var(--md-sys-color-primary) 35%, transparent);
   }
 
   50% {
-    box-shadow: 0 0 0 0.375rem color-mix(in srgb, var(--md-sys-color-primary) 12%, transparent);
+    box-shadow: 0 0 0 0.375rem
+      color-mix(in srgb, var(--md-sys-color-primary) 12%, transparent);
   }
 
   100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-sys-color-primary) 0%, transparent);
+    box-shadow: 0 0 0 0
+      color-mix(in srgb, var(--md-sys-color-primary) 0%, transparent);
   }
 }
 
@@ -1899,18 +2115,50 @@ md-dialog {
 }
 
 .telem-scroll-wrap.can-scroll-bottom:not(.can-scroll-top) {
-  mask-image: linear-gradient(to bottom, black 0%, black calc(100% - var(--fade-size)), transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - var(--fade-size)), transparent 100%);
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
 }
 
 .telem-scroll-wrap.can-scroll-top:not(.can-scroll-bottom) {
-  mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black 100%);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black var(--fade-size),
+    black 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black var(--fade-size),
+    black 100%
+  );
 }
 
 .telem-scroll-wrap.can-scroll-top.can-scroll-bottom {
-  mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black calc(100% - var(--fade-size)), transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black calc(100% - var(--fade-size)), transparent 100%);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black var(--fade-size),
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black var(--fade-size),
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
 }
 
 .telem-scroll-wrap:not(.can-scroll-top):not(.can-scroll-bottom) {
@@ -1951,7 +2199,7 @@ md-dialog {
 }
 
 .page-title {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(1.375rem, 2.4vw, 1.875rem);
   font-weight: 700;
   color: var(--md-sys-color-on-primary-container);
@@ -1971,8 +2219,6 @@ md-dialog {
   padding-bottom: 0;
 }
 
-
-
 .telem-column {
   display: flex;
   flex-direction: column;
@@ -1989,7 +2235,7 @@ md-dialog {
   min-width: 0;
 }
 
-.telem-column.col-grid-2>* {
+.telem-column.col-grid-2 > * {
   min-width: 0;
 }
 
@@ -2018,7 +2264,7 @@ md-dialog {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.625rem, 1.1vw, 0.9375rem);
   font-weight: 700;
   color: var(--md-sys-color-primary);
@@ -2043,7 +2289,10 @@ md-dialog {
   gap: clamp(0.375rem, 1.2vw, 1rem);
   min-width: 0;
   box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.04);
-  transition: transform 0.3s var(--spring), box-shadow 0.25s var(--ease), border-color 0.2s var(--ease);
+  transition:
+    transform 0.3s var(--spring),
+    box-shadow 0.25s var(--ease),
+    border-color 0.2s var(--ease);
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -2051,7 +2300,7 @@ md-dialog {
 
 /* Hover shimmer highlight */
 .metric-tile-m3::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -2065,11 +2314,13 @@ md-dialog {
   pointer-events: none;
   z-index: 0;
 }
-.metric-tile-m3:hover::before { opacity: 1; }
+.metric-tile-m3:hover::before {
+  opacity: 1;
+}
 
 /* State layer */
 .metric-tile-m3::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -2079,10 +2330,17 @@ md-dialog {
   pointer-events: none;
   z-index: 0;
 }
-.metric-tile-m3:hover::after  { opacity: 0.03; }
-.metric-tile-m3:active::after { opacity: 0.07; }
+.metric-tile-m3:hover::after {
+  opacity: 0.03;
+}
+.metric-tile-m3:active::after {
+  opacity: 0.07;
+}
 
-.metric-tile-m3 > * { position: relative; z-index: 1; }
+.metric-tile-m3 > * {
+  position: relative;
+  z-index: 1;
+}
 
 .metric-tile-m3:hover {
   transform: translateY(-0.2rem) scale(1.01);
@@ -2147,7 +2405,9 @@ md-dialog {
 .android-version-logo svg {
   filter: url(#android-theme-map);
   opacity: 0.7;
-  transition: opacity 0.3s var(--ease), filter 0.3s var(--ease);
+  transition:
+    opacity 0.3s var(--ease),
+    filter 0.3s var(--ease);
   transform: scale(0.9);
 }
 
@@ -2211,8 +2471,6 @@ md-dialog {
   flex-shrink: 0;
 }
 
-
-
 .metric-details {
   display: flex;
   flex-direction: column;
@@ -2239,7 +2497,7 @@ md-dialog {
 }
 
 .mem-card-header .metric-label {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.6rem, 1vw, 0.85rem);
   font-weight: 700;
   color: var(--text-dim);
@@ -2284,7 +2542,7 @@ md-dialog {
 }
 
 .mem-card .mem-pct {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(1.75rem, 3.5vw, 2.75rem);
   font-weight: 700;
   color: var(--md-sys-color-primary);
@@ -2292,7 +2550,7 @@ md-dialog {
 }
 
 .mem-card .mem-avail {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.75rem, 1.2vw, 1rem);
   font-weight: 500;
   color: var(--text-muted);
@@ -2347,7 +2605,7 @@ md-dialog {
 }
 
 .temp-value {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(2rem, 4vw, 3.625rem);
   font-weight: 900;
   color: var(--md-sys-color-primary);
@@ -2355,7 +2613,7 @@ md-dialog {
 }
 
 .temp-unit {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(1rem, 2.5vw, 1.625rem);
   font-weight: 700;
   color: var(--md-sys-color-primary);
@@ -2365,9 +2623,8 @@ md-dialog {
   top: 30%;
 }
 
-
 .sec-day {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(2.5rem, 6vw, 5rem);
   font-weight: 900;
   color: var(--md-sys-color-primary);
@@ -2375,7 +2632,7 @@ md-dialog {
 }
 
 .sec-month-weekday {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.5625rem, 1vw, 0.8125rem);
   font-weight: 700;
   color: var(--text);
@@ -2385,7 +2642,7 @@ md-dialog {
 }
 
 .sec-year {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.6875rem, 1.2vw, 1rem);
   font-weight: 500;
   color: var(--text-muted);
@@ -2409,17 +2666,16 @@ md-dialog {
   border-radius: inherit;
 }
 
-
 /* Web Components defaults override */
 md-outlined-button {
   --md-outlined-button-container-shape: 6.25rem;
-  --md-outlined-button-label-text-font: 'Roboto', sans-serif;
+  --md-outlined-button-label-text-font: "Roboto", sans-serif;
   --md-outlined-button-label-text-weight: 500;
 }
 
 md-filled-button {
   --md-filled-button-container-shape: 6.25rem;
-  --md-filled-button-label-text-font: 'Roboto', sans-serif;
+  --md-filled-button-label-text-font: "Roboto", sans-serif;
   --md-filled-button-label-text-weight: 500;
   --md-filled-button-container-elevation: 0;
   --md-filled-button-container-shadow-color: transparent;
@@ -2433,7 +2689,7 @@ md-filled-tonal-button {
 
 md-outlined-text-field {
   --md-outlined-text-field-container-shape: 0.75rem;
-  --md-outlined-text-field-label-text-font: 'Roboto', sans-serif;
+  --md-outlined-text-field-label-text-font: "Roboto", sans-serif;
   width: 100%;
 }
 
@@ -2504,8 +2760,12 @@ md-linear-progress {
    ═══════════════════════════════════════════════════════ */
 /* Directional sweep shimmer keyframe */
 @keyframes shimmerSweep {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -2513,18 +2773,20 @@ md-linear-progress {
    ═══════════════════════════════════════════════════════ */
 .apps-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(clamp(17.5rem, 26vw, 26.25rem), 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(clamp(17.5rem, 26vw, 26.25rem), 1fr)
+  );
   gap: clamp(1rem, 1.5vw, 1.75rem);
   padding: clamp(1rem, 2vw, 2rem);
 }
-
 
 .panel-area[data-panel-id="apps"] {
   flex: 1;
   min-height: 0;
 }
 
-.panel-area[data-panel-id="apps"]>div:first-child {
+.panel-area[data-panel-id="apps"] > div:first-child {
   flex: 1;
   min-height: 0;
   display: flex;
@@ -2580,31 +2842,71 @@ md-linear-progress {
   right: 0;
   display: block;
   height: 2.25rem;
-  background: linear-gradient(to bottom, transparent, var(--md-sys-color-surface));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--md-sys-color-surface)
+  );
   pointer-events: none;
   z-index: 1;
 }
 
 /* Scrolled to top — fade bottom only */
-.panel-area[data-panel-id="apps"] .card-body.no-pad.can-scroll-bottom:not(.can-scroll-top) {
-  mask-image: linear-gradient(to bottom, black 0%, black calc(100% - var(--fade-size)), transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - var(--fade-size)), transparent 100%);
+.panel-area[data-panel-id="apps"]
+  .card-body.no-pad.can-scroll-bottom:not(.can-scroll-top) {
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
 }
 
 /* Scrolled to bottom — fade top only */
-.panel-area[data-panel-id="apps"] .card-body.no-pad.can-scroll-top:not(.can-scroll-bottom) {
-  mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black 100%);
+.panel-area[data-panel-id="apps"]
+  .card-body.no-pad.can-scroll-top:not(.can-scroll-bottom) {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black var(--fade-size),
+    black 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black var(--fade-size),
+    black 100%
+  );
 }
 
 /* Mid-scroll — fade both ends */
-.panel-area[data-panel-id="apps"] .card-body.no-pad.can-scroll-top.can-scroll-bottom {
-  mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black calc(100% - var(--fade-size)), transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-size), black calc(100% - var(--fade-size)), transparent 100%);
+.panel-area[data-panel-id="apps"]
+  .card-body.no-pad.can-scroll-top.can-scroll-bottom {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black var(--fade-size),
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black var(--fade-size),
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
 }
 
 /* No overflow — no fade */
-.panel-area[data-panel-id="apps"] .card-body.no-pad:not(.can-scroll-top):not(.can-scroll-bottom) {
+.panel-area[data-panel-id="apps"]
+  .card-body.no-pad:not(.can-scroll-top):not(.can-scroll-bottom) {
   mask-image: none;
   -webkit-mask-image: none;
 }
@@ -2645,7 +2947,9 @@ md-linear-progress {
   min-height: 1rem;
   background: color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent);
   border-radius: 62.4375rem;
-  transition: top 0.08s linear, height 0.08s linear;
+  transition:
+    top 0.08s linear,
+    height 0.08s linear;
 }
 
 /* Expressive Header Buttons */
@@ -2666,16 +2970,23 @@ md-linear-progress {
   gap: 0.375rem;
   padding: 0 0.875rem;
   cursor: pointer;
-  transition: background 0.2s var(--ease), transform 0.25s var(--spring), box-shadow 0.2s var(--ease);
+  transition:
+    background 0.2s var(--ease),
+    transform 0.25s var(--spring),
+    box-shadow 0.2s var(--ease);
   box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.05);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
   white-space: nowrap;
 }
 
 .btn-m3-sideloader:hover {
-  background: color-mix(in srgb, var(--md-sys-color-primary-container) 85%, var(--md-sys-color-primary));
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary-container) 85%,
+    var(--md-sys-color-primary)
+  );
   transform: translateY(-0.125rem);
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
 }
@@ -2706,11 +3017,15 @@ md-linear-progress {
 .search-wrapper input {
   width: 100%;
   height: 3rem;
-  background: color-mix(in srgb, var(--md-sys-color-on-surface) 6%, var(--surface));
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) 6%,
+    var(--surface)
+  );
   border: none;
   border-radius: 6.25rem;
   padding: 0 1.5rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.875rem;
   color: var(--text);
   outline: none;
@@ -2734,7 +3049,7 @@ md-linear-progress {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--md-sys-color-on-primary);
@@ -2750,7 +3065,7 @@ md-linear-progress {
   align-items: center;
   gap: 0.75rem;
   flex-shrink: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--md-sys-color-on-primary);
@@ -2769,7 +3084,11 @@ md-linear-progress {
 .pill-toggle-switch {
   width: 2rem;
   height: 1.125rem;
-  background: color-mix(in srgb, var(--md-sys-color-on-primary) 25%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-on-primary) 25%,
+    transparent
+  );
   border-radius: 0.75rem;
   position: relative;
   transition: background 0.2s;
@@ -2788,7 +3107,9 @@ md-linear-progress {
   position: absolute;
   top: 0.125rem;
   left: 0.125rem;
-  transition: transform 0.2s, background 0.2s;
+  transition:
+    transform 0.2s,
+    background 0.2s;
 }
 
 .pill-toggle-switch.on .pill-toggle-knob {
@@ -2799,7 +3120,11 @@ md-linear-progress {
 .pill-toggle-divider {
   width: 1px;
   height: 1.25rem;
-  background: color-mix(in srgb, var(--md-sys-color-on-primary) 30%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-on-primary) 30%,
+    transparent
+  );
 }
 
 .category-pill-row {
@@ -2818,7 +3143,7 @@ md-linear-progress {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-muted);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -2830,7 +3155,11 @@ md-linear-progress {
 }
 
 .category-pill:hover {
-  background: color-mix(in srgb, var(--md-sys-color-on-surface) 6%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) 6%,
+    transparent
+  );
   color: var(--text);
 }
 
@@ -2849,19 +3178,30 @@ md-linear-progress {
   display: flex;
   align-items: stretch;
   min-height: 8.5rem;
-  background: color-mix(in srgb, var(--md-sys-color-primary) 6%, var(--surface));
-  border: 0.0625rem solid color-mix(in srgb, var(--md-sys-color-primary) 12%, var(--border-mid));
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 6%,
+    var(--surface)
+  );
+  border: 0.0625rem solid
+    color-mix(in srgb, var(--md-sys-color-primary) 12%, var(--border-mid));
   border-radius: 1.5rem;
   overflow: hidden;
-  box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.04), 0 0.125rem 0.5rem rgba(0, 0, 0, 0.02);
-  transition: transform 0.3s var(--spring), box-shadow 0.25s var(--ease), background 0.2s var(--ease), border-color 0.2s var(--ease);
+  box-shadow:
+    0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.04),
+    0 0.125rem 0.5rem rgba(0, 0, 0, 0.02);
+  transition:
+    transform 0.3s var(--spring),
+    box-shadow 0.25s var(--ease),
+    background 0.2s var(--ease),
+    border-color 0.2s var(--ease);
   position: relative;
   isolation: isolate;
 }
 
 /* State layer overlay on app cards */
 .app-card::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--md-sys-color-on-surface);
@@ -2870,14 +3210,28 @@ md-linear-progress {
   pointer-events: none;
   z-index: 1;
 }
-.app-card:hover::after  { opacity: 0.03; }
-.app-card:active::after { opacity: 0.07; }
+.app-card:hover::after {
+  opacity: 0.03;
+}
+.app-card:active::after {
+  opacity: 0.07;
+}
 
 .app-card:hover {
   transform: translateY(-0.25rem) scale(1.008);
-  background: color-mix(in srgb, var(--md-sys-color-primary) 10%, var(--surface));
-  border-color: color-mix(in srgb, var(--md-sys-color-primary) 28%, var(--border-mid));
-  box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.09), 0 0.125rem 0.375rem rgba(0, 0, 0, 0.05);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 10%,
+    var(--surface)
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 28%,
+    var(--border-mid)
+  );
+  box-shadow:
+    0 0.625rem 2rem rgba(0, 0, 0, 0.09),
+    0 0.125rem 0.375rem rgba(0, 0, 0, 0.05);
 }
 
 .app-card:focus-visible {
@@ -2891,8 +3245,13 @@ md-linear-progress {
 
 .app-icon-wrap {
   width: 7.5rem;
-  background: color-mix(in srgb, var(--md-sys-color-primary) 14%, var(--surface));
-  border-right: 0.0625rem solid color-mix(in srgb, var(--md-sys-color-primary) 12%, var(--border-mid));
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 14%,
+    var(--surface)
+  );
+  border-right: 0.0625rem solid
+    color-mix(in srgb, var(--md-sys-color-primary) 12%, var(--border-mid));
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -2938,7 +3297,7 @@ md-linear-progress {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -2988,7 +3347,7 @@ md-linear-progress {
 .avatar-letter {
   position: relative;
   z-index: 2;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 2.5rem;
   font-weight: 800;
   color: var(--md-sys-color-primary);
@@ -3010,7 +3369,7 @@ md-linear-progress {
 }
 
 .app-pkg {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--text);
@@ -3020,7 +3379,7 @@ md-linear-progress {
 }
 
 .app-pkg-short {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.75rem;
   color: var(--text-dim);
   margin-top: 0.25rem;
@@ -3060,7 +3419,7 @@ md-linear-progress {
   background: var(--surface);
   border: 0.0625rem solid var(--border-mid);
   color: var(--text);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.6875rem;
   font-weight: 500;
   cursor: pointer;
@@ -3093,7 +3452,11 @@ md-linear-progress {
 }
 
 .btn-app-action.btn-action-danger:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--md-sys-color-primary) 88%, var(--md-sys-color-on-surface));
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 88%,
+    var(--md-sys-color-on-surface)
+  );
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -3106,10 +3469,8 @@ md-linear-progress {
   overflow-y: auto;
 }
 
-
-
 .backup-log {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.75rem;
   line-height: 1.8;
   color: var(--text-muted);
@@ -3145,7 +3506,8 @@ md-linear-progress {
   gap: 1.5rem;
 }
 
-.tweak-row:last-child {}
+.tweak-row:last-child {
+}
 
 .tweak-info {
   flex: 1;
@@ -3187,7 +3549,7 @@ md-linear-progress {
   font-weight: 700;
   cursor: pointer;
   transition: all var(--dur) var(--ease);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -3257,11 +3619,11 @@ md-linear-progress {
 
 .toast-container {
   position: fixed;
-  bottom: 1.75rem;
+  top: 1.75rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: 0.5rem;
   z-index: 999;
   pointer-events: none;
@@ -3276,7 +3638,9 @@ md-linear-progress {
   font-size: 0.8125rem;
   color: var(--text);
   font-weight: 500;
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15), 0 0.125rem 0.375rem rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 0.5rem 1.5rem rgba(0, 0, 0, 0.15),
+    0 0.125rem 0.375rem rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   animation: toastIn 0.35s var(--spring) both;
@@ -3393,7 +3757,6 @@ md-linear-progress {
 }
 
 @keyframes blink {
-
   0%,
   100% {
     opacity: 1;
@@ -3405,14 +3768,19 @@ md-linear-progress {
 }
 
 @keyframes shimmer {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 0.85; }
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.85;
+  }
 }
 
 @keyframes toastIn {
   from {
     opacity: 0;
-    transform: translateY(2rem) scale(0.88);
+    transform: translateY(-2rem) scale(0.88);
   }
 
   to {
@@ -3424,7 +3792,7 @@ md-linear-progress {
 @keyframes toastOut {
   to {
     opacity: 0;
-    transform: translateY(2rem) scale(0.92);
+    transform: translateY(-2rem) scale(0.92);
   }
 }
 
@@ -3449,11 +3817,19 @@ md-linear-progress {
 .anim-btn .m3-ripple,
 md-filled-button .m3-ripple,
 md-filled-tonal-button .m3-ripple {
-  background: color-mix(in srgb, var(--md-sys-color-on-primary) 10%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-on-primary) 10%,
+    transparent
+  );
 }
 
 md-filled-tonal-button .m3-ripple {
-  background: color-mix(in srgb, var(--md-sys-color-on-primary-container) 10%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-on-primary-container) 10%,
+    transparent
+  );
 }
 
 @keyframes m3-ripple-effect {
@@ -3473,7 +3849,9 @@ md-filled-tonal-button .m3-ripple {
 /* Card transitions on Connect Screen (main ↔ help ↔ about) — driven by React inline styles */
 
 .connect-bottom-buttons {
-  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  transition:
+    opacity 0.2s var(--ease),
+    transform 0.2s var(--ease);
 }
 
 .connect-bottom-buttons.btn-exit {
@@ -3621,11 +3999,21 @@ md-filled-tonal-button .m3-ripple {
   animation: backupItemEnter 0.38s var(--spring) both;
 }
 
-.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(1) { animation-delay: 0.03s; }
-.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(2) { animation-delay: 0.06s; }
-.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(3) { animation-delay: 0.09s; }
-.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(4) { animation-delay: 0.12s; }
-.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(5) { animation-delay: 0.15s; }
+.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(1) {
+  animation-delay: 0.03s;
+}
+.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(3) {
+  animation-delay: 0.09s;
+}
+.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(4) {
+  animation-delay: 0.12s;
+}
+.panel-area[data-panel-id="backup"] .backup-file-item:nth-child(5) {
+  animation-delay: 0.15s;
+}
 
 /* System Tweaks Panel: Slide up from bottom + fade */
 .panel-area[data-panel-id="tweaks"] {
@@ -3638,9 +4026,15 @@ md-filled-tonal-button .m3-ripple {
   animation: tweakRowEnter 0.45s var(--spring) both;
 }
 
-.panel-area[data-panel-id="tweaks"] .tweak-card:nth-child(1) { animation-delay: 0.04s; }
-.panel-area[data-panel-id="tweaks"] .tweak-card:nth-child(2) { animation-delay: 0.10s; }
-.panel-area[data-panel-id="tweaks"] .tweak-card:nth-child(3) { animation-delay: 0.16s; }
+.panel-area[data-panel-id="tweaks"] .tweak-card:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.panel-area[data-panel-id="tweaks"] .tweak-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.panel-area[data-panel-id="tweaks"] .tweak-card:nth-child(3) {
+  animation-delay: 0.16s;
+}
 
 /* ── Keyframes for Transitions ── */
 
@@ -3856,8 +4250,20 @@ md-filled-tonal-button .m3-ripple {
   justify-content: center;
   gap: 1.25rem;
   opacity: 1;
-  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
 }
 
 .bg-track {
@@ -4056,7 +4462,7 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .backup-hero-text {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: clamp(0.75rem, 1.1vw, 1.0625rem);
   color: var(--text-muted);
   margin-top: clamp(3rem, 5.5vh, 4rem);
@@ -4093,18 +4499,20 @@ md-filled-tonal-button .m3-ripple {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+  box-shadow: 0 0.25rem 0.75rem
+    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .btn-m3-scan:hover:not(:disabled) {
   background: var(--md-sys-color-primary);
   transform: translateY(-0.15rem);
-  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+  box-shadow: 0 0.5rem 1.25rem
+    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
 }
 
 .btn-m3-scan:active:not(:disabled) {
@@ -4200,11 +4608,13 @@ md-filled-tonal-button .m3-ripple {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.10);
+  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.1);
   border: 0.0625rem solid var(--border);
   opacity: 0;
   transform: translateY(1.5rem) scale(0.97);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
 }
 
@@ -4259,7 +4669,7 @@ md-filled-tonal-button .m3-ripple {
 .backup-file-count-badge {
   background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 700;
   font-size: 0.875rem;
   height: 1.625rem;
@@ -4273,7 +4683,7 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .backup-header-title {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 0.9375rem;
   color: var(--text);
@@ -4291,7 +4701,7 @@ md-filled-tonal-button .m3-ripple {
   overflow-x: auto;
   position: relative;
   z-index: 2;
-  box-shadow: 0 0.0625rem 0.125rem rgba(0,0,0,0.06);
+  box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.06);
 }
 
 .collapse-arrow {
@@ -4313,7 +4723,7 @@ md-filled-tonal-button .m3-ripple {
   border-radius: 6.25rem;
   background: var(--surface);
   cursor: pointer;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-muted);
@@ -4362,25 +4772,54 @@ md-filled-tonal-button .m3-ripple {
 }
 
 @keyframes item-bounce {
-  0% { transform: translateY(-0.375rem) scale(0.97); opacity: 0; }
-  60% { transform: translateY(0.0625rem); opacity: 1; }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
+  0% {
+    transform: translateY(-0.375rem) scale(0.97);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(0.0625rem);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 .media-group-items.expanded .backup-file-item {
   animation: item-bounce 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-.media-group-items.expanded .backup-file-item:nth-child(1) { animation-delay: 0s; }
-.media-group-items.expanded .backup-file-item:nth-child(2) { animation-delay: 0.025s; }
-.media-group-items.expanded .backup-file-item:nth-child(3) { animation-delay: 0.05s; }
-.media-group-items.expanded .backup-file-item:nth-child(4) { animation-delay: 0.075s; }
-.media-group-items.expanded .backup-file-item:nth-child(5) { animation-delay: 0.1s; }
-.media-group-items.expanded .backup-file-item:nth-child(6) { animation-delay: 0.125s; }
-.media-group-items.expanded .backup-file-item:nth-child(7) { animation-delay: 0.15s; }
-.media-group-items.expanded .backup-file-item:nth-child(8) { animation-delay: 0.175s; }
-.media-group-items.expanded .backup-file-item:nth-child(9) { animation-delay: 0.2s; }
-.media-group-items.expanded .backup-file-item:nth-child(10) { animation-delay: 0.225s; }
+.media-group-items.expanded .backup-file-item:nth-child(1) {
+  animation-delay: 0s;
+}
+.media-group-items.expanded .backup-file-item:nth-child(2) {
+  animation-delay: 0.025s;
+}
+.media-group-items.expanded .backup-file-item:nth-child(3) {
+  animation-delay: 0.05s;
+}
+.media-group-items.expanded .backup-file-item:nth-child(4) {
+  animation-delay: 0.075s;
+}
+.media-group-items.expanded .backup-file-item:nth-child(5) {
+  animation-delay: 0.1s;
+}
+.media-group-items.expanded .backup-file-item:nth-child(6) {
+  animation-delay: 0.125s;
+}
+.media-group-items.expanded .backup-file-item:nth-child(7) {
+  animation-delay: 0.15s;
+}
+.media-group-items.expanded .backup-file-item:nth-child(8) {
+  animation-delay: 0.175s;
+}
+.media-group-items.expanded .backup-file-item:nth-child(9) {
+  animation-delay: 0.2s;
+}
+.media-group-items.expanded .backup-file-item:nth-child(10) {
+  animation-delay: 0.225s;
+}
 
 .media-group-header {
   display: flex;
@@ -4416,7 +4855,7 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .media-group-name {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
   font-weight: 700;
   font-size: 0.8125rem;
   color: var(--text);
@@ -4426,7 +4865,7 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .media-group-count {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.6875rem;
   color: var(--text-dim);
   background: var(--surface);
@@ -4437,7 +4876,7 @@ md-filled-tonal-button .m3-ripple {
 /* ── Category badge on file items ─────────────────────────────────── */
 
 .media-category-badge {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.625rem;
   font-weight: 600;
   padding: 0.0625rem 0.375rem;
@@ -4520,7 +4959,7 @@ md-filled-tonal-button .m3-ripple {
   border: none;
   border-radius: 0.5rem;
   padding: 0.4375rem 1rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.8125rem;
   font-weight: 600;
   background: var(--md-sys-color-primary);
@@ -4537,7 +4976,7 @@ md-filled-tonal-button .m3-ripple {
   border: 0.0625rem solid var(--border);
   border-radius: 0.5rem;
   padding: 0.4375rem 1rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.8125rem;
   font-weight: 500;
   background: transparent;
@@ -4596,7 +5035,11 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .custom-checkbox-wrapper:hover .state-layer {
-  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) 8%,
+    transparent
+  );
 }
 
 .checkbox-container {
@@ -4613,7 +5056,7 @@ md-filled-tonal-button .m3-ripple {
   box-sizing: border-box;
 }
 
-.real-checkbox:checked+.state-layer .checkbox-container {
+.real-checkbox:checked + .state-layer .checkbox-container {
   background: var(--md-sys-color-primary);
   border-color: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
@@ -4624,10 +5067,12 @@ md-filled-tonal-button .m3-ripple {
   height: 0.75rem;
   opacity: 0;
   transform: scale(0.6);
-  transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.real-checkbox:checked+.state-layer .check-icon {
+.real-checkbox:checked + .state-layer .check-icon {
   opacity: 1;
   transform: scale(1);
 }
@@ -4645,11 +5090,17 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .backup-file-item {
-  transition: background-color 0.15s var(--ease), transform 0.2s var(--spring);
+  transition:
+    background-color 0.15s var(--ease),
+    transform 0.2s var(--spring);
 }
 
 .backup-file-item:hover {
-  background-color: color-mix(in srgb, var(--md-sys-color-on-surface) 5%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) 5%,
+    transparent
+  );
   transform: translateX(0.2rem);
 }
 
@@ -4682,7 +5133,7 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .backup-file-name {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -4704,7 +5155,9 @@ md-filled-tonal-button .m3-ripple {
   color: var(--md-sys-color-on-surface-variant);
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .backup-file-save-btn:hover {
@@ -4720,7 +5173,7 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .backup-file-size {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 0.6875rem;
   color: var(--text-dim);
 }
@@ -4736,7 +5189,7 @@ md-filled-tonal-button .m3-ripple {
   border-radius: 6.25rem;
   padding: 0 2.25rem;
   height: 3rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1rem;
   font-weight: 600;
   display: inline-flex;
@@ -4745,14 +5198,16 @@ md-filled-tonal-button .m3-ripple {
   gap: 0.5rem;
   border: none;
   cursor: pointer;
-  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+  box-shadow: 0 0.25rem 0.75rem
+    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .btn-export:hover:not(:disabled) {
   background: var(--md-sys-color-primary);
   transform: translateY(-0.125rem);
-  box-shadow: 0 0.375rem 1rem color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent);
+  box-shadow: 0 0.375rem 1rem
+    color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent);
 }
 
 .btn-export:active:not(:disabled) {
@@ -4772,7 +5227,7 @@ md-filled-tonal-button .m3-ripple {
   border-radius: 6.25rem;
   padding: 0 2.25rem;
   height: 3rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1rem;
   font-weight: 600;
   display: inline-flex;
@@ -4795,7 +5250,7 @@ md-filled-tonal-button .m3-ripple {
   justify-content: center;
   height: 100%;
   gap: 1rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1rem;
   color: var(--text-muted);
 }
@@ -4807,7 +5262,7 @@ md-filled-tonal-button .m3-ripple {
   justify-content: center;
   height: 100%;
   gap: 1rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1rem;
   color: var(--md-sys-color-error);
 }
@@ -4836,11 +5291,12 @@ md-filled-tonal-button .m3-ripple {
   /* Chrome, Safari, Opera */
 }
 
-
-
 .tweaks-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(clamp(17.5rem, 26vw, 26.25rem), 1fr));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(clamp(17.5rem, 26vw, 26.25rem), 1fr)
+  );
   gap: clamp(1rem, 1.5vw, 1.75rem);
 }
 
@@ -4850,14 +5306,17 @@ md-filled-tonal-button .m3-ripple {
   border-radius: clamp(1rem, 1.5vw, 1.5rem);
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s var(--spring), box-shadow 0.25s var(--ease), border-color 0.2s var(--ease);
+  transition:
+    transform 0.3s var(--spring),
+    box-shadow 0.25s var(--ease),
+    border-color 0.2s var(--ease);
   position: relative;
   isolation: isolate;
 }
 
 /* State layer on tweaks cards */
 .tweak-card::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -4867,9 +5326,16 @@ md-filled-tonal-button .m3-ripple {
   pointer-events: none;
   z-index: 0;
 }
-.tweak-card:hover::after  { opacity: 0.03; }
-.tweak-card:active::after { opacity: 0.07; }
-.tweak-card > * { position: relative; z-index: 1; }
+.tweak-card:hover::after {
+  opacity: 0.03;
+}
+.tweak-card:active::after {
+  opacity: 0.07;
+}
+.tweak-card > * {
+  position: relative;
+  z-index: 1;
+}
 
 .tweak-card:hover {
   transform: translateY(-0.3rem) scale(1.006);
@@ -4886,7 +5352,8 @@ md-filled-tonal-button .m3-ripple {
   overflow: hidden;
   position: relative;
   border-radius: clamp(1rem, 1.5vw, 1.5rem) clamp(1rem, 1.5vw, 1.5rem) 0 0;
-  border-bottom: 0.0625rem solid var(--border-mid, var(--md-sys-color-outline-variant));
+  border-bottom: 0.0625rem solid
+    var(--border-mid, var(--md-sys-color-outline-variant));
 }
 
 .tweak-card-illus svg {
@@ -4955,7 +5422,7 @@ md-filled-tonal-button .m3-ripple {
   cursor: pointer;
   transition: all 0.2s var(--ease);
   text-transform: uppercase;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .tweak-pill:hover:not(.active):not(:disabled) {
@@ -5012,8 +5479,11 @@ md-filled-tonal-button .m3-ripple {
   font-size: 0.6875rem;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'Roboto', sans-serif;
-  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), background-color 0.2s var(--ease);
+  font-family: "Roboto", sans-serif;
+  transition:
+    border-color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease),
+    background-color 0.2s var(--ease);
   outline: none;
 }
 
@@ -5024,7 +5494,8 @@ md-filled-tonal-button .m3-ripple {
 
 .tweak-dropdown-trigger:focus-visible {
   border-color: var(--md-sys-color-primary);
-  box-shadow: 0 0 0 0.125rem color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
+  box-shadow: 0 0 0 0.125rem
+    color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
 }
 
 .tweak-dropdown-arrow {
@@ -5053,7 +5524,9 @@ md-filled-tonal-button .m3-ripple {
   opacity: 0;
   transform: translateY(-0.5rem) scale(0.96);
   pointer-events: none;
-  transition: opacity 0.2s var(--ease), transform 0.25s var(--ease);
+  transition:
+    opacity 0.2s var(--ease),
+    transform 0.25s var(--ease);
   z-index: 100;
 }
 
@@ -5091,7 +5564,7 @@ md-filled-tonal-button .m3-ripple {
   font-weight: 600;
   text-align: center;
   cursor: pointer;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   color: var(--text);
   transition: background-color 0.15s var(--ease);
 }
@@ -5115,7 +5588,7 @@ md-filled-tonal-button .m3-ripple {
   width: 4.5rem;
   outline: none;
   transition: border-color 0.2s var(--ease);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   text-align: center;
 }
 
@@ -5156,7 +5629,11 @@ md-filled-tonal-button .m3-ripple {
 :root {
   --ds-bg-app: var(--md-sys-color-surface);
   --ds-bg-content: var(--md-sys-color-surface);
-  --ds-bg-terminal: color-mix(in srgb, var(--md-sys-color-primary-container) 12%, #000000);
+  --ds-bg-terminal: color-mix(
+    in srgb,
+    var(--md-sys-color-primary-container) 12%,
+    #000000
+  );
   --ds-text-terminal: #e8eaed;
   --ds-accent-primary: var(--md-sys-color-primary);
   --ds-accent-dark: var(--md-sys-color-on-primary-container);
@@ -5188,7 +5665,9 @@ md-filled-tonal-button .m3-ripple {
   background: var(--ds-bg-content);
   border-radius: clamp(1.1rem, 2vw, 1.8rem);
   opacity: 1;
-  transition: opacity 180ms var(--ease), transform 220ms var(--ease);
+  transition:
+    opacity 180ms var(--ease),
+    transform 220ms var(--ease);
 }
 
 .main-content-stack:has(.shell-console-panel.expanded) .dashboard-panel-layer {
@@ -5207,7 +5686,10 @@ md-filled-tonal-button .m3-ripple {
   opacity: 0;
   pointer-events: none;
   transform: translateY(0.5rem);
-  transition: opacity 180ms var(--ease), transform 220ms var(--ease), visibility 0ms 220ms;
+  transition:
+    opacity 180ms var(--ease),
+    transform 220ms var(--ease),
+    visibility 0ms 220ms;
   z-index: 2;
   overflow: hidden;
 }
@@ -5217,7 +5699,10 @@ md-filled-tonal-button .m3-ripple {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
-  transition: opacity 140ms var(--decelerate), transform 180ms var(--spring), visibility 0ms 0ms;
+  transition:
+    opacity 140ms var(--decelerate),
+    transform 180ms var(--spring),
+    visibility 0ms 0ms;
 }
 
 .shell-console-inner {
@@ -5256,7 +5741,9 @@ md-filled-tonal-button .m3-ripple {
   line-height: 1;
   cursor: pointer;
   user-select: none;
-  transition: background 140ms var(--ease), transform 140ms var(--spring);
+  transition:
+    background 140ms var(--ease),
+    transform 140ms var(--spring);
 }
 
 .shell-tab.active {
@@ -5351,7 +5838,7 @@ md-filled-tonal-button .m3-ripple {
   position: absolute;
   inset: 0;
   padding: clamp(1.1rem, 2.3vh, 1.8rem) clamp(1.15rem, 1.8vw, 2rem);
-  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
   font-size: clamp(1rem, 1.2vw, 1.25rem);
   font-weight: 700;
 }
@@ -5371,7 +5858,11 @@ md-filled-tonal-button .m3-ripple {
   justify-content: space-between;
   gap: 1rem;
   padding: 0 clamp(0.7rem, 1.2vw, 1.2rem);
-  background: color-mix(in srgb, var(--md-sys-color-primary-container) 12%, var(--md-sys-color-surface));
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary-container) 70%,
+    var(--md-sys-color-surface)
+  );
   border-radius: calc(var(--ds-bottom-bar-h) / 2);
   margin-right: clamp(0.75rem, 1.5vw, 1.5rem);
   margin-bottom: clamp(0.75rem, 1.5vh, 1.25rem);
@@ -5388,12 +5879,14 @@ md-filled-tonal-button .m3-ripple {
   padding: 0 1rem;
   margin-left: -0.3rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ds-accent-primary) 5%, transparent);
+  background: color-mix(in srgb, var(--ds-accent-primary) 10%, transparent);
   font-size: clamp(0.72rem, 0.88vw, 0.9rem);
   font-weight: 800;
   line-height: 1;
   color: var(--ds-text-dark);
-  transition: background 120ms var(--ease), transform 120ms var(--spring);
+  transition:
+    background 120ms var(--ease),
+    transform 120ms var(--spring);
 }
 
 .device-shell-toggle:hover {
@@ -5489,4 +5982,356 @@ md-filled-tonal-button .m3-ripple {
   font-size: clamp(0.7rem, 0.82vw, 0.86rem);
   font-weight: 800;
   white-space: nowrap;
+}
+
+/* Labs layout */
+.tweaks-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 1.5vw, 1.75rem);
+}
+.tweak-card {
+  display: grid;
+  grid-template-columns: clamp(8.125rem, 10vw, 9.375rem) minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  column-gap: clamp(1rem, 1.4vw, 1.5rem);
+  padding: clamp(1.125rem, 1.6vw, 1.5rem);
+  border-radius: clamp(1.25rem, 1.7vw, 1.75rem);
+}
+.tweak-card-illus {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  align-self: center;
+  width: 100%;
+  aspect-ratio: 1;
+  height: auto;
+  border: none;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary-container);
+}
+.tweak-card-illus svg {
+  width: 82%;
+  height: 82%;
+}
+.tweak-card-body {
+  display: contents;
+}
+.tweak-card-title {
+  grid-column: 2;
+  align-self: end;
+  font-size: clamp(1.125rem, 1.35vw, 1.375rem);
+}
+.tweak-card-desc {
+  grid-column: 2;
+  align-self: start;
+  padding-top: 0.375rem;
+  line-height: 1.45;
+}
+.tweak-card-controls {
+  grid-column: 2;
+  margin-top: 0.5rem;
+}
+.density-controls {
+  flex-wrap: wrap;
+}
+.logcat-card {
+  background: var(--surface-mid, var(--md-sys-color-surface-variant));
+  border: 0.0625rem solid var(--border-mid, var(--md-sys-color-outline-variant));
+  border-radius: clamp(1.25rem, 1.7vw, 1.75rem);
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.52fr) minmax(0, 1.48fr);
+  gap: clamp(1.5rem, 3vw, 3.5rem);
+  padding: clamp(1.25rem, 2vw, 2rem);
+  min-height: clamp(27.6rem, 51.6vh, 38rem);
+  opacity: 0;
+  animation: tweakRowEnter 0.45s var(--spring) 0.22s both;
+}
+.logcat-card-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: clamp(0.25rem, 1vw, 0.75rem);
+}
+.logcat-card-title {
+  margin: 0;
+  color: var(--text, var(--md-sys-color-on-surface));
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  letter-spacing: -0.0625rem;
+}
+.logcat-card-desc {
+  margin: 0.75rem 0 0;
+  color: var(--text-muted, var(--md-sys-color-on-surface-variant));
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.logcat-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+.logcat-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6875rem 1rem;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  font:
+    700 0.75rem Roboto,
+    sans-serif;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.logcat-action--secondary {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+.logcat-console {
+  min-width: 0;
+  min-height: 15.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  padding: clamp(0.75rem, 1.25vw, 1.125rem);
+  border-radius: clamp(1rem, 1.5vw, 1.375rem);
+  background: var(--md-sys-color-inverse-surface);
+}
+[data-theme-mode="dark"] .logcat-console {
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-primary-container) 20%,
+    var(--md-sys-color-surface)
+  );
+}
+[data-theme-mode="dark"] .logcat-row-pid,
+[data-theme-mode="dark"] .logcat-row-tag,
+[data-theme-mode="dark"] .logcat-row-msg { color: #fff; }
+[data-theme-mode="dark"] .logcat-row-pid { opacity: 0.6; }
+[data-theme-mode="dark"] .logcat-row-tag { opacity: 0.9; }
+[data-theme-mode="dark"] .logcat-filters .logcat-filter { color: #fff; }
+[data-theme-mode="dark"] .logcat-empty { color: #fff; }
+.logcat-filters {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 0.75rem;
+}
+.logcat-filter {
+  flex: 0 1 auto;
+  border-radius: 999px;
+  padding: 0.375rem 0.5rem;
+  color: var(--md-sys-color-on-primary);
+  font:
+    700 0.625rem Roboto,
+    sans-serif;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  border: none;
+  cursor: pointer;
+  transition:
+    transform 0.16s var(--ease),
+    filter 0.16s var(--ease),
+    box-shadow 0.16s var(--ease);
+}
+.logcat-filter--fatal {
+  background: var(--md-sys-color-error);
+  color: var(--md-sys-color-on-error);
+}
+.logcat-filter--error {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+}
+.logcat-filter--warning {
+  background: var(--md-sys-color-tertiary);
+  color: var(--md-sys-color-on-tertiary);
+}
+.logcat-filter--info {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+.logcat-filter--debug {
+  background: var(--md-sys-color-secondary);
+  color: var(--md-sys-color-on-secondary);
+}
+.logcat-filter--verbose {
+  background: var(--md-sys-color-tertiary-container);
+  color: var(--md-sys-color-on-tertiary-container);
+}
+.logcat-filter:hover {
+  filter: brightness(1.08);
+  transform: translateY(-0.125rem);
+}
+.logcat-filter:active {
+  transform: translateY(0);
+}
+.logcat-filter:focus-visible {
+  outline: 0.125rem solid var(--md-sys-color-primary);
+  outline-offset: 0.125rem;
+}
+@media (max-width: 70rem) {
+  .tweaks-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .logcat-card {
+    grid-template-columns: 1fr;
+  }
+  .logcat-card-info {
+    flex-direction: row;
+    align-items: end;
+  }
+  .logcat-console {
+    min-height: 19.2rem;
+  }
+}
+@media (max-width: 45rem) {
+  .tweaks-grid {
+    grid-template-columns: 1fr;
+  }
+  .tweak-card {
+    grid-template-columns: 8rem minmax(0, 1fr);
+  }
+  .logcat-card-info {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.logcat-output {
+  position: relative;
+  width: 100%;
+  height: 28rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.logcat-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--md-sys-color-inverse-on-surface);
+  opacity: 0.5;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 1rem;
+}
+.logcat-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+  font:
+    400 0.75rem/1.4 "JetBrains Mono",
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.logcat-row-level {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.1rem;
+  border-radius: 0.2rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.logcat-row--f .logcat-row-level {
+  background: var(--md-sys-color-error);
+  color: var(--md-sys-color-on-error);
+}
+.logcat-row--e .logcat-row-level {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+}
+.logcat-row--w .logcat-row-level {
+  background: var(--md-sys-color-tertiary);
+  color: var(--md-sys-color-on-tertiary);
+}
+.logcat-row--i .logcat-row-level {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+.logcat-row--d .logcat-row-level {
+  background: var(--md-sys-color-secondary);
+  color: var(--md-sys-color-on-secondary);
+}
+.logcat-row--v .logcat-row-level {
+  background: var(--md-sys-color-tertiary-container);
+  color: var(--md-sys-color-on-tertiary-container);
+}
+.logcat-row-pid {
+  color: var(--md-sys-color-inverse-on-surface);
+  opacity: 0.6;
+  font-size: 0.65rem;
+  min-width: 3rem;
+  flex-shrink: 0;
+}
+.logcat-row-tag {
+  color: var(--md-sys-color-inverse-on-surface);
+  opacity: 0.8;
+  font-weight: 500;
+  min-width: 6rem;
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+.logcat-row-msg {
+  color: var(--md-sys-color-inverse-on-surface);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.logcat-filter--active {
+  box-shadow: 0 0 0 0.125rem var(--md-sys-color-outline);
+  filter: brightness(1.12);
+}
+.logcat-filters-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--md-sys-color-on-surface-variant);
+  padding: 0.375rem 0.25rem 0.375rem 0;
+  white-space: nowrap;
+}
+[data-theme-mode="dark"] .logcat-filters-label { color: #fff; opacity: 0.7; }
+.logcat-action:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+}
+.logcat-scroll-hint {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+  z-index: 2;
+}
+.logcat-scroll-hint:hover {
+  opacity: 1;
 }

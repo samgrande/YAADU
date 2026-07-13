@@ -13,7 +13,7 @@ export default defineConfig({
     // These packages are already ESM — skip pre-bundling to avoid transformation conflicts
     exclude: [
       "@yume-chan/adb",
-      "@yume-chan/adb-backend-webusb",
+      "@yume-chan/adb-daemon-webusb",
       "@yume-chan/stream-extra",
     ],
   },

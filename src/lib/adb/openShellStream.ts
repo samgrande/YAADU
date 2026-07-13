@@ -1,5 +1,4 @@
-import type { Adb, AdbSubprocessProtocol } from "@yume-chan/adb";
-import { ConsumableWritableStream } from "@yume-chan/stream-extra";
+import type { Adb } from "@yume-chan/adb";
 
 export interface AdbShellStream {
   stdout: ReadableStream<Uint8Array>;
@@ -12,35 +11,58 @@ export interface AdbShellStream {
 }
 
 export async function openShellStream(adb: Adb): Promise<AdbShellStream> {
-  const protocol = await adb.subprocess.shell();
-  return wrapProtocol(protocol);
-}
+  if (adb.subprocess.shellProtocol?.isSupported) {
+    const pty = await adb.subprocess.shellProtocol.pty();
+    const writer = pty.input.getWriter();
+    let closed = false;
 
-function wrapProtocol(protocol: AdbSubprocessProtocol): AdbShellStream {
-  const writer = protocol.stdin.getWriter();
+    return {
+      stdout: pty.output as unknown as ReadableStream<Uint8Array>,
+      stderr: new ReadableStream<Uint8Array>(),
+      exit: pty.exited,
+      supportsResize: true,
+
+      async write(chunk: Uint8Array) {
+        if (closed) return;
+        await writer.write(chunk);
+      },
+
+      async resize(rows: number, cols: number) {
+        if (closed) return;
+        await pty.resize(rows, cols);
+      },
+
+      async close() {
+        if (closed) return;
+        closed = true;
+        try { await writer.close(); } catch { /* ignore */ }
+        try { await pty.kill(); } catch { /* ignore */ }
+      },
+    };
+  }
+
+  const proc = await adb.subprocess.noneProtocol.spawn("/system/bin/sh");
+  const writer = proc.stdin.getWriter();
   let closed = false;
 
   return {
-    stdout: protocol.stdout as unknown as ReadableStream<Uint8Array>,
-    stderr: protocol.stderr as unknown as ReadableStream<Uint8Array>,
-    exit: protocol.exit,
-    supportsResize: true,
+    stdout: proc.output as unknown as ReadableStream<Uint8Array>,
+    stderr: new ReadableStream<Uint8Array>(),
+    exit: proc.exited.then(() => 0),
+    supportsResize: false,
 
     async write(chunk: Uint8Array) {
       if (closed) return;
-      await ConsumableWritableStream.write(writer, chunk);
+      await writer.write(chunk);
     },
 
-    async resize(rows: number, cols: number) {
-      if (closed) return;
-      await protocol.resize(rows, cols);
-    },
+    async resize() { /* no-op for none protocol */ },
 
     async close() {
       if (closed) return;
       closed = true;
       try { await writer.close(); } catch { /* ignore */ }
-      try { await protocol.kill(); } catch { /* ignore */ }
+      try { await proc.kill(); } catch { /* ignore */ }
     },
   };
 }

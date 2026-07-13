@@ -1,6 +1,5 @@
 import type { Adb } from "@yume-chan/adb";
-import { LinuxFileType } from "@yume-chan/adb";
-import type { AdbSyncEntry } from "@yume-chan/adb";
+import { LinuxFileType, type AdbSyncEntry } from "@yume-chan/adb";
 import { formatBytes } from "./helpers.js";
 import type { ZipWriter, BlobWriter } from "@zip.js/zip.js";
 
@@ -222,7 +221,7 @@ async function streamFileToZip(
 async function createZipOutput(
   deviceName: string,
   label: string,
-  writable?: WritableStream<Uint8Array>,
+  writable?: WritableStream<Uint8Array> | FileSystemWritableFileStream,
 ): Promise<{
   zipWriter: ZipWriter<unknown>;
   finalize: () => Promise<void>;

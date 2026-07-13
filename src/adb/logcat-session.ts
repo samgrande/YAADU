@@ -7,7 +7,7 @@ const BATCH_INTERVAL_MS = 100;
 export type CaptureStatus = "idle" | "capturing" | "stopped";
 
 class LogcatSession {
-  private protocol: Awaited<ReturnType<Adb["subprocess"]["shell"]>> | null = null;
+  private process: { output: ReadableStream<Uint8Array>; kill(): void } | null = null;
   private reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
   private aborted = false;
   private entryIdCounter = 0;
@@ -23,8 +23,9 @@ class LogcatSession {
   async start(adb: Adb): Promise<void> {
     if (this.isActive) return;
     this.aborted = false;
-    this.protocol = await adb.subprocess.spawn("logcat -v threadtime");
-    this.reader = this.protocol.stdout.getReader();
+    const proc = await adb.subprocess.noneProtocol.spawn("logcat -v threadtime");
+    this.process = proc as unknown as { output: ReadableStream<Uint8Array>; kill(): void };
+    this.reader = this.process.output.getReader();
     this.batchTimer = setInterval(() => this.flushBatch(), BATCH_INTERVAL_MS);
     logcatStore.setCaptureStatus("capturing");
     this.readLoop().catch(() => {});
@@ -139,9 +140,9 @@ class LogcatSession {
       try { this.reader.releaseLock(); } catch { /* ignore */ }
       this.reader = null;
     }
-    if (this.protocol) {
-      try { this.protocol.kill(); } catch { /* ignore */ }
-      (this.protocol as any) = undefined;
+    if (this.process) {
+      try { this.process.kill(); } catch { /* ignore */ }
+      this.process = null;
     }
   }
 }

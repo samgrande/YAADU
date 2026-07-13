@@ -324,7 +324,7 @@ export function AppsPanel({ adb }: Props) {
               Install APK
               <button
                 onClick={() => setShowInstaller(false)}
-                style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", display: "flex", alignItems: "center", padding: "4px" }}
+                className="apk-dialog-close"
                 title="Close"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">

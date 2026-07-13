@@ -5,6 +5,9 @@ import { disconnectDevice } from "../adb/connection.js";
 import { DeviceShellProvider } from "../features/device-shell/DeviceShellProvider.js";
 import { BottomBar } from "../features/device-shell/components/BottomBar.js";
 import { ShellConsolePanel } from "../features/device-shell/components/ShellConsolePanel.js";
+import { MirrorPanel } from "../features/mirror/components/MirrorPanel.js";
+import { MirrorToggle } from "../features/mirror/components/MirrorToggle.js";
+import { useMirrorStore } from "../features/mirror/MirrorStore.js";
 import { PanelLoader } from "./PanelLoader.js";
 import type { ActivePanel } from "../state.js";
 
@@ -49,6 +52,7 @@ const NAV_ITEMS: { id: ActivePanel; label: string; title: string; icon: React.Co
 
 export function Dashboard({ adb }: { adb: Adb }) {
   const { state, dispatch } = useAppContext();
+  const { isExpanded: isMirrorExpanded } = useMirrorStore();
   const [activePanel, setActivePanel] = useState<ActivePanel>(state.panel);
   const [exitingPanel, setExitingPanel] = useState<ActivePanel | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -157,11 +161,16 @@ export function Dashboard({ adb }: { adb: Adb }) {
                   <div className="device-model" id="sb-model">{device.marketingName}</div>
                 </div>
               </div>
+              <MirrorToggle />
             </div>
           )}
 
         </div>
       </aside>
+
+      <div className={`mirror-panel-column${isMirrorExpanded ? " expanded" : ""}`}>
+        <MirrorPanel adb={adb} />
+      </div>
 
       <main className="main-content">
         <div className="main-content-stack">

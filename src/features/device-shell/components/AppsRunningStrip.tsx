@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Adb } from "@yume-chan/adb";
-import { getRunningApps, fetchAppIcon } from "../../../adb/apps.js";
+import { getRunningApps, fetchAppIcon, launchApp } from "../../../adb/apps.js";
 
 const MAX_VISIBLE = 10;
 const POLL_MS = 1000;
@@ -74,7 +74,14 @@ export function AppsRunningStrip({ adb }: Props) {
         {visible.map((pkg) => {
           const iconUrl = iconCache[pkg];
           return (
-            <div className="apps-running-dot" key={pkg} title={pkg}>
+            <div
+              className="apps-running-dot"
+              key={pkg}
+              title={pkg}
+              onClick={() => { if (adb) launchApp(adb, pkg); }}
+              role="button"
+              tabIndex={0}
+            >
               {iconUrl ? (
                 <img src={iconUrl} className="app-icon-img" alt="" />
               ) : (

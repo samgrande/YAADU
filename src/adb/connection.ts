@@ -1,13 +1,13 @@
 /**
- * Module 1: WebUSB Connection Lifecycle (adb 0.0.19 API)
+ * Module 1: WebUSB Connection Lifecycle (Tango ADB 2.x API)
  *
- * In 0.0.19: Adb.authenticate(connection, credentialStore) is the static entry point.
- * The Adb instance has model/device/product properties but NO serial field.
- * We use the WebUSB device serial as our identifier.
+ * In 2.x: AdbDaemonTransport.authenticate({serial, connection, credentialStore})
+ * returns a transport, then new Adb(transport) creates the high-level instance.
+ * The Adb instance now has adb.banner.model, adb.serial, etc.
  */
 
-import { Adb } from "@yume-chan/adb";
-import { AdbWebUsbBackendManager, type AdbWebUsbBackend } from "@yume-chan/adb-backend-webusb";
+import { Adb, AdbDaemonTransport } from "@yume-chan/adb";
+import { AdbDaemonWebUsbDeviceManager, type AdbDaemonWebUsbDevice } from "@yume-chan/adb-daemon-webusb";
 import type { AppAction } from "../state.js";
 import { credentialStore } from "./credential.js";
 import { fetchDeviceInfo } from "./telemetry.js";
@@ -23,34 +23,40 @@ export async function connectDevice(dispatch: React.Dispatch<AppAction>): Promis
   dispatch({ type: "SET_CONNECTION", status: "connecting" });
 
   try {
-    const manager = AdbWebUsbBackendManager.BROWSER;
-    if (!manager) {
+    const Manager = AdbDaemonWebUsbDeviceManager.BROWSER;
+    if (!Manager) {
       throw new Error("WebUSB is not available. Use Chrome or Edge 89+.");
     }
 
     // Step 1: User picks device — must be inside user gesture
-    const backend = await manager.requestDevice();
-    if (!backend) {
+    const device = await Manager.requestDevice();
+    if (!device) {
       dispatch({ type: "SET_CONNECTION", status: "disconnected" });
       return;
     }
 
     // Store raw USB device reference for forcible close on disconnect
-    _usbDevice = (backend as unknown as { device: USBDevice }).device;
+    _usbDevice = device.raw;
 
-    // Step 2: Open USB stream pair
-    const connection = await backend.connect();
+    // Step 2: Open connection
+    const connection = await device.connect();
 
     // Step 3: RSA handshake — triggers "Allow USB Debugging?" on phone
     dispatch({ type: "SET_CONNECTION", status: "authorizing" });
-    console.info("[YAADU] Auth started:", backend.serial);
+    console.info("[YAADU] Auth started:", device.serial);
 
-    // 0.0.19 API: Adb.authenticate(connection, credentialStore)
-    const adb = await Adb.authenticate(connection, credentialStore);
+    // 2.x API: AdbDaemonTransport.authenticate() then new Adb(transport)
+    const transport = await AdbDaemonTransport.authenticate({
+      serial: device.serial,
+      connection,
+      credentialStore,
+    });
+
+    const adb = new Adb(transport);
 
     dispatch({ type: "SET_ADB", adb });
     dispatch({ type: "SET_CONNECTION", status: "connected" });
-    console.info("[YAADU] Connected. Model:", adb.model);
+    console.info("[YAADU] Connected. Model:", adb.banner.model);
 
     // Asynchronously pre-fetch device info so it is available to the UI immediately
     fetchDeviceInfo(adb)
@@ -113,28 +119,29 @@ export async function silentReconnect(
   dispatch: React.Dispatch<AppAction>
 ): Promise<boolean> {
   try {
-    const manager = AdbWebUsbBackendManager.BROWSER;
-    if (!manager) return false;
+    const Manager = AdbDaemonWebUsbDeviceManager.BROWSER;
+    if (!Manager) return false;
 
-    // getDevices() returns devices the user has already granted access to
-    const devices: AdbWebUsbBackend[] = await (manager as unknown as {
-      getDevices(): Promise<AdbWebUsbBackend[]>;
-    }).getDevices();
-
+    const devices: AdbDaemonWebUsbDevice[] = await Manager.getDevices();
     if (devices.length === 0) return false;
 
-    const backend = devices[0];
-    _usbDevice = (backend as unknown as { device: USBDevice }).device;
+    const device = devices[0];
+    _usbDevice = device.raw;
 
     dispatch({ type: "SET_CONNECTION", status: "connecting" });
-    const connection = await backend.connect();
+    const connection = await device.connect();
 
     dispatch({ type: "SET_CONNECTION", status: "authorizing" });
-    const adb = await Adb.authenticate(connection, credentialStore);
+    const transport = await AdbDaemonTransport.authenticate({
+      serial: device.serial,
+      connection,
+      credentialStore,
+    });
+    const adb = new Adb(transport);
 
     dispatch({ type: "SET_ADB", adb });
     dispatch({ type: "SET_CONNECTION", status: "connected" });
-    console.info("[YAADU] Silently reconnected. Model:", adb.model);
+    console.info("[YAADU] Silently reconnected. Model:", adb.banner.model);
 
     fetchDeviceInfo(adb)
       .then((info) => { dispatch({ type: "SET_DEVICE", device: info }); })

@@ -1,9 +1,9 @@
 /**
- * AdbCredentialStore for @yume-chan/adb 0.0.19
+ * AdbCredentialStore for @yume-chan/adb 2.x (Tango ADB)
  *
- * In 0.0.19 the interface is:
- *   generateKey(): ValueOrPromise<Uint8Array>   ← raw PKCS#8 bytes
- *   iterateKeys(): Iterable<Uint8Array> | AsyncIterable<Uint8Array>
+ * In 2.x the interface is:
+ *   generateKey(): ValueOrPromise<{ buffer: Uint8Array; name: string }>
+ *   iterateKeys(): Iterable<{ buffer: Uint8Array; name: string }> | AsyncIterable<...>
  *
  * The RSA private key is encrypted at rest with AES-256-GCM.
  * The AES key is stored in IndexedDB as non-extractable (never leaves
@@ -137,7 +137,7 @@ export class YaaduCredentialStore implements AdbCredentialStore {
   private _keyCache: Uint8Array | null = null;
   private _aesKey: CryptoKey | null = null;
 
-  async generateKey(): Promise<Uint8Array> {
+  async generateKey(): Promise<{ buffer: Uint8Array; name: string }> {
     const keyPair = await crypto.subtle.generateKey(KEY_ALGORITHM, true, [
       "sign",
       "verify",
@@ -151,12 +151,12 @@ export class YaaduCredentialStore implements AdbCredentialStore {
 
     this._keyCache = buffer;
     console.info("[YAADU] Generated new RSA-2048 credential (encrypted at rest).");
-    return buffer;
+    return { buffer, name: "YAADU" };
   }
 
-  async *iterateKeys(): AsyncIterable<Uint8Array> {
+  async *iterateKeys(): AsyncIterable<{ buffer: Uint8Array; name: string }> {
     if (this._keyCache) {
-      yield this._keyCache;
+      yield { buffer: this._keyCache, name: "YAADU" };
       return;
     }
 
@@ -166,7 +166,7 @@ export class YaaduCredentialStore implements AdbCredentialStore {
     try {
       this._aesKey ??= await loadOrCreateAesKey();
       this._keyCache = await decryptRsaKey(this._aesKey, stored);
-      yield this._keyCache;
+      yield { buffer: this._keyCache, name: "YAADU" };
     } catch {
       console.warn("[YAADU] Stored credential corrupt or encryption key unavailable; skipping.");
     }

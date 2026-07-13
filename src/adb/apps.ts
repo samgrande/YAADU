@@ -1,13 +1,11 @@
 /**
- * Module 3: App Management (adb 0.0.19)
+ * Module 3: App Management (adb 2.x)
  *
- * Uses adb.subprocess.spawnAndWait / spawnAndWaitLegacy.
- * APK install: push via sync.write() with Consumable-wrapped stream, then pm install.
- * sync.write().file must be ReadableStream<Consumable<Uint8Array>> in 0.0.19.
+ * Uses adb.subprocess.noneProtocol / shellProtocol.
+ * APK install: push via sync.write() with plain ReadableStream, then pm install.
  */
 
 import type { Adb } from "@yume-chan/adb";
-import { Consumable } from "@yume-chan/stream-extra";
 import { shell, shellFull } from "./helpers.js";
 import { fetchAppName, fetchAppIconUrl } from "./app-names.js";
 import { categorizeApp } from "./app-categories.js";
@@ -122,6 +120,15 @@ export async function forceStop(adb: Adb, pkg: string): Promise<AppOpResult> {
     return { success: true, message: `Force-stopped ${pkg}` };
   } catch (err) {
     return { success: false, message: `Force-stop failed: ${String(err)}` };
+  }
+}
+
+export async function launchApp(adb: Adb, pkg: string): Promise<AppOpResult> {
+  try {
+    await shell(adb, `monkey -p ${pkg} -c android.intent.category.LAUNCHER 1`);
+    return { success: true, message: `Launched ${pkg}` };
+  } catch (err) {
+    return { success: false, message: `Launch failed: ${String(err)}` };
   }
 }
 
@@ -243,16 +250,15 @@ export async function installApk(
     const totalSize = file.size;
     let transferred = 0;
 
-    // 0.0.19 requires ReadableStream<Consumable<Uint8Array>>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fileStream = new ReadableStream<Consumable<Uint8Array>>({
+    // 2.x accepts plain ReadableStream<Uint8Array> via MaybeConsumable
+    const fileStream = new ReadableStream<Uint8Array>({
       async start(controller) {
         const buffer = await file.arrayBuffer();
         const chunk  = new Uint8Array(buffer);
         const CHUNK  = 64 * 1024;
         for (let offset = 0; offset < chunk.length; offset += CHUNK) {
           const slice = chunk.subarray(offset, offset + CHUNK);
-          controller.enqueue(new Consumable(slice));
+          controller.enqueue(slice);
           transferred += slice.length;
           onProgress({
             phase: "pushing",
@@ -266,9 +272,7 @@ export async function installApk(
 
     await sync.write({
       filename: remotePath,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      file: fileStream as any,
-      mode: 0o644,
+      file: fileStream as unknown as import("@yume-chan/stream-extra").ReadableStream<Uint8Array>,
     });
 
     await sync.dispose();

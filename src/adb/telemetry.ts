@@ -1,9 +1,8 @@
 /**
- * Module 2: Device Telemetry (adb 0.0.19)
+ * Module 2: Device Telemetry (adb 2.x)
  *
- * adb.model, adb.device, adb.product are properties on the Adb instance.
- * We still use getProp() for OS version and shell for screen/battery.
- * Note: in 0.0.19 there is no .serial property; we use adb.model for display.
+ * In 2.x: adb.banner.model, adb.banner.product, adb.banner.serial.
+ * adb.getProp() is still available on the Adb instance.
  */
 
 import type { Adb } from "@yume-chan/adb";
@@ -113,8 +112,8 @@ export async function fetchDeviceInfo(adb: Adb): Promise<DeviceInfo> {
   const battery    = parseBattery(battOut);
   const screenSize = parseWmSize(wmSizeOut);
 
-  const rawBrand = brand || adb.product || "Android";
-  const rawModel = model || adb.model   || "Unknown";
+  const rawBrand = brand || adb.banner.product || "Android";
+  const rawModel = model || adb.banner.model   || "Unknown";
   const rawMarket = marketName1 || marketName2 || "";
 
   const resolved = resolveDeviceDetails(rawModel, rawBrand, rawMarket);

@@ -1,14 +1,20 @@
 import type { Adb } from "@yume-chan/adb";
 
 export async function shell(adb: Adb, command: string): Promise<string> {
-  return adb.subprocess.spawnAndWaitLegacy(command);
+  return adb.subprocess.noneProtocol.spawnWaitText(command);
 }
 
 export async function shellFull(
   adb: Adb,
   command: string | string[]
 ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
-  return adb.subprocess.spawnAndWait(command);
+  if (adb.subprocess.shellProtocol?.isSupported) {
+    const result = await adb.subprocess.shellProtocol.spawnWaitText(command);
+    return { stdout: result.stdout, stderr: result.stderr, exitCode: result.exitCode };
+  }
+  // Fallback: noneProtocol only has combined output, no exit code
+  const stdout = await adb.subprocess.noneProtocol.spawnWaitText(command);
+  return { stdout, stderr: "", exitCode: 0 };
 }
 
 export async function getProp(adb: Adb, key: string): Promise<string> {

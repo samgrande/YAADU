@@ -83,7 +83,7 @@ export class AdbShellSession {
   }
 
   private async pipeReadable(readable: ReadableStream<Uint8Array>) {
-    const reader = readable.getReader();
+    const reader = (readable as unknown as import("@yume-chan/stream-extra").ReadableStream<Uint8Array>).getReader();
     try {
       while (!this.closed) {
         const { value, done } = await reader.read();

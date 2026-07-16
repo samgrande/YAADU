@@ -289,7 +289,7 @@ export function ConnectScreen() {
                     onClick={handleConnect}
                     disabled={isConnecting ? true : undefined}
                   >
-                    {isConnecting ? (connection === "authorizing" ? "Waiting for Authorization…" : "Connecting…") : "Connect Device"}
+                    {isConnecting ? (connection === "authorizing" ? "Waiting for Authorization…" : "Connecting…") : "CONNECT"}
                   </md-filled-button>
                 </>
               )}
@@ -337,8 +337,8 @@ export function ConnectScreen() {
                   </div>
                 </div>
                 <button
+                  className="btn-forget-adb-key"
                   onClick={() => { credentialStore.clearKey(); alert("ADB key cleared. You will need to re-authorize on next connection."); }}
-                  style={{ marginTop: "20px", padding: "6px 16px", borderRadius: "24px", border: "1px solid var(--border)", background: "transparent", color: "var(--text-muted)", cursor: "pointer", fontFamily: "'Roboto',sans-serif", fontSize: "11px", alignSelf: "center" }}
                   title="Clear stored RSA-2048 ADB key"
                 >
                   Forget ADB Key

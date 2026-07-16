@@ -62,7 +62,7 @@ function ApkInstaller({ adb, onInstalled }: ApkInstallerProps) {
   }, [handleFile]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+    <div className="apk-installer-wrap">
       <input
         ref={fileInputRef}
         type="file"
@@ -84,8 +84,8 @@ function ApkInstaller({ adb, onInstalled }: ApkInstallerProps) {
       </div>
 
       {progress && (
-        <div className="apk-progress" style={{ display: "flex", flexDirection: "column", gap: "8px", paddingTop: "16px" }}>
-          <div className="apk-progress-label" style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "var(--text-muted)" }}>
+        <div className="apk-progress-wrap">
+          <div className="apk-progress-label">
             <span>{progress.message}</span>
             <span>{progress.percent}%</span>
           </div>
@@ -300,7 +300,7 @@ export function AppsPanel({ adb }: Props) {
 
   return (
     <div className="card apps-list-card" style={{ display: "flex", flex: "1", flexDirection: "column" }}>
-      <div className="card-header" style={{ alignItems: "center", padding: "clamp(16px,2vh,24px) clamp(20px,2.5vw,32px)" }}>
+      <div className="card-header">
         <div className="page-title-row">
           <div className="page-title-icon">{navbarAppsIcon}</div>
           <span className="page-title">Installed Apps</span>
@@ -398,7 +398,7 @@ export function AppsPanel({ adb }: Props) {
       )}
 
       <div className="apps-scroll-wrap">
-        <div className="card-body no-pad" style={{ flex: 1, overflowY: "auto" }} ref={panelRef}>
+        <div className="card-body no-pad" ref={panelRef}>
           {loading ? (
             <PanelLoader />
           ) : (

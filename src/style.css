@@ -67,7 +67,7 @@
 
   --cyan: var(--md-sys-color-primary);
   --cyan-dim: color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
-  --cyan-glow: color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
+  --cyan-glow: color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent);
   --green: color-mix(
     in srgb,
     var(--md-sys-color-primary-container) 70%,
@@ -332,8 +332,12 @@ select {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: min(100%, 25rem);
+  justify-content: center;
+  width: 100%;
+  max-width: 25rem;
   gap: 0;
+  padding: 1.5rem 0;
+  pointer-events: auto;
 }
 
 .connect-brand-header {
@@ -342,6 +346,7 @@ select {
   align-items: center;
   text-align: center;
   margin-bottom: 2rem;
+  animation: connectHeaderEnter 0.6s var(--ease) both;
 }
 
 .connect-android-logo {
@@ -402,6 +407,7 @@ select {
     black 85%,
     transparent 100%
   );
+  animation: connectWaveEnter 0.8s var(--ease) 0.15s both;
 }
 
 .connect-wave-path {
@@ -431,6 +437,7 @@ select {
   text-align: center;
   color: var(--text-muted);
   letter-spacing: 0.0625rem;
+  animation: connectTaglineEnter 0.6s var(--ease) 0.25s both;
 }
 
 .connect-card-m3 {
@@ -446,10 +453,12 @@ select {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  overflow: visible;
   box-shadow:
     0 0.5rem 2.5rem rgba(0, 0, 0, 0.08),
     0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.04);
   margin-bottom: 1.25rem;
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
 .phone-graphic-container {
@@ -468,6 +477,7 @@ select {
 
 .pulse-circle {
   transform-origin: 8.28125rem 7.375rem;
+  filter: blur(3px);
 }
 
 .pulse-circle.outer-1 {
@@ -581,10 +591,11 @@ select {
   --md-filled-button-container-shape: 62.4375rem;
   --md-filled-button-container-height: 2.6rem;
   --md-filled-button-label-text-size: 0.83rem;
+  overflow: visible;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -593,7 +604,7 @@ select {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 #btn-connect:active:not([disabled]) {
@@ -609,7 +620,7 @@ select {
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent) !important;
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent) !important;
   opacity: 0.8;
   cursor: wait;
 }
@@ -635,14 +646,14 @@ select {
     transparent
   );
   border: 2px solid
-    color-mix(in srgb, var(--md-sys-color-error) 30%, transparent);
+    color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--md-sys-color-error);
   animation: reconnect-ring-pulse 2s ease-in-out infinite;
   box-shadow: 0 0 0 0
-    color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
 }
 
 @keyframes reconnect-ring-pulse {
@@ -696,7 +707,7 @@ select {
     transparent
   );
   border: 1.5px solid
-    color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
   border-radius: 18px;
   width: 100%;
   max-width: 20rem;
@@ -777,10 +788,11 @@ select {
   --md-filled-button-label-text-color: var(--md-sys-color-on-error);
   --md-filled-button-container-shape: 62.4375rem;
   --md-filled-button-container-height: 3rem;
+  overflow: visible;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -789,7 +801,7 @@ select {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-error) 65%, transparent);
 }
 
 #btn-cancel-reconnect:active {
@@ -805,19 +817,25 @@ select {
   width: 100%;
   gap: 0.625rem;
   margin-top: 0.25rem;
+  transition:
+    opacity 0.2s var(--ease),
+    transform 0.2s var(--ease);
 }
 
 .connect-bottom-buttons md-filled-tonal-button {
   flex: 1;
   min-width: 0;
   max-width: 10rem;
+  opacity: 0;
+  outline: none;
+  animation: connectButtonEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
   --md-filled-tonal-button-container-color: color-mix(in srgb, var(--md-sys-color-primary) 25%, var(--md-sys-color-primary-container) 75%);
   --md-filled-tonal-button-label-text-color: var(--md-sys-color-on-primary-container);
   --md-filled-tonal-button-container-elevation: 0;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -826,7 +844,7 @@ select {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .connect-bottom-buttons md-filled-tonal-button:active {
@@ -952,7 +970,7 @@ select {
   outline: none;
   box-shadow:
     0 0 0 0.1875rem
-      color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent),
+      color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent),
     inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.08);
 }
 
@@ -1010,7 +1028,7 @@ select {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -1019,7 +1037,7 @@ select {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .theme-save-button:active {
@@ -1047,7 +1065,7 @@ select {
   position: relative;
   overflow: hidden;
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-on-surface) 10%, transparent);
+    color-mix(in srgb, var(--md-sys-color-on-surface) 22%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -1071,7 +1089,7 @@ select {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-on-surface) 15%, transparent);
+    color-mix(in srgb, var(--md-sys-color-on-surface) 30%, transparent);
 }
 
 .btn-forget-adb-key:active {
@@ -1097,15 +1115,30 @@ select {
 /* Wrapper used inside help/about cards to stack content + bottom actions */
 .card-content-wrapper {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   gap: 0.75rem;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* Layout modifier for text-heavy card views */
 .card-content-wrapper.text-layout {
   gap: 1rem;
+  position: relative;
+  justify-content: space-between;
+  overflow: visible;
+}
+
+.card-content-wrapper.text-layout md-filled-button {
+  width: 11rem;
+  margin-top: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .card-text-header {
@@ -1374,6 +1407,8 @@ md-dialog {
   inset: 0;
   z-index: 1000;
   background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1390,7 +1425,9 @@ md-dialog {
 }
 
 .apk-dialog {
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 1.75rem;
   border: 1px solid var(--border);
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15);
@@ -1783,7 +1820,7 @@ md-dialog {
 
 .battery-v-unfilled {
   width: 0.375rem;
-  background: color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
   border-radius: 0.375rem;
   flex-shrink: 0;
   transition: height 0.3s;
@@ -1867,7 +1904,7 @@ md-dialog {
   position: relative;
   overflow: hidden;
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -1905,7 +1942,7 @@ md-dialog {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-error) 65%, transparent);
 }
 
 .btn-disconnect:focus-visible {
@@ -1930,7 +1967,7 @@ md-dialog {
   border-radius: var(--radius-lg);
   background: var(--container-bg);
   border: 0.0625rem solid
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   scrollbar-width: none;
 }
 
@@ -1953,7 +1990,7 @@ md-dialog {
   width: 200px;
   height: 200px;
   filter: drop-shadow(
-      0 0 1rem color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent)
+      0 0 1rem color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent)
     )
     hue-rotate(calc((var(--theme-hue, 0) / 360) * 360deg))
     saturate(calc((var(--theme-saturation, 1) * 100%) - 100%))
@@ -2083,7 +2120,7 @@ md-dialog {
   font-family: "Roboto", sans-serif;
   font-size: clamp(0.625rem, 0.9vw, 0.8125rem);
   font-weight: 600;
-  color: color-mix(in srgb, var(--md-sys-color-primary) 55%, transparent);
+  color: color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   letter-spacing: 0.0625rem;
   text-transform: uppercase;
   margin-bottom: 0.375rem;
@@ -2168,7 +2205,7 @@ md-dialog {
   font-family: "Roboto Condensed", sans-serif;
   font-size: 0.75rem;
   font-weight: 500;
-  color: color-mix(in srgb, var(--md-sys-color-primary) 55%, transparent);
+  color: color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   margin-top: 0.125rem;
   margin-bottom: auto;
 }
@@ -2275,7 +2312,7 @@ md-dialog {
   top: 0;
   width: 100%;
   min-height: 1rem;
-  background: color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   border-radius: 62.4375rem;
   transition:
     top 0.08s linear,
@@ -3188,7 +3225,7 @@ md-linear-progress {
   top: 0;
   width: 100%;
   min-height: 1rem;
-  background: color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   border-radius: 62.4375rem;
   transition:
     top 0.08s linear,
@@ -3223,7 +3260,7 @@ md-linear-progress {
   letter-spacing: 0.00625em;
   white-space: nowrap;
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -3246,7 +3283,7 @@ md-linear-progress {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .btn-m3-sideloader:active:not(:disabled) {
@@ -3345,7 +3382,7 @@ md-linear-progress {
 .search-wrapper input:focus {
   background: var(--md-sys-color-surface-variant);
   border-color: var(--md-sys-color-primary);
-  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
+  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent);
 }
 
 .count-pill {
@@ -3379,7 +3416,7 @@ md-linear-progress {
   font-weight: 600;
   color: var(--md-sys-color-on-primary);
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -3388,7 +3425,7 @@ md-linear-progress {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .pill-toggle:active {
@@ -3411,12 +3448,8 @@ md-linear-progress {
 .pill-toggle-switch {
   width: 2.25rem;
   height: 1.25rem;
-  background: color-mix(
-    in srgb,
-    var(--md-sys-color-on-primary) 38%,
-    transparent
-  );
-  border: 2px solid color-mix(in srgb, var(--md-sys-color-on-primary) 60%, transparent);
+  background: color-mix(in srgb, var(--md-sys-color-on-primary));
+  border: 2px solid color-mix(in srgb, var(--md-sys-color-on-primary) 20%, transparent);
   border-radius: 0.75rem;
   position: relative;
   transition:
@@ -3426,8 +3459,8 @@ md-linear-progress {
 }
 
 .pill-toggle-switch.on {
-  background: var(--md-sys-color-on-primary);
-  border-color: var(--md-sys-color-on-primary);
+  background: color-mix(in srgb, var(--md-sys-color-on-primary) 30%,  transparent);
+  border-color: color-mix(in srgb, var(--md-sys-color-on-primary) 60%, var(--md-sys-color-primary));
 }
 
 .pill-toggle-knob {
@@ -3441,14 +3474,12 @@ md-linear-progress {
   transform: translateY(-50%);
   transition:
     transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
-    background 0.2s,
-    width 0.15s;
+    background 0.2s;
 }
 
 .pill-toggle-switch.on .pill-toggle-knob {
   transform: translateX(1rem) translateY(-50%);
-  background: var(--md-sys-color-primary);
-  width: 1rem;
+  background: var(--md-sys-color-on-primary);
 }
 
 .pill-toggle-divider {
@@ -3816,13 +3847,13 @@ md-linear-progress {
 .btn-app-action.btn-action-danger {
   background: color-mix(in srgb, var(--md-sys-color-error-container) 80%, transparent);
   color: var(--md-sys-color-error);
-  border: 0.0625rem solid color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
+  border: 0.0625rem solid color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
   font-weight: 600;
 }
 
 .btn-app-action.btn-action-danger:hover:not(:disabled) {
   background: var(--md-sys-color-error-container);
-  border-color: color-mix(in srgb, var(--md-sys-color-error) 40%, transparent);
+  border-color: color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
   color: var(--md-sys-color-error);
 }
 
@@ -4228,11 +4259,6 @@ md-filled-tonal-button .m3-ripple {
 
 /* Card transitions on Connect Screen (main ↔ help ↔ about) — driven by React inline styles */
 
-.connect-bottom-buttons {
-  transition:
-    opacity 0.2s var(--ease),
-    transform 0.2s var(--ease);
-}
 
 .connect-bottom-buttons.btn-exit {
   opacity: 0;
@@ -4240,23 +4266,7 @@ md-filled-tonal-button .m3-ripple {
   pointer-events: none;
 }
 
-/* Connect Screen Initial Load Entrance Animations */
-.connect-brand-header {
-  animation: connectHeaderEnter 0.6s var(--ease) both;
-}
 
-.connect-wave-separator {
-  animation: connectWaveEnter 0.8s var(--ease) 0.15s both;
-}
-
-.connect-tagline-text {
-  animation: connectTaglineEnter 0.6s var(--ease) 0.25s both;
-}
-
-.connect-bottom-buttons md-filled-tonal-button {
-  opacity: 0;
-  animation: connectButtonEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
 
 .connect-bottom-buttons md-filled-tonal-button:nth-child(1) {
   animation-delay: 0.5s;
@@ -4587,43 +4597,26 @@ md-filled-tonal-button .m3-ripple {
 }
 
 /* Card Content Wrapper for unified seamless slide/fade transitions */
-.card-content-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  min-width: 0;
-  overflow: hidden;
+
+.card-content-wrapper.text-layout::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14rem;
+  height: 3.5rem;
+  border-radius: 62.4375rem;
+  background: var(--md-sys-color-primary);
+  filter: blur(1.5rem);
+  opacity: 0.22;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
-.card-content-wrapper.text-layout {
-  justify-content: space-between;
-}
-
-.card-content-wrapper.text-layout md-filled-button {
-  width: 15rem;
-  margin-top: 1.5rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
-  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
-}
-
-.card-content-wrapper.text-layout md-filled-button:hover {
-  transform: translateY(-0.15rem);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
-}
-
-.card-content-wrapper.text-layout md-filled-button:active {
-  transform: scale(0.93);
-  transition: transform 0.1s cubic-bezier(0.3, 0, 1, 1);
+.card-content-wrapper.text-layout:hover::before {
+  opacity: 0.32;
 }
 
 #btn-close-card {
@@ -4757,19 +4750,6 @@ md-filled-tonal-button .m3-ripple {
   animation-duration: 18s;
 }
 
-/* Ensure landing page content sits on top of background animation */
-.connect-screen-content {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 25rem;
-  padding: 1.5rem 0;
-  pointer-events: auto;
-}
 
 /* ═══════════════════════════════════════════════════════
    BACKUP PANEL STYLES
@@ -4798,6 +4778,7 @@ md-filled-tonal-button .m3-ripple {
   height: clamp(5.625rem, 12vh, 10rem);
   pointer-events: none;
   z-index: 2;
+  filter: drop-shadow(0 0.5rem 1.5rem color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent));
 }
 
 .hero-shape {
@@ -4904,7 +4885,7 @@ md-filled-tonal-button .m3-ripple {
   position: relative;
   overflow: hidden;
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -4912,7 +4893,7 @@ md-filled-tonal-button .m3-ripple {
   background: var(--md-sys-color-primary);
   transform: translateY(-0.15rem);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .btn-m3-scan:active:not(:disabled) {
@@ -5161,7 +5142,7 @@ md-filled-tonal-button .m3-ripple {
   background: var(--md-sys-color-primary);
   border-color: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
-  box-shadow: 0 1px 4px color-mix(in srgb, var(--md-sys-color-primary) 30%, transparent);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent);
 }
 
 .media-category-label {
@@ -5389,13 +5370,13 @@ md-filled-tonal-button .m3-ripple {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0.125rem 0.375rem color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+  box-shadow: 0 0.125rem 0.375rem color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .wa-backup-btn-yes:hover {
   transform: translateY(-0.15rem);
-  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent);
+  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
 }
 
 .wa-backup-btn-yes:active {
@@ -5613,7 +5594,7 @@ md-filled-tonal-button .m3-ripple {
 .backup-file-save-btn:hover {
   background: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-primary);
-  border-color: color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
+  border-color: color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent);
 }
 
 .backup-file-save-btn:active {
@@ -5662,7 +5643,7 @@ md-filled-tonal-button .m3-ripple {
   position: relative;
   overflow: hidden;
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -5670,7 +5651,7 @@ md-filled-tonal-button .m3-ripple {
   background: var(--md-sys-color-primary);
   transform: translateY(-0.15rem);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .btn-export:active:not(:disabled) {
@@ -5828,22 +5809,20 @@ md-filled-tonal-button .m3-ripple {
 
 .tweak-card-illus {
   background: var(--md-sys-color-primary-container);
-  height: clamp(22.5rem, 28vh, 27.5rem);
+  height: clamp(22.5rem, 28vh, 20.5rem);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   position: relative;
-  border-radius: clamp(1rem, 1.5vw, 1.5rem) clamp(1rem, 1.5vw, 1.5rem) 0 0;
+  border-radius: clamp(1rem, 1.5vw, 1rem) clamp(1rem, 1.5vw, 1rem) 0 0;
   border-bottom: 0.0625rem solid
     var(--border-mid, var(--md-sys-color-outline-variant));
 }
 
 .tweak-card-illus svg {
-  width: 60%;
-  height: 60%;
-  max-width: 65%;
-  max-height: 65%;
+  width: 40%;
+  height: 40%;
   color: var(--md-sys-color-primary);
   transition: transform 0.4s var(--spring);
 }
@@ -5956,7 +5935,7 @@ md-filled-tonal-button .m3-ripple {
   position: relative;
   overflow: hidden;
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -5979,7 +5958,7 @@ md-filled-tonal-button .m3-ripple {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .tweak-pill--filled:active:not(:disabled) {
@@ -6033,7 +6012,7 @@ md-filled-tonal-button .m3-ripple {
 .tweak-dropdown-trigger:focus-visible {
   border-color: var(--md-sys-color-primary);
   box-shadow: 0 0 0 0.1875rem
-    color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent);
   outline: none;
 }
 
@@ -6135,6 +6114,14 @@ md-filled-tonal-button .m3-ripple {
     box-shadow 0.2s var(--ease);
   font-family: "Roboto", sans-serif;
   text-align: center;
+  caret-color: transparent;
+  -moz-appearance: textfield;
+}
+
+.tweak-dpi-input::-webkit-inner-spin-button,
+.tweak-dpi-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .tweak-dpi-input::placeholder {
@@ -6143,7 +6130,7 @@ md-filled-tonal-button .m3-ripple {
 
 .tweak-dpi-input:focus {
   border-color: var(--md-sys-color-primary);
-  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
+  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent);
 }
 
 .tweak-icon-btn {
@@ -6284,7 +6271,13 @@ md-filled-tonal-button .m3-ripple {
   display: flex;
   align-items: center;
   gap: 0.42rem;
-  overflow: hidden;
+  overflow: visible;
+}
+
+.device-shell-left {
+  display: flex;
+  align-items: center;
+  gap: 0;
 }
 
 .shell-tab {
@@ -6307,7 +6300,7 @@ md-filled-tonal-button .m3-ripple {
   cursor: pointer;
   user-select: none;
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--ds-accent-primary) 25%, transparent);
+    color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -6322,7 +6315,7 @@ md-filled-tonal-button .m3-ripple {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
+    color-mix(in srgb, var(--ds-accent-primary) 65%, transparent);
 }
 
 .shell-tab[data-status="connecting"] {
@@ -6427,13 +6420,6 @@ md-filled-tonal-button .m3-ripple {
   font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
   font-size: clamp(1rem, 1.2vw, 1.25rem);
   font-weight: 700;
-}
-
-.shell-terminal-empty {
-  color: var(--ds-accent-primary);
-}
-
-.shell-terminal-error {
   color: #ffc9c9;
 }
 
@@ -6465,7 +6451,7 @@ md-filled-tonal-button .m3-ripple {
   padding: 0 1rem;
   margin-left: -0.3rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ds-accent-primary) 25%, transparent);
+  background: color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   font-size: clamp(0.72rem, 0.88vw, 0.9rem);
@@ -6473,7 +6459,7 @@ md-filled-tonal-button .m3-ripple {
   line-height: 1;
   color: var(--ds-text-dark);
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--ds-accent-primary) 25%, transparent);
+    color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -6483,7 +6469,7 @@ md-filled-tonal-button .m3-ripple {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
+    color-mix(in srgb, var(--ds-accent-primary) 65%, transparent);
 }
 
 .device-shell-toggle.active {
@@ -6493,6 +6479,130 @@ md-filled-tonal-button .m3-ripple {
 .device-shell-toggle:active {
   transform: scale(0.93);
   transition: transform 0.1s cubic-bezier(0.3, 0, 1, 1);
+}
+
+.device-shell-power {
+  height: clamp(1.75rem, 3.2vh, 2.3rem);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0 1rem;
+  border: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: clamp(0.72rem, 0.88vw, 0.9rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ds-text-dark);
+  cursor: pointer;
+  box-shadow: 0 0.25rem 0.75rem
+    color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
+  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.device-shell-power:hover {
+  background: color-mix(in srgb, var(--ds-accent-primary) 50%, transparent);
+  transform: translateY(-0.15rem);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 0.5rem 1.25rem
+    color-mix(in srgb, var(--ds-accent-primary) 65%, transparent);
+}
+
+.device-shell-power:active {
+  transform: scale(0.93);
+  transition: transform 0.1s cubic-bezier(0.3, 0, 1, 1);
+}
+
+.device-power-menu-wrap {
+  position: relative;
+}
+
+.device-power-popup {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: color-mix(in srgb, var(--md-sys-color-primary) 25%, color-mix(in srgb, var(--md-sys-color-surface) 90%, transparent));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 1000;
+  animation: powerPopupEnter 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes powerPopupEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.device-power-popup-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ds-text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.device-power-popup-options {
+  display: flex;
+  gap: 1rem;
+}
+
+.device-power-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.25rem 1.5rem;
+  border: none;
+  border-radius: 1.25rem;
+  background: color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  color: var(--ds-text-dark);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  min-width: 7rem;
+}
+
+.device-power-option:hover {
+  background: color-mix(in srgb, var(--md-sys-color-primary) 55%, transparent);
+  transform: translateY(-0.1rem);
+}
+
+.device-power-option:active {
+  transform: scale(0.93);
+}
+
+.device-power-option-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-items: center;
+}
+
+.device-power-option-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: var(--ds-accent-dark);
+  stroke-width: 2;
+}
+
+.device-power-option-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .device-shell-toggle-icon {
@@ -6615,11 +6725,11 @@ md-filled-tonal-button .m3-ripple {
   min-height: 0;
 }
 .tweak-card-illus svg {
-  width: 82%;
-  height: 82%;
+  width: 60%;
+  height: 60%;
   /* Reset max-width/height from base */
-  max-width: 82%;
-  max-height: 82%;
+  max-width: 60%;
+  max-height: 60%;
 }
 .tweak-card-body {
   display: contents;
@@ -6704,7 +6814,7 @@ md-filled-tonal-button .m3-ripple {
   position: relative;
   overflow: hidden;
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -6727,7 +6837,7 @@ md-filled-tonal-button .m3-ripple {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .logcat-action:active:not(:disabled) {
@@ -6744,12 +6854,12 @@ md-filled-tonal-button .m3-ripple {
   background: color-mix(in srgb, var(--md-sys-color-secondary) 25%, var(--md-sys-color-secondary-container) 75%);
   color: var(--md-sys-color-on-secondary-container);
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-secondary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-secondary) 45%, transparent);
 }
 
 .logcat-action--secondary:hover:not(:disabled) {
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-secondary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-secondary) 65%, transparent);
 }
 
 .logcat-action--secondary::after {
@@ -7050,7 +7160,7 @@ md-filled-tonal-button .m3-ripple {
   gap: 0.5rem;
   flex-shrink: 0;
   margin-top: auto;
-  padding-left: clamp(0.75rem, 7.5%, 1.5rem);
+  padding-left: clamp(0.75rem, 7.5%, 2.5rem);
   padding-top: clamp(0.5rem, 6%, 1rem);
   padding-bottom: 0.5rem;
 }
@@ -7092,21 +7202,22 @@ md-filled-tonal-button .m3-ripple {
   padding: 0 1.1rem;
   background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
-  box-shadow: 0 0.125rem 0.375rem color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+  box-shadow: 0 0.125rem 0.375rem color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
 }
 .mirror-btn-start:hover:not(:disabled):not(.busy) {
   background: var(--md-sys-color-primary);
   transform: translateY(-0.15rem);
-  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 .mirror-btn-start.active {
   background: var(--md-sys-color-error);
   color: var(--md-sys-color-on-error);
-  box-shadow: 0 0.125rem 0.375rem color-mix(in srgb, var(--md-sys-color-error) 30%, transparent);
+  box-shadow: 0 0.125rem 0.375rem color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
 }
 .mirror-btn-start.active:hover:not(:disabled) {
+  background: var(--md-sys-color-error);
   transform: translateY(-0.15rem);
-  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
+  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-error) 65%, transparent);
 }
 .mirror-btn-start.busy {
   opacity: 0.65;
@@ -7120,24 +7231,24 @@ md-filled-tonal-button .m3-ripple {
   padding: 0 0.85rem;
   background: color-mix(in srgb, var(--md-sys-color-primary-container) 85%, transparent);
   color: var(--md-sys-color-on-primary-container);
-  border: 1px solid color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent);
 }
 .mirror-btn-icon:hover:not(:disabled) {
   background: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-primary);
   border-color: color-mix(in srgb, var(--md-sys-color-primary) 35%, transparent);
   transform: translateY(-0.1rem);
-  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--md-sys-color-primary) 15%, transparent);
+  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
 }
 .mirror-btn-icon.recording {
   background: color-mix(in srgb, var(--md-sys-color-error-container) 90%, transparent);
   color: var(--md-sys-color-error);
-  border-color: color-mix(in srgb, var(--md-sys-color-error) 25%, transparent);
+  border-color: color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--md-sys-color-error) 20%, transparent);
 }
 .mirror-btn-icon.recording:hover:not(:disabled) {
   background: var(--md-sys-color-error-container);
-  border-color: color-mix(in srgb, var(--md-sys-color-error) 40%, transparent);
+  border-color: color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
 }
 
 /* ── Viewport ─────────────────────────────────────── */
@@ -7229,7 +7340,7 @@ md-filled-tonal-button .m3-ripple {
   position: relative;
   overflow: hidden;
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -7252,7 +7363,7 @@ md-filled-tonal-button .m3-ripple {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .mirror-toggle:active {
@@ -7263,7 +7374,7 @@ md-filled-tonal-button .m3-ripple {
   background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
   box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
 }
 .mirror-toggle.active::after {
   background: var(--md-sys-color-on-primary);
@@ -7330,7 +7441,7 @@ md-filled-tonal-button .m3-ripple {
 :root:not([data-theme-mode="dark"]) .logcat-filter--error {
   background: var(--md-sys-color-error-container);
   color: var(--md-sys-color-on-error-container);
-  border-color: color-mix(in srgb, var(--md-sys-color-error) 30%, transparent);
+  border-color: color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
 }
 
 :root:not([data-theme-mode="dark"]) .logcat-filter--warning {
@@ -7342,7 +7453,7 @@ md-filled-tonal-button .m3-ripple {
 :root:not([data-theme-mode="dark"]) .logcat-filter--info {
   background: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-on-primary-container);
-  border-color: color-mix(in srgb, var(--md-sys-color-primary) 30%, transparent);
+  border-color: color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent);
 }
 
 :root:not([data-theme-mode="dark"]) .logcat-filter--debug {
@@ -7390,4 +7501,146 @@ md-filled-tonal-button .m3-ripple {
 
 .logcat-console .logcat-filter--verbose {
   color: var(--md-sys-color-on-surface-variant) !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   DARK MODE — Dark button shadows (inverted from light)
+   ═══════════════════════════════════════════════════════ */
+
+[data-theme-mode="dark"] #btn-connect {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] #btn-connect:hover:not([disabled]) {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+[data-theme-mode="dark"] #btn-connect[disabled] {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme-mode="dark"] #btn-cancel-reconnect {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] #btn-cancel-reconnect:hover {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .connect-bottom-buttons md-filled-tonal-button {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .connect-bottom-buttons md-filled-tonal-button:hover {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .theme-save-button {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .theme-save-button:hover {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .btn-forget-adb-key {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
+}
+[data-theme-mode="dark"] .btn-forget-adb-key:hover {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.25);
+}
+
+[data-theme-mode="dark"] .btn-disconnect {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .btn-disconnect:hover:not(:disabled) {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .btn-m3-sideloader {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .btn-m3-sideloader:hover:not(:disabled) {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .pill-toggle {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .pill-toggle:hover {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .btn-m3-scan {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .btn-m3-scan:hover:not(:disabled) {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .btn-export {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .btn-export:hover:not(:disabled) {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .wa-backup-btn-yes {
+  box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .wa-backup-btn-yes:hover {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .tweak-pill--filled {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .tweak-pill--filled:hover:not(:disabled) {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .shell-tab {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .shell-tab.active {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .device-shell-toggle {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .device-shell-toggle:hover {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .logcat-action {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .logcat-action:hover:not(:disabled) {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .logcat-action--secondary {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .logcat-action--secondary:hover:not(:disabled) {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .mirror-btn-start {
+  box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .mirror-btn-start:hover:not(:disabled):not(.busy) {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+[data-theme-mode="dark"] .mirror-btn-start.active {
+  box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .mirror-btn-start.active:hover:not(:disabled) {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .mirror-toggle {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .mirror-toggle:hover {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+[data-theme-mode="dark"] .mirror-toggle.active {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
 }

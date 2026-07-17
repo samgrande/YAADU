@@ -38,7 +38,7 @@ export function TweaksPanel({ adb }: Props) {
   const [currentDpi, setCurrentDpi] = useState<string>("—");
   const [customDpi, setCustomDpi] = useState<string>("");
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
-  const [dropdownLabel, setDropdownLabel] = useState<string>("Presets");
+  const [dropdownLabel, setDropdownLabel] = useState<string>("420");
   const [isApplyingDpi, setIsApplyingDpi] = useState<boolean>(false);
   const [isResettingDpi, setIsResettingDpi] = useState<boolean>(false);
   const isLoadingSettingsRef = useRef(false);
@@ -127,7 +127,6 @@ export function TweaksPanel({ adb }: Props) {
   };
 
   const handleResetDpi = async () => {
-    if (!confirm("Reset display density to device default?")) return;
     setIsResettingDpi(true);
     try {
       const result = await resetDensity(adb);
@@ -136,7 +135,7 @@ export function TweaksPanel({ adb }: Props) {
         const dpi = await getCurrentDensity(adb);
         setCurrentDpi(dpi ? String(dpi) : "default");
         setCustomDpi("");
-        setDropdownLabel("Presets");
+                        setDropdownLabel("420");
       }
     } catch (err) {
       toast(`Failed to reset DPI: ${normalizeError(err)}`, "error");
@@ -274,14 +273,11 @@ export function TweaksPanel({ adb }: Props) {
                     </svg>
                   </button>
                   <div className="tweak-dropdown-menu">
-                    <button className="tweak-dropdown-option" type="button" onClick={(e) => handlePresetSelect(e, "", "Presets")}>Presets</button>
+                    <button className="tweak-dropdown-option" type="button" onClick={(e) => handlePresetSelect(e, "", "420")}>420</button>
                     <button className="tweak-dropdown-option" type="button" onClick={(e) => handlePresetSelect(e, "320", "320 – Compact")}>320 – Compact</button>
                     <button className="tweak-dropdown-option" type="button" onClick={(e) => handlePresetSelect(e, "360", "360")}>360</button>
                     <button className="tweak-dropdown-option" type="button" onClick={(e) => handlePresetSelect(e, "400", "400")}>400</button>
                     <button className="tweak-dropdown-option" type="button" onClick={(e) => handlePresetSelect(e, "420", "420 – Default")}>420 – Default</button>
-                    <button className="tweak-dropdown-option" type="button" onClick={(e) => handlePresetSelect(e, "440", "440")}>440</button>
-                    <button className="tweak-dropdown-option" type="button" onClick={(e) => handlePresetSelect(e, "480", "480 – Large")}>480 – Large</button>
-                    <button className="tweak-dropdown-option" type="button" onClick={(e) => handlePresetSelect(e, "560", "560 – XL")}>560 – XL</button>
                   </div>
                 </div>
                 <input
@@ -294,7 +290,7 @@ export function TweaksPanel({ adb }: Props) {
                   value={customDpi}
                   onChange={(e) => {
                     setCustomDpi(e.target.value);
-                    setDropdownLabel("Presets");
+        setDropdownLabel("420");
                   }}
                 />
                 <button

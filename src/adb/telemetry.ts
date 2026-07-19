@@ -217,6 +217,7 @@ export async function fetchConnectivity(adb: Adb): Promise<ConnectivityData> {
     ?? allWifi.match(/"([^"]+)"\s*[\[{].*RSSI/i)
     ?? allWifi.match(/ssid[=:]"?([^"&\s,}\]]+)/i);
   if (ssidM) wifiSsid = ssidM[1].replace(/["\[\]{}]/g, "").trim();
+  wifiSsid = wifiSsid.replace(/[\x00-\x1f\x7f]/g, "").slice(0, 128);
   if (wifiSsid === "—" || wifiSsid === "<unknown ssid>" || /^0x[0-9a-f]+$/i.test(wifiSsid)) wifiSsid = "—";
 
   // IP address

@@ -36,6 +36,7 @@ export function LogcatConsole({ adb }: Props) {
   const { captureStatus, entries, activeLevels } = useLogcatStore();
   const listRef = useListRef(null);
   const [isAutoScroll, setIsAutoScroll] = useState(true);
+  const [confirmingExport, setConfirmingExport] = useState(false);
 
   const filteredEntries = useMemo(
     () => entries.filter(e => activeLevels.has(e.level as SeverityLevel)),
@@ -110,7 +111,7 @@ export function LogcatConsole({ adb }: Props) {
           <button
             className="logcat-action logcat-action--secondary"
             type="button"
-            onClick={handleExport}
+            onClick={() => setConfirmingExport(true)}
             disabled={isExportDisabled}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -132,6 +133,20 @@ export function LogcatConsole({ adb }: Props) {
           )}
         </div>
       </div>
+      {confirmingExport && (
+        <div className="logcat-export-overlay">
+          <div className="logcat-export-confirm">
+            <div className="logcat-export-confirm-text">
+              Logs may contain sensitive data (tokens, PII, credentials from other apps).
+              Do not share publicly.
+            </div>
+            <div className="logcat-export-confirm-actions">
+              <button className="logcat-action logcat-action--secondary" type="button" onClick={() => setConfirmingExport(false)}>Cancel</button>
+              <button className="logcat-action" type="button" onClick={() => { setConfirmingExport(false); handleExport(); }}>Export Anyway</button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="logcat-console" aria-label="LogCat output">
         <div className="logcat-output">
           {filteredEntries.length === 0 ? (

@@ -600,7 +600,7 @@ select {
 }
 
 #btn-connect:hover:not([disabled]) {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -797,7 +797,7 @@ select {
 }
 
 #btn-cancel-reconnect:hover {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -840,7 +840,7 @@ select {
 }
 
 .connect-bottom-buttons md-filled-tonal-button:hover {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -1033,7 +1033,7 @@ select {
 }
 
 .theme-save-button:hover {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -1085,7 +1085,7 @@ select {
 .btn-forget-adb-key:hover {
   border-color: var(--md-sys-color-outline);
   color: var(--md-sys-color-on-surface);
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -1938,7 +1938,7 @@ md-dialog {
 }
 
 .btn-disconnect:hover:not(:disabled) {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -3240,7 +3240,7 @@ md-linear-progress {
 }
 
 .btn-m3-sideloader {
-  height: 2.5rem;
+  height: 3rem;
   border-radius: 6.25rem;
   background: color-mix(in srgb, var(--md-sys-color-primary) 25%, var(--md-sys-color-primary-container) 75%);
   backdrop-filter: blur(12px);
@@ -3279,7 +3279,7 @@ md-linear-progress {
 .btn-m3-sideloader:active:not(:disabled)::after { opacity: 0.12; }
 
 .btn-m3-sideloader:hover:not(:disabled) {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -3421,7 +3421,7 @@ md-linear-progress {
 }
 
 .pill-toggle:hover {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -3824,7 +3824,7 @@ md-linear-progress {
   background: var(--md-sys-color-surface-variant);
   border-color: var(--md-sys-color-outline);
   color: var(--md-sys-color-on-surface);
-  transform: translateY(-0.1rem);
+  transform: translateY(-0.05rem);
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
 }
 
@@ -3964,7 +3964,7 @@ md-linear-progress {
 
 .anim-btn:hover:not(.active) {
   color: var(--md-sys-color-on-surface);
-  transform: translateY(-0.1rem);
+  transform: translateY(-0.05rem);
 }
 
 .anim-btn:active {
@@ -4891,7 +4891,7 @@ md-filled-tonal-button .m3-ripple {
 
 .btn-m3-scan:hover:not(:disabled) {
   background: var(--md-sys-color-primary);
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   box-shadow: 0 0.5rem 1.25rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
@@ -5375,7 +5375,7 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .wa-backup-btn-yes:hover {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
 }
 
@@ -5407,7 +5407,7 @@ md-filled-tonal-button .m3-ripple {
 .wa-backup-btn-no:hover {
   background: var(--md-sys-color-surface-variant);
   border-color: var(--md-sys-color-outline);
-  transform: translateY(-0.1rem);
+  transform: translateY(-0.05rem);
 }
 
 .wa-backup-btn-no:active {
@@ -5649,7 +5649,7 @@ md-filled-tonal-button .m3-ripple {
 
 .btn-export:hover:not(:disabled) {
   background: var(--md-sys-color-primary);
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   box-shadow: 0 0.5rem 1.25rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
@@ -5691,7 +5691,7 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .btn-cancel:hover {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.08);
 }
 
@@ -5914,8 +5914,8 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .tweak-pill.active {
-  background: var(--md-sys-color-surface);
-  color: var(--md-sys-color-on-surface);
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
   box-shadow: 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.10), 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.06);
 }
 
@@ -5954,7 +5954,7 @@ md-filled-tonal-button .m3-ripple {
 .tweak-pill--filled:active:not(:disabled)::after { opacity: 0.12; }
 
 .tweak-pill--filled:hover:not(:disabled) {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -6155,7 +6155,7 @@ md-filled-tonal-button .m3-ripple {
   background: var(--md-sys-color-surface-variant);
   color: var(--md-sys-color-on-surface);
   border-color: var(--md-sys-color-outline);
-  transform: translateY(-0.1rem);
+  transform: translateY(-0.05rem);
 }
 
 .tweak-icon-btn:active:not(:disabled) {
@@ -6465,7 +6465,7 @@ md-filled-tonal-button .m3-ripple {
 
 .device-shell-toggle:hover {
   background: color-mix(in srgb, var(--ds-accent-primary) 50%, transparent);
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -6505,7 +6505,7 @@ md-filled-tonal-button .m3-ripple {
 
 .device-shell-power:hover {
   background: color-mix(in srgb, var(--ds-accent-primary) 50%, transparent);
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -6578,7 +6578,7 @@ md-filled-tonal-button .m3-ripple {
 
 .device-power-option:hover {
   background: color-mix(in srgb, var(--md-sys-color-primary) 55%, transparent);
-  transform: translateY(-0.1rem);
+  transform: translateY(-0.05rem);
 }
 
 .device-power-option:active {
@@ -6758,6 +6758,7 @@ md-filled-tonal-button .m3-ripple {
   flex-wrap: wrap;
 }
 .logcat-card {
+  position: relative;
   background: var(--md-sys-color-surface);
   border: 0.0625rem solid var(--md-sys-color-outline-variant);
   border-radius: clamp(1.25rem, 1.7vw, 1.75rem);
@@ -6768,6 +6769,42 @@ md-filled-tonal-button .m3-ripple {
   min-height: clamp(27.6rem, 51.6vh, 38rem);
   opacity: 0;
   animation: tweakRowEnter 0.45s var(--spring) 0.22s both;
+}
+.logcat-export-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--md-sys-color-surface) 75%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: inherit;
+}
+.logcat-export-confirm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  max-width: 24rem;
+  background: color-mix(in srgb, var(--md-sys-color-surface-container-high) 90%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 1.25rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.12);
+}
+.logcat-export-confirm-text {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.logcat-export-confirm-actions {
+  display: flex;
+  gap: 0.5rem;
 }
 .logcat-card-info {
   display: flex;
@@ -6833,7 +6870,7 @@ md-filled-tonal-button .m3-ripple {
 .logcat-action:active:not(:disabled)::after { opacity: 0.12; }
 
 .logcat-action:hover:not(:disabled) {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -7206,7 +7243,7 @@ md-filled-tonal-button .m3-ripple {
 }
 .mirror-btn-start:hover:not(:disabled):not(.busy) {
   background: var(--md-sys-color-primary);
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 .mirror-btn-start.active {
@@ -7216,7 +7253,7 @@ md-filled-tonal-button .m3-ripple {
 }
 .mirror-btn-start.active:hover:not(:disabled) {
   background: var(--md-sys-color-error);
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-error) 65%, transparent);
 }
 .mirror-btn-start.busy {
@@ -7237,7 +7274,7 @@ md-filled-tonal-button .m3-ripple {
   background: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-primary);
   border-color: color-mix(in srgb, var(--md-sys-color-primary) 35%, transparent);
-  transform: translateY(-0.1rem);
+  transform: translateY(-0.05rem);
   box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
 }
 .mirror-btn-icon.recording {
@@ -7359,7 +7396,7 @@ md-filled-tonal-button .m3-ripple {
 .mirror-toggle:active::after { opacity: 0.12; }
 
 .mirror-toggle:hover {
-  transform: translateY(-0.15rem);
+  transform: translateY(-0.08rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0.5rem 1.25rem
@@ -7605,6 +7642,13 @@ md-filled-tonal-button .m3-ripple {
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .device-shell-toggle:hover {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode="dark"] .device-shell-power {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+[data-theme-mode="dark"] .device-shell-power:hover {
   box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
 }
 

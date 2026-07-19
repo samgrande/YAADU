@@ -15,6 +15,7 @@ import { normalizeError } from "./errors.js";
 import { shellManager } from "../features/device-shell/ShellManager.js";
 import { shellConsoleStore } from "../features/device-shell/ShellConsoleStore.js";
 import { logcatSession } from "./logcat-session.js";
+import { mirrorStore } from "../features/mirror/MirrorStore.js";
 
 let _usbDevice: USBDevice | null = null;
 
@@ -86,9 +87,10 @@ export async function disconnectDevice(
   adb: Adb | null
 ): Promise<void> {
   if (!adb) { dispatch({ type: "RESET" }); return; }
-  logcatSession.markDisconnected();
-  await shellManager.disposeAll();
+  logcatSession.clear();
   shellConsoleStore.reset();
+  mirrorStore.reset();
+  await shellManager.disposeAll();
 
   // Close the raw USB device directly, bypassing the ADB protocol close
   // handshake which can fail with "data buffer exceeded maximum size".
@@ -102,7 +104,9 @@ export async function disconnectDevice(
 
 function handleDisconnect(dispatch: React.Dispatch<AppAction>): void {
   logcatSession.markDisconnected();
+  logcatSession.clear();
   shellConsoleStore.markDisconnected();
+  mirrorStore.reset();
   shellManager.setAdb(null);
   dispatch({ type: "SET_ADB", adb: null });
   dispatch({ type: "SET_DEVICE", device: null });

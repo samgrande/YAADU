@@ -226,6 +226,12 @@ export function AppsPanel({ adb }: Props) {
   const iconQueueRef                      = useRef<string[]>([]);
   const fetchingRef                       = useRef(false);
   const iconMapRef                        = useRef<Map<string, string | null>>(new Map());
+  const mountedRef                        = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
 
   const loadApps = useCallback(async () => {
     setActiveCategory("all");
@@ -238,11 +244,12 @@ export function AppsPanel({ adb }: Props) {
         const label = await fetchAppLabel(adb, a.packageName);
         return { ...a, label: label ?? undefined };
       }));
+      if (!mountedRef.current) return;
       setApps(list);
     } catch (err) {
       toast(`Failed to list apps: ${normalizeError(err)}`, "error");
     } finally {
-      setLoading(false);
+      if (mountedRef.current) setLoading(false);
     }
   }, [adb, showSystem]);
 
@@ -254,6 +261,7 @@ export function AppsPanel({ adb }: Props) {
 
   const loadIcons = useCallback(async (pkg: string) => {
     const url = await fetchAppIcon(pkg);
+    if (!mountedRef.current) return;
     setIconMap((prev) => {
       const next = new Map(prev);
       next.set(pkg, url);

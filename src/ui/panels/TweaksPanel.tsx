@@ -9,6 +9,7 @@ import {
 import { toast } from "../Toast.js";
 import { normalizeError } from "../../adb/errors.js";
 import { LogcatConsole } from "./LogcatConsole.js";
+import { ErrorBoundary } from "../ErrorBoundary.js";
 import animSvg from "../../assets/illus-anim.svg?raw";
 import themeSvg from "../../assets/illus-theme.svg?raw";
 import densitySvg from "../../assets/illus-density.svg?raw";
@@ -304,6 +305,7 @@ export function TweaksPanel({ adb }: Props) {
                 <button
                   className="tweak-icon-btn"
                   id="btn-reset-dpi"
+                  aria-label="Reset display density to default"
                   title="Reset to device default"
                   onClick={handleResetDpi}
                   disabled={isResettingDpi}
@@ -315,7 +317,7 @@ export function TweaksPanel({ adb }: Props) {
           </div>
         </div>
       </div>
-      <LogcatConsole adb={adb} />
+      <ErrorBoundary><LogcatConsole adb={adb} /></ErrorBoundary>
     </div>
   );
 }

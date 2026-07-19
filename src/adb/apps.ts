@@ -10,6 +10,15 @@ import { shell, shellFull } from "./helpers.js";
 import { fetchAppName, fetchAppIconUrl } from "./app-names.js";
 import { categorizeApp } from "./app-categories.js";
 
+const PACKAGE_NAME_RE = /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/;
+
+function validatePackageName(pkg: string): string | null {
+  if (!pkg || !PACKAGE_NAME_RE.test(pkg)) {
+    return `Invalid package name: "${pkg}"`;
+  }
+  return null;
+}
+
 export interface AppEntry {
   packageName: string;
   disabled:    boolean;
@@ -115,24 +124,30 @@ export async function mergeDisabledState(adb: Adb, entries: AppEntry[]): Promise
 }
 
 export async function forceStop(adb: Adb, pkg: string): Promise<AppOpResult> {
+  const err = validatePackageName(pkg);
+  if (err) return { success: false, message: err };
   try {
     await shell(adb, `am force-stop ${pkg}`);
     return { success: true, message: `Force-stopped ${pkg}` };
-  } catch (err) {
-    return { success: false, message: `Force-stop failed: ${String(err)}` };
+  } catch (e) {
+    return { success: false, message: `Force-stop failed: ${String(e)}` };
   }
 }
 
 export async function launchApp(adb: Adb, pkg: string): Promise<AppOpResult> {
+  const err = validatePackageName(pkg);
+  if (err) return { success: false, message: err };
   try {
     await shell(adb, `monkey -p ${pkg} -c android.intent.category.LAUNCHER 1`);
     return { success: true, message: `Launched ${pkg}` };
-  } catch (err) {
-    return { success: false, message: `Launch failed: ${String(err)}` };
+  } catch (e) {
+    return { success: false, message: `Launch failed: ${String(e)}` };
   }
 }
 
 export async function clearAppData(adb: Adb, pkg: string): Promise<AppOpResult> {
+  const err = validatePackageName(pkg);
+  if (err) return { success: false, message: err };
   try {
     const out = await shell(adb, `pm clear ${pkg}`);
     const success = out.toLowerCase().includes("success");
@@ -143,6 +158,8 @@ export async function clearAppData(adb: Adb, pkg: string): Promise<AppOpResult> 
 }
 
 export async function uninstallApp(adb: Adb, pkg: string): Promise<AppOpResult> {
+  const err = validatePackageName(pkg);
+  if (err) return { success: false, message: err };
   try {
     const result = await shellFull(adb, `pm uninstall ${pkg}`);
     const combined = (result.stdout + result.stderr).toLowerCase();
@@ -160,6 +177,8 @@ export async function uninstallApp(adb: Adb, pkg: string): Promise<AppOpResult> 
 }
 
 export async function disableApp(adb: Adb, pkg: string): Promise<AppOpResult> {
+  const err = validatePackageName(pkg);
+  if (err) return { success: false, message: err };
   try {
     const out = await shell(adb, `pm disable-user --user 0 ${pkg}`);
     const success = out.toLowerCase().includes("disabled");
@@ -170,6 +189,8 @@ export async function disableApp(adb: Adb, pkg: string): Promise<AppOpResult> {
 }
 
 export async function enableApp(adb: Adb, pkg: string): Promise<AppOpResult> {
+  const err = validatePackageName(pkg);
+  if (err) return { success: false, message: err };
   try {
     const out = await shell(adb, `pm enable ${pkg}`);
     const success = out.toLowerCase().includes("enabled");
@@ -180,6 +201,8 @@ export async function enableApp(adb: Adb, pkg: string): Promise<AppOpResult> {
 }
 
 export async function pullApk(adb: Adb, pkg: string): Promise<AppOpResult> {
+  const err = validatePackageName(pkg);
+  if (err) return { success: false, message: err };
   try {
     const out = await shell(adb, `pm path ${pkg}`);
     const match = out.match(/package:(.+)/);

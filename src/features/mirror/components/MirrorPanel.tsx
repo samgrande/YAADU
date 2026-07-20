@@ -31,24 +31,76 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
   const [error, setError] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [deviceSize, setDeviceSize] = useState<{ w: number; h: number } | null>(null);
+  const [sourceType, setSourceType] = useState<"screen" | "camera" | null>(null);
+  const [cameraFacing, setCameraFacing] = useState<"front" | "back">("front");
 
   const { isExpanded } = useMirrorStore();
   const isActive = status === "active";
   const isBusy = status === "starting";
+  const isCamera = sourceType === "camera";
 
-  // Auto-stop when panel is collapsed
-  useEffect(() => {
-    if (isExpanded || !sessionRef.current) return;
-    // Panel collapsed — stop session + recorder
+  const cameraDeviceSize = isCamera ? deviceSize ?? { w: 640, h: 480 } : deviceSize;
+  const displaySize = isCamera && cameraDeviceSize
+    ? { w: cameraDeviceSize.h, h: cameraDeviceSize.w }
+    : cameraDeviceSize;
+  const cameraStyle = isCamera && cameraDeviceSize
+    ? {
+        transform: cameraFacing === "front" ? "scaleX(-1) rotate(-90deg)" : "rotate(90deg)",
+        width: "230%",
+        height: `${(cameraDeviceSize.h / cameraDeviceSize.w) * 100}%`,
+      }
+    : {};
+
+  const startSession = useCallback(async (type: "screen" | "camera") => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    setSourceType(type);
+    setStatus("starting");
+    setError(null);
+
+    try {
+      const opts = type === "camera"
+        ? {
+            videoSource: "camera" as const,
+            cameraFacing: cameraFacing as "front" | "back",
+            cameraSize: "640x480",
+            control: false,
+          }
+        : undefined;
+      const session = await startScreenMirror(adb, canvas, opts);
+      sessionRef.current = session;
+
+      session.onSizeChange((w, h) => {
+        if (w > 0 && h > 0) setDeviceSize({ w, h });
+      });
+
+      setStatus("active");
+    } catch (err) {
+      console.error(`[Mirror] ${type} start failed:`, err);
+      setError(err instanceof Error ? err.message : `Failed to start ${type}`);
+      setStatus("error");
+      setSourceType(null);
+    }
+  }, [adb, cameraFacing]);
+
+  const stopSession = useCallback(() => {
     if (recorderRef.current && recorderRef.current.state !== "inactive") {
       recorderRef.current.stop();
     }
-    sessionRef.current.stop().catch(() => {});
+    sessionRef.current?.stop().catch(() => {});
     sessionRef.current = null;
     setStatus("idle");
     setDeviceSize(null);
     setIsRecording(false);
-  }, [isExpanded]);
+    setSourceType(null);
+  }, []);
+
+  // Auto-stop when panel is collapsed
+  useEffect(() => {
+    if (isExpanded || !sessionRef.current) return;
+    stopSession();
+  }, [isExpanded, stopSession]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -62,14 +114,7 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
 
   const handleStart = useCallback(async () => {
     if (isActive) {
-      // Stop
-      if (recorderRef.current && recorderRef.current.state !== "inactive") {
-        recorderRef.current.stop();
-      }
-      await sessionRef.current?.stop().catch(() => {});
-      sessionRef.current = null;
-      setStatus("idle");
-      setDeviceSize(null);
+      stopSession();
       return;
     }
 
@@ -84,16 +129,76 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
       sessionRef.current = session;
 
       session.onSizeChange((w, h) => {
-        if (w > 0 && h > 0) setDeviceSize(prev => prev ?? { w, h });
+        if (w > 0 && h > 0) setDeviceSize({ w, h });
       });
 
+      setSourceType("screen");
       setStatus("active");
     } catch (err) {
       console.error("[Mirror] Start failed:", err);
       setError(err instanceof Error ? err.message : "Failed to start mirroring");
       setStatus("error");
     }
-  }, [adb, isActive]);
+  }, [adb, isActive, stopSession]);
+
+  const handleCam = useCallback(async () => {
+    if (isActive && isCamera) {
+      stopSession();
+      return;
+    }
+    // Stop screen mirror if active, then start camera
+    if (sessionRef.current) {
+      if (recorderRef.current && recorderRef.current.state !== "inactive") {
+        recorderRef.current.stop();
+      }
+      await sessionRef.current.stop().catch(() => {});
+      sessionRef.current = null;
+      setIsRecording(false);
+    }
+    await startSession("camera");
+  }, [isActive, isCamera, stopSession, startSession]);
+
+  const handleSwitchCamera = useCallback(async () => {
+    const next = cameraFacing === "front" ? "back" : "front";
+    setCameraFacing(next);
+
+    if (!isCamera || !sessionRef.current) return;
+
+    // Restart with new facing
+    if (recorderRef.current && recorderRef.current.state !== "inactive") {
+      recorderRef.current.stop();
+    }
+    await sessionRef.current.stop().catch(() => {});
+    sessionRef.current = null;
+    setIsRecording(false);
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    setStatus("starting");
+    setError(null);
+
+    try {
+      const session = await startScreenMirror(adb, canvas, {
+        videoSource: "camera",
+        cameraFacing: next as "front" | "back",
+        cameraSize: "640x480",
+        control: false,
+      });
+      sessionRef.current = session;
+
+      session.onSizeChange((w, h) => {
+        if (w > 0 && h > 0) setDeviceSize({ w, h });
+      });
+
+      setStatus("active");
+    } catch (err) {
+      console.error("[Mirror] Camera switch failed:", err);
+      setError(err instanceof Error ? err.message : "Failed to switch camera");
+      setStatus("error");
+      setSourceType(null);
+    }
+  }, [adb, cameraFacing, isCamera]);
 
   const handleScreenshot = useCallback(async () => {
     if (!isActive) return;
@@ -153,14 +258,14 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
             className={`mirror-btn mirror-btn-start${isActive ? " active" : ""}${isBusy ? " busy" : ""}`}
             onClick={handleStart}
             disabled={isBusy}
-            title={isActive ? "Stop mirroring" : "Start mirroring"}
+            title={isActive ? (isCamera ? "Stop camera" : "Stop mirroring") : "Start mirroring"}
           >
             {isActive ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                 <rect x="4" y="4" width="16" height="16" rx="2"/>
               </svg>
             ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="6,3 20,12 6,21"/>
               </svg>
             )}
@@ -173,11 +278,11 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
             disabled={!isActive}
             title="Screenshot"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
               <circle cx="12" cy="13" r="4"/>
             </svg>
-            <span>SCREENSHOT</span>
+            <span>SNAP</span>
           </button>
 
           <button
@@ -186,7 +291,7 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
             disabled={!isActive}
             title={isRecording ? "Stop recording" : "Record screen"}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"/>
               {isRecording ? (
                 <rect x="8" y="8" width="8" height="8" rx="1" fill="var(--md-sys-color-error)" stroke="none"/>
@@ -196,18 +301,48 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
             </svg>
             <span>{isRecording ? "STOP" : "RECORD"}</span>
           </button>
+
+          <button
+            className={`mirror-btn mirror-btn-icon${isCamera ? " camera" : ""}`}
+            onClick={handleCam}
+            disabled={isBusy}
+            title={isCamera ? "Stop camera" : "Stream camera"}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+              <circle cx="12" cy="13" r="3"/>
+            </svg>
+            <span>CAM</span>
+          </button>
+
+          <button
+            className="mirror-btn mirror-btn-icon"
+            onClick={handleSwitchCamera}
+            disabled={isBusy}
+            title={`Switch to ${cameraFacing === "front" ? "back" : "front"} camera`}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1 12s1.5-5 5-7c3.5-2 7-1.5 9 1"/>
+              <path d="M12 3v3h3"/>
+              <path d="M23 12s-1.5 5-5 7c-3.5 2-7 1.5-9-1"/>
+              <path d="M12 21v-3h-3"/>
+            </svg>
+          </button>
         </div>
 
         {/* Viewport */}
         <div className="mirror-viewport">
           <div
             className="mirror-viewport-inner"
-            style={deviceSize ? { aspectRatio: `${deviceSize.w} / ${deviceSize.h}` } : undefined}
+            style={displaySize ? { aspectRatio: `${displaySize.w} / ${displaySize.h}` } : undefined}
           >
             <canvas
               ref={canvasRef}
               className="mirror-canvas"
-              style={{ display: status === "idle" || status === "error" ? "none" : "block" }}
+          style={{
+            display: status === "idle" || status === "error" ? "none" : "block",
+            ...cameraStyle,
+          }}
             />
             {status === "idle" && (
               <div className="mirror-placeholder">

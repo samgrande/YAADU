@@ -594,16 +594,16 @@ select {
   overflow: visible;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 #btn-connect:hover:not([disabled]) {
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
@@ -619,7 +619,7 @@ select {
   background: var(--md-sys-color-primary) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent) !important;
   opacity: 0.8;
   cursor: wait;
@@ -791,16 +791,16 @@ select {
   overflow: visible;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 #btn-cancel-reconnect:hover {
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-error) 65%, transparent);
 }
 
@@ -834,16 +834,16 @@ select {
   --md-filled-tonal-button-container-elevation: 0;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .connect-bottom-buttons md-filled-tonal-button:hover {
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
@@ -1027,16 +1027,16 @@ select {
   --md-filled-button-container-height: 3rem;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .theme-save-button:hover {
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
@@ -1064,7 +1064,7 @@ select {
   letter-spacing: 0.00625em;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-on-surface) 22%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
@@ -1085,10 +1085,10 @@ select {
 .btn-forget-adb-key:hover {
   border-color: var(--md-sys-color-outline);
   color: var(--md-sys-color-on-surface);
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-on-surface) 30%, transparent);
 }
 
@@ -1827,10 +1827,10 @@ md-dialog {
 }
 
 .battery-v-fill {
+  position: relative;
   width: 100%;
   background: var(--md-sys-color-primary);
   border-radius: 0.3125rem;
-  overflow: hidden;
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='32'%3E%3Cpath d='M5 0 Q9 4 5 8 Q1 12 5 16 Q9 20 5 24 Q1 28 5 32' stroke='black' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='32'%3E%3Cpath d='M5 0 Q9 4 5 8 Q1 12 5 16 Q9 20 5 24 Q1 28 5 32' stroke='black' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   mask-size: 0.625rem 2rem;
@@ -1839,6 +1839,25 @@ md-dialog {
   -webkit-mask-repeat: repeat-y;
   transition: height 0.3s;
   animation: wave-scroll 1.2s linear infinite;
+}
+.battery-v-fill::before,
+.battery-v-fill::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 0.375rem;
+  background: var(--md-sys-color-primary);
+  border-radius: 0.375rem;
+  mask: none;
+  -webkit-mask: none;
+  z-index: 1;
+}
+.battery-v-fill::before {
+  top: -0.125rem;
+}
+.battery-v-fill::after {
+  bottom: -0.125rem;
 }
 
 .device-brand {
@@ -1903,7 +1922,7 @@ md-dialog {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
@@ -1938,10 +1957,10 @@ md-dialog {
 }
 
 .btn-disconnect:hover:not(:disabled) {
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-error) 65%, transparent);
 }
 
@@ -2580,7 +2599,7 @@ md-dialog {
 
 .metric-tile-m3:hover {
   transform: translateY(-0.2rem) scale(1.01);
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.09);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.09);
   border-color: var(--md-sys-color-primary);
 }
 
@@ -3259,7 +3278,7 @@ md-linear-progress {
   font-weight: 500;
   letter-spacing: 0.00625em;
   white-space: nowrap;
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
@@ -3279,10 +3298,10 @@ md-linear-progress {
 .btn-m3-sideloader:active:not(:disabled)::after { opacity: 0.12; }
 
 .btn-m3-sideloader:hover:not(:disabled) {
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
@@ -3415,16 +3434,16 @@ md-linear-progress {
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--md-sys-color-on-primary);
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .pill-toggle:hover {
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
@@ -3824,8 +3843,8 @@ md-linear-progress {
   background: var(--md-sys-color-surface-variant);
   border-color: var(--md-sys-color-outline);
   color: var(--md-sys-color-on-surface);
-  transform: translateY(-0.05rem);
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+  transform: translateY(-0.04rem);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.08);
 }
 
 .btn-app-action:active:not(:disabled) {
@@ -3964,7 +3983,7 @@ md-linear-progress {
 
 .anim-btn:hover:not(.active) {
   color: var(--md-sys-color-on-surface);
-  transform: translateY(-0.05rem);
+  transform: translateY(-0.04rem);
 }
 
 .anim-btn:active {
@@ -4884,15 +4903,15 @@ md-filled-tonal-button .m3-ripple {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .btn-m3-scan:hover:not(:disabled) {
   background: var(--md-sys-color-primary);
-  transform: translateY(-0.08rem);
-  box-shadow: 0 0.5rem 1.25rem
+  transform: translateY(-0.04rem);
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
@@ -5375,8 +5394,8 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .wa-backup-btn-yes:hover {
-  transform: translateY(-0.08rem);
-  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
+  transform: translateY(-0.04rem);
+  box-shadow: 0 0.5rem 0.75rem color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
 }
 
 .wa-backup-btn-yes:active {
@@ -5407,7 +5426,7 @@ md-filled-tonal-button .m3-ripple {
 .wa-backup-btn-no:hover {
   background: var(--md-sys-color-surface-variant);
   border-color: var(--md-sys-color-outline);
-  transform: translateY(-0.05rem);
+  transform: translateY(-0.04rem);
 }
 
 .wa-backup-btn-no:active {
@@ -5642,15 +5661,15 @@ md-filled-tonal-button .m3-ripple {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .btn-export:hover:not(:disabled) {
   background: var(--md-sys-color-primary);
-  transform: translateY(-0.08rem);
-  box-shadow: 0 0.5rem 1.25rem
+  transform: translateY(-0.04rem);
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
@@ -5691,8 +5710,8 @@ md-filled-tonal-button .m3-ripple {
 }
 
 .btn-cancel:hover {
-  transform: translateY(-0.08rem);
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.08);
+  transform: translateY(-0.04rem);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.08);
 }
 
 .btn-cancel:active {
@@ -5868,10 +5887,10 @@ md-filled-tonal-button .m3-ripple {
 
 .tweak-pill-group {
   display: flex;
-  background: var(--md-sys-color-surface-variant);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 15%, var(--md-sys-color-primary-container) 85%);
   padding: 0.25rem;
   border-radius: 62.4375rem;
-  border: 0.0625rem solid var(--md-sys-color-outline-variant);
+  border: 0.0625rem solid color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
   width: max-content;
 }
 
@@ -5916,7 +5935,15 @@ md-filled-tonal-button .m3-ripple {
 .tweak-pill.active {
   background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.10), 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.06);
+}
+.tweak-pill.active:hover {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transform: translateY(-0.04rem);
+  box-shadow: 0 0.25rem 0.5rem color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .tweak-pill:focus-visible {
@@ -5934,7 +5961,7 @@ md-filled-tonal-button .m3-ripple {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
@@ -5954,10 +5981,10 @@ md-filled-tonal-button .m3-ripple {
 .tweak-pill--filled:active:not(:disabled)::after { opacity: 0.12; }
 
 .tweak-pill--filled:hover:not(:disabled) {
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
@@ -6155,7 +6182,7 @@ md-filled-tonal-button .m3-ripple {
   background: var(--md-sys-color-surface-variant);
   color: var(--md-sys-color-on-surface);
   border-color: var(--md-sys-color-outline);
-  transform: translateY(-0.05rem);
+  transform: translateY(-0.04rem);
 }
 
 .tweak-icon-btn:active:not(:disabled) {
@@ -6299,7 +6326,7 @@ md-filled-tonal-button .m3-ripple {
   line-height: 1;
   cursor: pointer;
   user-select: none;
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
@@ -6314,7 +6341,7 @@ md-filled-tonal-button .m3-ripple {
   color: var(--md-sys-color-on-primary);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--ds-accent-primary) 65%, transparent);
 }
 
@@ -6451,25 +6478,25 @@ md-filled-tonal-button .m3-ripple {
   padding: 0 1rem;
   margin-left: -0.3rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 25%, var(--md-sys-color-primary-container) 75%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   font-size: clamp(0.72rem, 0.88vw, 0.9rem);
   font-weight: 800;
   line-height: 1;
-  color: var(--ds-text-dark);
-  box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
+  color: var(--md-sys-color-on-primary-container);
+  box-shadow: 0 0.25rem 0.5rem
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .device-shell-toggle:hover {
-  background: color-mix(in srgb, var(--ds-accent-primary) 50%, transparent);
-  transform: translateY(-0.08rem);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 30%, var(--md-sys-color-primary-container) 70%);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--ds-accent-primary) 65%, transparent);
+  box-shadow: 0 0.5rem 0.75rem
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .device-shell-toggle.active {
@@ -6490,26 +6517,26 @@ md-filled-tonal-button .m3-ripple {
   padding: 0 1rem;
   border: none;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 25%, var(--md-sys-color-primary-container) 75%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   font-size: clamp(0.72rem, 0.88vw, 0.9rem);
   font-weight: 800;
   line-height: 1;
-  color: var(--ds-text-dark);
+  color: var(--md-sys-color-on-primary-container);
   cursor: pointer;
-  box-shadow: 0 0.25rem 0.75rem
-    color-mix(in srgb, var(--ds-accent-primary) 45%, transparent);
+  box-shadow: 0 0.25rem 0.5rem
+    color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .device-shell-power:hover {
-  background: color-mix(in srgb, var(--ds-accent-primary) 50%, transparent);
-  transform: translateY(-0.08rem);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 30%, var(--md-sys-color-primary-container) 70%);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
-    color-mix(in srgb, var(--ds-accent-primary) 65%, transparent);
+  box-shadow: 0 0.5rem 0.75rem
+    color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
 .device-shell-power:active {
@@ -6578,7 +6605,7 @@ md-filled-tonal-button .m3-ripple {
 
 .device-power-option:hover {
   background: color-mix(in srgb, var(--md-sys-color-primary) 55%, transparent);
-  transform: translateY(-0.05rem);
+  transform: translateY(-0.04rem);
 }
 
 .device-power-option:active {
@@ -6850,7 +6877,7 @@ md-filled-tonal-button .m3-ripple {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
@@ -6870,10 +6897,10 @@ md-filled-tonal-button .m3-ripple {
 .logcat-action:active:not(:disabled)::after { opacity: 0.12; }
 
 .logcat-action:hover:not(:disabled) {
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
@@ -6890,12 +6917,12 @@ md-filled-tonal-button .m3-ripple {
 .logcat-action--secondary {
   background: color-mix(in srgb, var(--md-sys-color-secondary) 25%, var(--md-sys-color-secondary-container) 75%);
   color: var(--md-sys-color-on-secondary-container);
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-secondary) 45%, transparent);
 }
 
 .logcat-action--secondary:hover:not(:disabled) {
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-secondary) 65%, transparent);
 }
 
@@ -7193,27 +7220,29 @@ md-filled-tonal-button .m3-ripple {
 .mirror-controls {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.35rem;
   flex-shrink: 0;
   margin-top: auto;
-  padding-left: clamp(0.75rem, 7.5%, 2.5rem);
   padding-top: clamp(0.5rem, 6%, 1rem);
   padding-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .mirror-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
   border: none;
   cursor: pointer;
   font-family: "Roboto", sans-serif;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   line-height: 1;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   border-radius: 999px;
   position: relative;
@@ -7235,16 +7264,16 @@ md-filled-tonal-button .m3-ripple {
 
 /* Primary START/STOP button */
 .mirror-btn-start {
-  height: 2.25rem;
-  padding: 0 1.1rem;
+  height: 1.75rem;
+  padding: 0 0.7rem;
   background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
   box-shadow: 0 0.125rem 0.375rem color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
 }
 .mirror-btn-start:hover:not(:disabled):not(.busy) {
   background: var(--md-sys-color-primary);
-  transform: translateY(-0.08rem);
-  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
+  transform: translateY(-0.04rem);
+  box-shadow: 0 0.5rem 0.75rem color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 .mirror-btn-start.active {
   background: var(--md-sys-color-error);
@@ -7253,8 +7282,8 @@ md-filled-tonal-button .m3-ripple {
 }
 .mirror-btn-start.active:hover:not(:disabled) {
   background: var(--md-sys-color-error);
-  transform: translateY(-0.08rem);
-  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--md-sys-color-error) 65%, transparent);
+  transform: translateY(-0.04rem);
+  box-shadow: 0 0.5rem 0.75rem color-mix(in srgb, var(--md-sys-color-error) 65%, transparent);
 }
 .mirror-btn-start.busy {
   opacity: 0.65;
@@ -7264,8 +7293,8 @@ md-filled-tonal-button .m3-ripple {
 
 /* Secondary tonal icon buttons (Screenshot / Record) */
 .mirror-btn-icon {
-  height: 2.25rem;
-  padding: 0 0.85rem;
+  height: 1.75rem;
+  padding: 0 0.55rem;
   background: color-mix(in srgb, var(--md-sys-color-primary-container) 85%, transparent);
   color: var(--md-sys-color-on-primary-container);
   border: 1px solid color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent);
@@ -7274,8 +7303,8 @@ md-filled-tonal-button .m3-ripple {
   background: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-primary);
   border-color: color-mix(in srgb, var(--md-sys-color-primary) 35%, transparent);
-  transform: translateY(-0.05rem);
-  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+  transform: translateY(-0.04rem);
+  box-shadow: 0 0.25rem 0.5rem color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
 }
 .mirror-btn-icon.recording {
   background: color-mix(in srgb, var(--md-sys-color-error-container) 90%, transparent);
@@ -7286,6 +7315,16 @@ md-filled-tonal-button .m3-ripple {
 .mirror-btn-icon.recording:hover:not(:disabled) {
   background: var(--md-sys-color-error-container);
   border-color: color-mix(in srgb, var(--md-sys-color-error) 45%, transparent);
+}
+.mirror-btn-icon.camera {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border-color: color-mix(in srgb, var(--md-sys-color-primary) 35%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);
+}
+.mirror-btn-icon.camera:hover:not(:disabled) {
+  background: var(--md-sys-color-primary);
+  border-color: color-mix(in srgb, var(--md-sys-color-primary) 35%, transparent);
 }
 
 /* ── Viewport ─────────────────────────────────────── */
@@ -7320,6 +7359,7 @@ md-filled-tonal-button .m3-ripple {
   margin-top: -1%;
   /*object-fit: contain;*/
 }
+
 
 .mirror-placeholder {
   position: absolute;
@@ -7376,7 +7416,7 @@ md-filled-tonal-button .m3-ripple {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
   transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
@@ -7396,10 +7436,10 @@ md-filled-tonal-button .m3-ripple {
 .mirror-toggle:active::after { opacity: 0.12; }
 
 .mirror-toggle:hover {
-  transform: translateY(-0.08rem);
+  transform: translateY(-0.04rem);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 0.5rem 1.25rem
+  box-shadow: 0 0.5rem 0.75rem
     color-mix(in srgb, var(--md-sys-color-primary) 65%, transparent);
 }
 
@@ -7410,7 +7450,7 @@ md-filled-tonal-button .m3-ripple {
 .mirror-toggle.active {
   background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
-  box-shadow: 0 0.25rem 0.75rem
+  box-shadow: 0 0.25rem 0.5rem
     color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent);
 }
 .mirror-toggle.active::after {
@@ -7545,146 +7585,146 @@ md-filled-tonal-button .m3-ripple {
    ═══════════════════════════════════════════════════════ */
 
 [data-theme-mode="dark"] #btn-connect {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] #btn-connect:hover:not([disabled]) {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 [data-theme-mode="dark"] #btn-connect[disabled] {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25) !important;
 }
 
 [data-theme-mode="dark"] #btn-cancel-reconnect {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] #btn-cancel-reconnect:hover {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .connect-bottom-buttons md-filled-tonal-button {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .connect-bottom-buttons md-filled-tonal-button:hover {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .theme-save-button {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .theme-save-button:hover {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .btn-forget-adb-key {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
 }
 [data-theme-mode="dark"] .btn-forget-adb-key:hover {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.25);
 }
 
 [data-theme-mode="dark"] .btn-disconnect {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .btn-disconnect:hover:not(:disabled) {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .btn-m3-sideloader {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .btn-m3-sideloader:hover:not(:disabled) {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .pill-toggle {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .pill-toggle:hover {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .btn-m3-scan {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .btn-m3-scan:hover:not(:disabled) {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .btn-export {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .btn-export:hover:not(:disabled) {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .wa-backup-btn-yes {
   box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .wa-backup-btn-yes:hover {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .tweak-pill--filled {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .tweak-pill--filled:hover:not(:disabled) {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .shell-tab {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .shell-tab.active {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .device-shell-toggle {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .device-shell-toggle:hover {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .device-shell-power {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .device-shell-power:hover {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .logcat-action {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .logcat-action:hover:not(:disabled) {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .logcat-action--secondary {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .logcat-action--secondary:hover:not(:disabled) {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .mirror-btn-start {
   box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .mirror-btn-start:hover:not(:disabled):not(.busy) {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 [data-theme-mode="dark"] .mirror-btn-start.active {
   box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .mirror-btn-start.active:hover:not(:disabled) {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 [data-theme-mode="dark"] .mirror-toggle {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }
 [data-theme-mode="dark"] .mirror-toggle:hover {
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 [data-theme-mode="dark"] .mirror-toggle.active {
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
 }

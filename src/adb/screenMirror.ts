@@ -30,6 +30,11 @@ interface MirrorOptions {
   maxSize?: number;
   maxFps?: number;
   control?: boolean;
+  videoSource?: "display" | "camera";
+  cameraId?: string;
+  cameraSize?: string;
+  cameraFacing?: "front" | "back" | "external";
+  cameraFps?: number;
 }
 
 export async function startScreenMirror(
@@ -57,6 +62,11 @@ export async function startScreenMirror(
     stayAwake: false,
     powerOn: true,
     cleanup: true,
+    videoSource: options?.videoSource ?? "display",
+    cameraId: options?.cameraId,
+    cameraSize: options?.cameraSize,
+    cameraFacing: options?.cameraFacing,
+    cameraFps: options?.cameraFps,
   });
 
   const client = await AdbScrcpyClient.start(adb, SERVER_PATH, scrcpyOpts);
@@ -104,6 +114,9 @@ export async function startScreenMirror(
 
     onSizeChange(listener: (w: number, h: number) => void) {
       sizeListeners.add(listener);
+      const w = decoder.width;
+      const h = decoder.height;
+      if (w > 0 && h > 0) listener(w, h);
       return () => { sizeListeners.delete(listener); };
     },
 

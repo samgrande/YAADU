@@ -200,13 +200,11 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
 
   const handleScreenshot = useCallback(async () => {
     if (!isActive) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const session = sessionRef.current;
+    if (!session) return;
 
     try {
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/png"),
-      );
+      const blob = await session.screenshot();
       if (blob) downloadBlob(blob, `yaadu_screenshot_${timestamp()}.png`);
     } catch (err) {
       console.error("[Mirror] Screenshot failed:", err);
@@ -267,7 +265,7 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
                 <polygon points="6,3 20,12 6,21"/>
               </svg>
             )}
-            <span>{isActive ? "STOP" : isBusy ? "STARTING…" : "START"}</span>
+            <span>{isActive ? "STOP" : isBusy ? "STARTING…" : "MIRROR SCREEN"}</span>
           </button>
 
           <button
@@ -311,7 +309,7 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
               <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
               <circle cx="12" cy="13" r="3"/>
             </svg>
-            <span>{isCamera ? cameraFacing === "front" ? "FRONT" : "BACK" : "CAM"}</span>
+            <span>{isCamera ? cameraFacing === "front" ? "FRONT" : "BACK" : "Stream Cam"}</span>
           </button>
         </div>
 

@@ -141,37 +141,7 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
     }
   }, [adb, isActive, stopSession]);
 
-  const handleCam = useCallback(async () => {
-    if (isActive && isCamera) {
-      stopSession();
-      return;
-    }
-    // Stop screen mirror if active, then start camera
-    if (sessionRef.current) {
-      if (recorderRef.current && recorderRef.current.state !== "inactive") {
-        recorderRef.current.stop();
-      }
-      await sessionRef.current.stop().catch(() => {});
-      sessionRef.current = null;
-      setIsRecording(false);
-    }
-    await startSession("camera");
-  }, [isActive, isCamera, stopSession, startSession]);
-
-  const handleSwitchCamera = useCallback(async () => {
-    const next = cameraFacing === "front" ? "back" : "front";
-    setCameraFacing(next);
-
-    if (!isCamera || !sessionRef.current) return;
-
-    // Restart with new facing
-    if (recorderRef.current && recorderRef.current.state !== "inactive") {
-      recorderRef.current.stop();
-    }
-    await sessionRef.current.stop().catch(() => {});
-    sessionRef.current = null;
-    setIsRecording(false);
-
+  const startCameraWithFacing = useCallback(async (facing: "front" | "back") => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -181,7 +151,7 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
     try {
       const session = await startScreenMirror(adb, canvas, {
         videoSource: "camera",
-        cameraFacing: next as "front" | "back",
+        cameraFacing: facing,
         cameraSize: "640x480",
         control: false,
       });
@@ -193,12 +163,40 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
 
       setStatus("active");
     } catch (err) {
-      console.error("[Mirror] Camera switch failed:", err);
-      setError(err instanceof Error ? err.message : "Failed to switch camera");
+      console.error("[Mirror] Camera start failed:", err);
+      setError(err instanceof Error ? err.message : "Failed to start camera");
       setStatus("error");
       setSourceType(null);
     }
-  }, [adb, cameraFacing, isCamera]);
+  }, [adb]);
+
+  const handleCam = useCallback(async () => {
+    if (isActive && isCamera) {
+      const next = cameraFacing === "front" ? "back" : "front";
+      setCameraFacing(next);
+
+      if (recorderRef.current && recorderRef.current.state !== "inactive") {
+        recorderRef.current.stop();
+      }
+      await sessionRef.current?.stop().catch(() => {});
+      sessionRef.current = null;
+      setIsRecording(false);
+
+      await startCameraWithFacing(next);
+      return;
+    }
+    // Stop screen mirror if active, then start camera
+    if (sessionRef.current) {
+      if (recorderRef.current && recorderRef.current.state !== "inactive") {
+        recorderRef.current.stop();
+      }
+      await sessionRef.current.stop().catch(() => {});
+      sessionRef.current = null;
+      setIsRecording(false);
+    }
+    setSourceType("camera");
+    await startCameraWithFacing("front");
+  }, [isActive, isCamera, cameraFacing, stopSession, startCameraWithFacing]);
 
   const handleScreenshot = useCallback(async () => {
     if (!isActive) return;
@@ -279,8 +277,9 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
             title="Screenshot"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-              <circle cx="12" cy="13" r="4"/>
+              <rect x="4" y="3" width="16" height="18" rx="2"/>
+              <circle cx="12" cy="11" r="4"/>
+              <path d="M8 3l2-2h4l2 2"/>
             </svg>
             <span>SNAP</span>
           </button>
@@ -308,25 +307,11 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
             disabled={isBusy}
             title={isCamera ? "Stop camera" : "Stream camera"}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
               <circle cx="12" cy="13" r="3"/>
             </svg>
-            <span>CAM</span>
-          </button>
-
-          <button
-            className="mirror-btn mirror-btn-icon"
-            onClick={handleSwitchCamera}
-            disabled={isBusy}
-            title={`Switch to ${cameraFacing === "front" ? "back" : "front"} camera`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M1 12s1.5-5 5-7c3.5-2 7-1.5 9 1"/>
-              <path d="M12 3v3h3"/>
-              <path d="M23 12s-1.5 5-5 7c-3.5 2-7 1.5-9-1"/>
-              <path d="M12 21v-3h-3"/>
-            </svg>
+            <span>{isCamera ? cameraFacing === "front" ? "FRONT" : "BACK" : "CAM"}</span>
           </button>
         </div>
 

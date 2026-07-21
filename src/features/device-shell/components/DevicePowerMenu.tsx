@@ -8,9 +8,10 @@ const POWER_OPTIONS = [
     id: "shutdown",
     label: "Shutdown",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10" />
         <path d="M12 2v10" />
-        <path d="M4.93 10.93a9 9 0 1 0 14.14 0" />
+        <path d="M8 5.5a8 8 0 1 0 8 0" />
       </svg>
     ),
     command: "reboot -p",
@@ -19,9 +20,9 @@ const POWER_OPTIONS = [
     id: "reboot",
     label: "Reboot",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 2v6h-6" />
-        <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="23 4 23 10 17 10" />
+        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
       </svg>
     ),
     command: "reboot",
@@ -30,10 +31,10 @@ const POWER_OPTIONS = [
     id: "recovery",
     label: "Recovery",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        <path d="M9 12h6" />
-        <path d="M12 9v6" />
+        <path d="M12 8v4" />
+        <path d="M12 16h.01" />
       </svg>
     ),
     command: "reboot recovery",
@@ -42,9 +43,13 @@ const POWER_OPTIONS = [
     id: "bootloader",
     label: "Bootloader",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="16 18 22 12 16 6" />
-        <polyline points="8 6 2 12 8 18" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
+        <line x1="9" y1="22" x2="15" y2="22" />
+        <line x1="12" y1="18" x2="12" y2="22" />
+        <path d="M8 8h8" />
+        <path d="M8 12h8" />
+        <path d="M8 16h4" />
       </svg>
     ),
     command: "reboot bootloader",
@@ -89,8 +94,8 @@ export function DevicePowerMenu({ adb }: Props) {
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >
-          <span className="device-shell-toggle-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" strokeLinecap="round" strokeLinejoin="round">
+        <span className="device-shell-toggle-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2v10" />
             <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
           </svg>

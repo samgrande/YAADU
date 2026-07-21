@@ -2147,7 +2147,7 @@ md-dialog {
 
 .metric-value {
   font-family: "Roboto Condensed", sans-serif;
-  font-size: 1.54375rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--md-sys-color-on-primary-container);
   line-height: 1.15;

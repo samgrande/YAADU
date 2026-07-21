@@ -5887,7 +5887,7 @@ md-filled-tonal-button .m3-ripple {
 
 .tweak-pill-group {
   display: flex;
-  background: color-mix(in srgb, var(--md-sys-color-primary) 15%, var(--md-sys-color-primary-container) 85%);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 25%, var(--md-sys-color-primary-container) 15%);
   padding: 0.25rem;
   border-radius: 62.4375rem;
   border: 0.0625rem solid color-mix(in srgb, var(--md-sys-color-primary) 20%, transparent);

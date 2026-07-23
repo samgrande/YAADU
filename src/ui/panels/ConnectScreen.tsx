@@ -433,8 +433,8 @@ export function ConnectScreen() {
                     onClick={() => updateDraftTheme({ color: entry.value })}
                   >
                     {draftTheme.color === entry.value && (
-                      <svg className="theme-swatch-check" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                      <svg className="theme-swatch-check" viewBox="0 0 24 24" fill="none">
+                        <path d="M7 13l3 3 7-7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     )}
                   </button>

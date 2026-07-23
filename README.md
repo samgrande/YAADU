@@ -3,35 +3,50 @@
 </p>
 
 <p align="center">
-  <strong>Website</strong>: <a href="https://samgrande.github.io/YAADU/">https://samgrande.github.io/YAADU/</a>
+  <a href="https://samgrande.github.io/YAADU/">
+    <img src="https://img.shields.io/badge/website-samgrande.github.io%2FYAADU-8B5CF6?style=flat-square&logo=google-chrome&logoColor=white" alt="Website">
+  </a>
 </p>
 
-# YAADU — Yet Another Android Debug Utility
+<p align="center">
+  <img src="https://img.shields.io/badge/-Chrome%20%7C%20Edge-4285F4?style=flat-square&logo=google-chrome&logoColor=white" alt="Browser">
+  <img src="https://img.shields.io/badge/-open%20source-78716C?style=flat-square" alt="Open Source">
+</p>
 
-A fully client-side Android dashboard that communicates with a physical device over USB via the **WebUSB API**. No backend. No companion app. No native binaries. Just a browser tab.
+<h1 align="center">YAADU — Yet Another Android Debug Utility</h1>
 
----
-
-## Prerequisites
-
-| Requirement | Details |
-|---|---|
-| Browser | Chrome 89+ or Edge 89+ on Desktop (macOS / Windows / Linux) |
-| USB Debugging | Enabled in **Developer Options** on the Android device |
-| Secure Context | Page served from `localhost` or HTTPS (WebUSB requirement) |
-| ADB port conflict | Stop any local `adb server` on the host first: `adb kill-server` |
+<p align="center">
+  A browser-based Android dashboard. Plug in your device and go.
+</p>
 
 ---
 
+### 🔌 &nbsp;Connect
+Pair your Android device over USB with a single tap and enjoy a seamless debugging session — no cables to configure, no drivers to install.
+
+### 📱 &nbsp;Apps
+Browse every app installed on your device, search through them, launch apps remotely, or uninstall the ones you no longer need — all from your browser.
+
+### 📊 &nbsp;Telemetry
+Keep an eye on your device's health with real-time battery level, memory usage, storage space, and other important vitals at a glance.
+
+### ⚙️ &nbsp;Tweaks
+Take control of your device's look and feel — adjust the screen DPI, tweak animation speeds, and modify system settings without digging through menus.
+
+### 💾 &nbsp;Backup
+Safeguard your memories by scanning and exporting photos, videos, and WhatsApp media straight to your computer with just a few clicks.
+
+### 🖥 &nbsp;Shell
+Fire up a full-featured terminal right in your browser with support for multiple tabbed sessions — perfect for running ADB commands on the fly.
+
+### 🪞 &nbsp;Screen Mirror
+See your device's screen in real time with low-latency display mirroring — great for demos, recording tutorials, or debugging UI issues.
+
+### 🎨 &nbsp;Themes
+Make the dashboard your own by choosing from a range of accent colors and switching between light and dark mode to suit your workflow.
+
 ---
 
-## Pairing Troubleshooting
-
-1. **"No devices found" in picker** — Ensure USB debugging is enabled and cable is data-capable (not charge-only)
-2. **"Allow USB Debugging?" never appears** — Kill any ADB server: `adb kill-server`, then retry
-3. **Repeated authorization prompts** — Use the *Forget ADB Key* button in the About section of the connect screen, or clear manually via DevTools: `localStorage.removeItem("yaadu:adb-private-key")`
-4. **Permission denied errors** — YAADU runs as the `shell` user; some operations (e.g. uninstalling system apps) require `root`
-
----
-
-> **For technical details — architecture, modules, UI system, and tech stack — see [`project-info.md`](./project-info.md)**
+<p align="center">
+  Works in Chrome and Edge
+</p>

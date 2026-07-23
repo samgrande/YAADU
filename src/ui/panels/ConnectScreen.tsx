@@ -434,7 +434,7 @@ export function ConnectScreen() {
                   >
                     {draftTheme.color === entry.value && (
                       <svg className="theme-swatch-check" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="9" stroke="white" strokeWidth="1.5" opacity="0.5"/>
+                        <circle cx="12" cy="12" r="10" fill="white" opacity="0.25"/>
                         <path d="M7 13l3 3 7-7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     )}

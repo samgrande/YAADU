@@ -343,7 +343,7 @@ export function ConnectScreen() {
                 >
                   Forget ADB Key
                 </button>
-                <md-filled-button onClick={() => switchCard("main")}>
+                <md-filled-button className="btn-card-action" onClick={() => switchCard("main")}>
                   Close Help
                 </md-filled-button>
               </div>
@@ -403,7 +403,7 @@ export function ConnectScreen() {
                   </div>
 
                 </div>
-                <md-filled-button onClick={() => switchCard("main")}>
+                <md-filled-button className="btn-card-action" onClick={() => switchCard("main")}>
                   Awesome
                 </md-filled-button>
               </div>
@@ -435,7 +435,7 @@ export function ConnectScreen() {
                     {draftTheme.color === entry.value && (
                       <svg className="theme-swatch-check" viewBox="0 0 24 24" fill="none">
                         <circle cx="12" cy="12" r="10" fill="white" opacity="0.25"/>
-                        <path d="M7 13l3 3 7-7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M7.5 12L10.5 15 16.5 9" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     )}
                   </button>

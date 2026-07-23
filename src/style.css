@@ -951,6 +951,7 @@ select {
 }
 
 .theme-swatch {
+  position: relative;
   width: min(100%, clamp(1.75rem, 8vw, 3rem));
   aspect-ratio: 1 / 1;
   height: auto;
@@ -979,6 +980,16 @@ select {
   box-shadow:
     0 0 0 0.1875rem var(--md-sys-color-primary-container),
     inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.08);
+}
+
+.theme-swatch-check {
+  position: absolute;
+  inset: 20%;
+  width: 60%;
+  height: 60%;
+  color: color-mix(in srgb, white 85%, transparent);
+  filter: drop-shadow(0 0.0625rem 0.125rem rgba(0, 0, 0, 0.3));
+  pointer-events: none;
 }
 
 .theme-mode-toggle {

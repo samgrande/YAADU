@@ -357,26 +357,15 @@ select {
 }
 
 .connect-title-yaadu {
-  width: clamp(10rem, 40vw, 18rem);
-  color: var(--md-sys-color-primary);
+  display: flex;
+  justify-content: center;
+  width: clamp(8rem, 25vw, 14rem);
   line-height: 1;
-  text-align: center;
 }
 
 .connect-title-yaadu svg {
-  filter: saturate(1.5) brightness(1.1) contrast(1.1);
-}
-
-[data-theme-mode="dark"] .connect-title-yaadu svg {
-  filter: none;
-}
-
-[data-theme-mode="dark"] .connect-title-yaadu svg path[fill*="primary"] {
-  filter: saturate(1.5) brightness(0.85) contrast(1.1);
-}
-
-[data-theme-mode="dark"] .connect-title-yaadu svg rect[fill*="on-surface"] {
-  fill: #ffffff;
+  width: 100%;
+  height: auto;
 }
 
 [data-theme-mode="dark"] .tweak-card-illus {

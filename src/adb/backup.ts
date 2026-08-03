@@ -34,11 +34,19 @@ export interface SavedFile {
 export const MEDIA_FOLDERS = [
   { path: "/sdcard/DCIM/Camera",             label: "Camera" },
   { path: "/sdcard/DCIM",                    label: "DCIM" },
+  { path: "/sdcard/DCIM/Screenshots",        label: "DCIM Screenshots" },
   { path: "/sdcard/Pictures/Screenshots",    label: "Screenshots" },
   { path: "/sdcard/Pictures",                label: "Pictures" },
   { path: "/sdcard/Movies",                  label: "Movies" },
   { path: "/sdcard/Music",                   label: "Music" },
   { path: "/sdcard/Download",                label: "Download" },
+  { path: "/sdcard/Videos",                  label: "Videos" },
+  { path: "/sdcard/Ringtones",               label: "Ringtones" },
+  { path: "/sdcard/Notifications",           label: "Notifications" },
+  { path: "/sdcard/Alarms",                  label: "Alarms" },
+  { path: "/sdcard/Recordings",              label: "Recordings" },
+  { path: "/sdcard/Bluetooth",               label: "Bluetooth" },
+  { path: "/sdcard/Camera",                  label: "Camera (root)" },
 ];
 
 const PHOTO_EXTS = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "heic", "heif"];

@@ -11,11 +11,11 @@ export const THEME_STORAGE_KEY = "yaadu:theme";
 
 export const THEME_COLORS = [
   { name: "Android Green", value: "#376A3E" },
-  { name: "Signal Red", value: "#FF333D" },
-  { name: "Pixel Blue", value: "#0B8BEF" },
+  { name: "Signal Red", value: "#f44336" },
+  { name: "Pixel Blue", value: "#2196f3" },
   { name: "Sunbeam Yellow", value: "#FFC107" },
-  { name: "Indigo Pulse", value: "#5A52E8" },
-  { name: "Radical Pink", value: "#FF2F66" },
+  { name: "Indigo Pulse", value: "#9c27b0" },
+  { name: "Radical Pink", value: "#e91e63" },
 ] as const;
 
 export const DEFAULT_THEME: YaaduTheme = {

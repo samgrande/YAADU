@@ -195,7 +195,7 @@ export function LogcatConsole({ adb }: Props) {
           {SEVERITY_LEVELS.map(level => (
             <button
               key={level}
-              className={`logcat-filter logcat-filter--${level.toLowerCase()} ${activeLevels.has(level) ? "logcat-filter--active" : ""}`}
+              className={`logcat-filter logcat-filter--${LEVEL_LABELS[level].toLowerCase()} ${activeLevels.has(level) ? "logcat-filter--active" : ""}`}
               type="button"
               onClick={() => handleToggleLevel(level)}
             >

@@ -87,15 +87,26 @@ export function App() {
 
     const rippleTimers = new Set<ReturnType<typeof setTimeout>>();
     const MAX_RIPPLES = 15;
+    const HOVER_RIPPLE_COOLDOWN_MS = 200;
+    const lastHoverRippleAt = new WeakMap<HTMLElement, number>();
 
     const findButton = (target: HTMLElement): HTMLElement | null => {
       const webButton = target.closest("md-filled-button, md-filled-tonal-button, md-outlined-button, md-text-button") as HTMLElement | null;
       return webButton || target.closest("button, .anim-btn, .nav-item-m3, .telemetry-skeleton") as HTMLElement | null;
     };
 
-    const spawnRipple = (e: MouseEvent, button: HTMLElement) => {
+    const spawnRipple = (e: MouseEvent, button: HTMLElement, hover = false) => {
       if (button.hasAttribute("disabled") || button.classList.contains("disabled")) return;
       if (button.querySelectorAll(".m3-ripple").length >= MAX_RIPPLES) return;
+
+      if (hover) {
+        const now = performance.now();
+        const last = lastHoverRippleAt.get(button) ?? 0;
+        if (now - last < HOVER_RIPPLE_COOLDOWN_MS) return;
+        lastHoverRippleAt.set(button, now);
+        const existing = button.querySelector(".m3-ripple");
+        if (existing) existing.remove();
+      }
 
       const ripple = document.createElement("span");
       ripple.className = "m3-ripple";
@@ -132,7 +143,7 @@ export function App() {
       if (!button) return;
       const related = e.relatedTarget as Node | null;
       if (related && button.contains(related)) return;
-      spawnRipple(e, button);
+      spawnRipple(e, button, true);
     };
 
     document.addEventListener("mousedown", handleRipple);

@@ -2,7 +2,7 @@ import type { Adb } from "@yume-chan/adb";
 import { LineBuffer, parseLogcatLine, type LogcatEntry } from "./logcat-parser.js";
 import { logcatStore } from "./logcat-store.js";
 
-const BATCH_INTERVAL_MS = 100;
+const BATCH_INTERVAL_MS = 250;
 
 export type CaptureStatus = "idle" | "capturing" | "stopped";
 

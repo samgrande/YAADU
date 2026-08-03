@@ -584,7 +584,10 @@ select {
   --md-filled-button-label-text-size: 0.875rem;
   --md-filled-button-label-text-weight: 600;
   overflow: visible;
-  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+    background-color 0.25s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 #btn-connect:active:not([disabled]) {
@@ -765,7 +768,10 @@ select {
   --md-filled-button-container-shape: 62.4375rem;
   --md-filled-button-container-height: 3rem;
   overflow: visible;
-  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+    background-color 0.25s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 #btn-cancel-reconnect:active {
@@ -801,7 +807,10 @@ select {
   --md-filled-tonal-button-pressed-container-elevation: 0;
   --md-filled-tonal-button-container-height: 2.25rem;
   --md-filled-tonal-button-label-text-size: 0.75rem;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    transform 0.2s cubic-bezier(0.2, 0, 0, 1),
+    background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .connect-bottom-buttons md-filled-tonal-button:hover {
@@ -1576,7 +1585,10 @@ md-dialog {
   text-align: center;
   position: relative;
   overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    background-color 0.25s cubic-bezier(0.2, 0, 0, 1),
+    color 0.25s cubic-bezier(0.2, 0, 0, 1),
+    transform 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* Icon pill container — the animated background */
@@ -1900,7 +1912,10 @@ md-dialog {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+    background-color 0.25s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* Inherit icon color from parent text color */
@@ -4255,7 +4270,8 @@ md-filled-tonal-button .m3-ripple {
 }
 
 /* Dashboard Panels Transitions */
-.panel-area {
+/* Only promote to a composited layer during the exit transition */
+.panel-area.panel-exit {
   will-change: transform, opacity;
 }
 
@@ -6753,7 +6769,10 @@ md-filled-tonal-button .m3-ripple {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+    background-color 0.25s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* State layer */
@@ -6994,8 +7013,10 @@ md-filled-tonal-button .m3-ripple {
   text-overflow: ellipsis;
 }
 .logcat-filter--active {
-  box-shadow: 0 0 0 0.125rem var(--md-sys-color-outline);
-  filter: brightness(1.12);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  filter: none;
+  box-shadow: none;
 }
 .logcat-filters-label {
   display: inline-flex;
@@ -7090,7 +7111,10 @@ md-filled-tonal-button .m3-ripple {
   border-radius: 999px;
   position: relative;
   overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+    background-color 0.25s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 .mirror-btn:active:not(:disabled) {
   transform: scale(0.93);
@@ -7288,7 +7312,10 @@ md-filled-tonal-button .m3-ripple {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+    background-color 0.25s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* State layer */
@@ -7406,12 +7433,11 @@ md-filled-tonal-button .m3-ripple {
 }
 
 :root:not([data-theme-mode="dark"]) .logcat-filter--active {
-  box-shadow: 0 0 0 .125rem color-mix(
-    in srgb,
-    var(--md-sys-color-primary) 34%,
-    transparent
-  );
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border-color: var(--md-sys-color-primary-container);
   filter: none;
+  box-shadow: none;
 }
 
 :root:not([data-theme-mode="dark"]) .logcat-filter:hover {
@@ -7438,5 +7464,16 @@ md-filled-tonal-button .m3-ripple {
 
 .logcat-console .logcat-filter--verbose {
   color: var(--md-sys-color-on-surface-variant) !important;
+}
+
+.logcat-console .logcat-filter--active {
+  background: var(--md-sys-color-primary-container) !important;
+  color: var(--md-sys-color-on-primary-container) !important;
+}
+
+.logcat-console .logcat-filter:not(.logcat-filter--active) {
+  background: var(--md-sys-color-surface-container-high) !important;
+  color: var(--md-sys-color-on-surface-variant) !important;
+  border-color: var(--md-sys-color-outline-variant);
 }
 

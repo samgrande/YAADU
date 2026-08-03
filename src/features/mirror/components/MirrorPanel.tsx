@@ -248,71 +248,6 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
   return (
     <section className="mirror-panel">
       <div className="mirror-panel-inner">
-        {/* Control row */}
-        <div className="mirror-controls">
-          <button
-            className={`mirror-btn mirror-btn-start${isActive ? " active" : ""}${isBusy ? " busy" : ""}`}
-            onClick={handleStart}
-            disabled={isBusy}
-            title={isActive ? (isCamera ? "Stop camera" : "Stop mirroring") : "Start mirroring"}
-          >
-            {isActive ? (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                <rect x="4" y="4" width="16" height="16" rx="2"/>
-              </svg>
-            ) : (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="6,3 20,12 6,21"/>
-              </svg>
-            )}
-            <span>{isActive ? "STOP" : isBusy ? "STARTING…" : "MIRROR SCREEN"}</span>
-          </button>
-
-          <button
-            className="mirror-btn mirror-btn-icon"
-            onClick={handleScreenshot}
-            disabled={!isActive}
-            title="Screenshot"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="4" y="3" width="16" height="18" rx="2"/>
-              <circle cx="12" cy="11" r="4"/>
-              <path d="M8 3l2-2h4l2 2"/>
-            </svg>
-            <span>SNAP</span>
-          </button>
-
-          <button
-            className={`mirror-btn mirror-btn-icon mirror-btn-record${isRecording ? " recording" : ""}`}
-            onClick={handleRecord}
-            disabled={!isActive}
-            title={isRecording ? "Stop recording" : "Record screen"}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              {isRecording ? (
-                <rect x="8" y="8" width="8" height="8" rx="1" fill="var(--md-sys-color-error)" stroke="none"/>
-              ) : (
-                <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
-              )}
-            </svg>
-            <span>{isRecording ? "STOP" : "RECORD"}</span>
-          </button>
-
-          <button
-            className={`mirror-btn mirror-btn-icon${isCamera ? " camera" : ""}`}
-            onClick={handleCam}
-            disabled={isBusy}
-            title={isCamera ? "Stop camera" : "Stream camera"}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
-              <circle cx="12" cy="13" r="3"/>
-            </svg>
-            <span>{isCamera ? cameraFacing === "front" ? "FRONT" : "BACK" : "Stream Cam"}</span>
-          </button>
-        </div>
-
         {/* Viewport */}
         <div className="mirror-viewport">
           <div
@@ -327,6 +262,67 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
             ...cameraStyle,
           }}
             />
+            {status === "active" && (
+              <div className="mirror-stop-overlay">
+                <button
+                  className="mirror-btn mirror-btn-start active mirror-stop-btn"
+                  onClick={handleStart}
+                  title="Stop mirroring"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="4" y="4" width="16" height="16" rx="2"/>
+                  </svg>
+                  <span>STOP</span>
+                </button>
+              </div>
+            )}
+            {status === "active" && (
+              <div className="mirror-tools-overlay">
+                <button
+                  className="mirror-btn mirror-btn-icon"
+                  onClick={handleScreenshot}
+                  disabled={!isActive}
+                  title="Screenshot"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="4" y="3" width="16" height="18" rx="2"/>
+                    <circle cx="12" cy="11" r="4"/>
+                    <path d="M8 3l2-2h4l2 2"/>
+                  </svg>
+                  <span>SNAP</span>
+                </button>
+
+                <button
+                  className={`mirror-btn mirror-btn-icon mirror-btn-record${isRecording ? " recording" : ""}`}
+                  onClick={handleRecord}
+                  disabled={!isActive}
+                  title={isRecording ? "Stop recording" : "Record screen"}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    {isRecording ? (
+                      <rect x="8" y="8" width="8" height="8" rx="1" fill="var(--md-sys-color-error)" stroke="none"/>
+                    ) : (
+                      <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
+                    )}
+                  </svg>
+                  <span>{isRecording ? "STOP" : "RECORD"}</span>
+                </button>
+
+                <button
+                  className={`mirror-btn mirror-btn-icon${isCamera ? " camera" : ""}`}
+                  onClick={handleCam}
+                  disabled={isBusy}
+                  title={isCamera ? "Stop camera" : "Stream camera"}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                    <circle cx="12" cy="13" r="3"/>
+                  </svg>
+                  <span>{isCamera ? cameraFacing === "front" ? "FRONT" : "BACK" : "Stream Cam"}</span>
+                </button>
+              </div>
+            )}
             {status === "idle" && (
               <div className="mirror-placeholder">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--md-sys-color-primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -334,6 +330,17 @@ export function MirrorPanel({ adb }: { adb: Adb }) {
                   <line x1="12" y1="18" x2="12.01" y2="18"/>
                 </svg>
                 <span>Press START to mirror</span>
+                <button
+                  className={`mirror-btn mirror-btn-start mirror-start-btn${isBusy ? " busy" : ""}`}
+                  onClick={handleStart}
+                  disabled={isBusy}
+                  title="Start mirroring"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="6,3 20,12 6,21"/>
+                  </svg>
+                  <span>{isBusy ? "STARTING…" : "START"}</span>
+                </button>
               </div>
             )}
             {status === "starting" && (

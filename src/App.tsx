@@ -88,12 +88,13 @@ export function App() {
     const rippleTimers = new Set<ReturnType<typeof setTimeout>>();
     const MAX_RIPPLES = 15;
 
-    const handleRipple = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
+    const findButton = (target: HTMLElement): HTMLElement | null => {
       const webButton = target.closest("md-filled-button, md-filled-tonal-button, md-outlined-button, md-text-button") as HTMLElement | null;
-      const button = webButton || target.closest("button, .anim-btn, .nav-item-m3, .telemetry-skeleton") as HTMLElement | null;
-      if (!button || button.hasAttribute("disabled") || button.classList.contains("disabled")) return;
+      return webButton || target.closest("button, .anim-btn, .nav-item-m3, .telemetry-skeleton") as HTMLElement | null;
+    };
 
+    const spawnRipple = (e: MouseEvent, button: HTMLElement) => {
+      if (button.hasAttribute("disabled") || button.classList.contains("disabled")) return;
       if (button.querySelectorAll(".m3-ripple").length >= MAX_RIPPLES) return;
 
       const ripple = document.createElement("span");
@@ -120,9 +121,25 @@ export function App() {
       rippleTimers.add(timer);
     };
 
+    const handleRipple = (e: MouseEvent) => {
+      const button = findButton(e.target as HTMLElement);
+      if (!button) return;
+      spawnRipple(e, button);
+    };
+
+    const handleHoverRipple = (e: MouseEvent) => {
+      const button = findButton(e.target as HTMLElement);
+      if (!button) return;
+      const related = e.relatedTarget as Node | null;
+      if (related && button.contains(related)) return;
+      spawnRipple(e, button);
+    };
+
     document.addEventListener("mousedown", handleRipple);
+    document.addEventListener("mouseover", handleHoverRipple);
     return () => {
       document.removeEventListener("mousedown", handleRipple);
+      document.removeEventListener("mouseover", handleHoverRipple);
       window.removeEventListener('themeChange', updateAndroidFilter);
       for (const timer of rippleTimers) {
         clearTimeout(timer);

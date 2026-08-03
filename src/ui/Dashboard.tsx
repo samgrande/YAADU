@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import type { Adb } from "@yume-chan/adb";
 import { useAppContext } from "../context.js";
 import { disconnectDevice } from "../adb/connection.js";
+import { shellConsoleStore, useShellConsoleStore } from "../features/device-shell/ShellConsoleStore.js";
 import { DeviceShellProvider } from "../features/device-shell/DeviceShellProvider.js";
 import { BottomBar } from "../features/device-shell/components/BottomBar.js";
 import { ShellConsolePanel } from "../features/device-shell/components/ShellConsolePanel.js";
@@ -53,6 +54,7 @@ const NAV_ITEMS: { id: ActivePanel; label: string; title: string; icon: React.Co
 export function Dashboard({ adb }: { adb: Adb }) {
   const { state, dispatch } = useAppContext();
   const { isExpanded: isMirrorExpanded } = useMirrorStore();
+  const { isExpanded: isShellExpanded } = useShellConsoleStore();
   const [activePanel, setActivePanel] = useState<ActivePanel>(state.panel);
   const [exitingPanel, setExitingPanel] = useState<ActivePanel | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -61,6 +63,9 @@ export function Dashboard({ adb }: { adb: Adb }) {
   const device = state.device;
 
   const handlePanelChange = (panelId: ActivePanel) => {
+    if (isShellExpanded) {
+      shellConsoleStore.setExpanded(false);
+    }
     if (panelId === activePanel) {
       setRefreshKey((k) => k + 1);
       return;
@@ -235,8 +240,8 @@ export function Dashboard({ adb }: { adb: Adb }) {
                   <span className="nav-icon">
                     <item.icon />
                   </span>
+                  <span className="nav-label">{item.label}</span>
                 </span>
-                <span className="nav-label">{item.label}</span>
               </button>
             ))}
           </nav>

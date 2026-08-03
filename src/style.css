@@ -4588,26 +4588,6 @@ md-filled-tonal-button .m3-ripple {
 
 /* Card Content Wrapper for unified seamless slide/fade transitions */
 
-.card-content-wrapper.text-layout::before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 14rem;
-  height: 3.5rem;
-  border-radius: 62.4375rem;
-  background: var(--md-sys-color-primary);
-  opacity: 0.22;
-  pointer-events: none;
-  z-index: 0;
-  transition: opacity 0.25s cubic-bezier(0.2, 0, 0, 1);
-}
-
-.card-content-wrapper.text-layout:hover::before {
-  opacity: 0.32;
-}
-
 #btn-close-card {
   width: 10rem;
   margin-top: 1.5rem;

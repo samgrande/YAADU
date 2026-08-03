@@ -3,7 +3,7 @@ import type { Adb } from "@yume-chan/adb";
 import { getRunningApps, fetchAppIcon, launchApp } from "../../../adb/apps.js";
 
 const MAX_VISIBLE = 10;
-const POLL_MS = 1000;
+const POLL_MS = 3000;
 const ICON_BATCH = 3;
 
 interface Props {
@@ -25,7 +25,12 @@ export function AppsRunningStrip({ adb }: Props) {
         const apps = await getRunningApps(adb);
         if (cancelled) return;
 
-        setRunningApps(apps);
+        setRunningApps((prev) => {
+          if (prev.length !== apps.length) return apps;
+          const sortedPrev = [...prev].sort();
+          const sortedApps = [...apps].sort();
+          return sortedPrev.every((pkg, i) => pkg === sortedApps[i]) ? prev : apps;
+        });
 
         const unknown = apps.filter((pkg) => !(pkg in iconCacheRef.current));
         if (unknown.length === 0) return;
